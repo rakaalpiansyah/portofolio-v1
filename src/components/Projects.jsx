@@ -104,6 +104,7 @@ export default function Projects() {
       return;
     }
 
+    // 3D slide-out transition
     gsap.to(card, {
       x: direction * -120,
       rotationY: direction * -28,
@@ -114,6 +115,7 @@ export default function Projects() {
       ease: 'power2.in',
       onComplete: () => {
         setActiveIndex(newIndex);
+        // 3D slide-in transition
         gsap.fromTo(
           card,
           {
@@ -248,7 +250,7 @@ export default function Projects() {
                 <currentProject.icon className="w-6 h-6 text-zinc-300" />
               </div>
 
-              {/* Center Visual Mockup in 3D */}
+              {/* Center Visual Mockup & Watermark in 3D */}
               <div className="my-8 py-6 border-y border-white/10 text-center">
                 <div className="text-[11px] font-mono text-zinc-400 mb-1">
                   PROJECT SPECIFICATION

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Terminal, Sparkles, Layers, ShieldCheck, Cpu } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +20,7 @@ export default function Skills() {
       label: 'Linux',
       symbol: 'TUX',
       bg: 'bg-zinc-800 text-white border-zinc-600 shadow-[0_6px_0_#27272a]',
+      activeBg: 'bg-zinc-700',
       tag: 'OS & Infrastructure',
       punchline: "where 'chmod 777' is the ultimate flex",
       description: 'Administrasi server Linux, shell bash automation, permissions management, dan sertifikasi resmi Linux Essentials dari Cisco Networking Academy.',
@@ -29,6 +31,7 @@ export default function Skills() {
       label: 'Docker',
       symbol: '🐳',
       bg: 'bg-sky-600 text-white border-sky-400 shadow-[0_6px_0_#0284c7]',
+      activeBg: 'bg-sky-500',
       tag: 'Containerization',
       punchline: "works on my machine, and in production",
       description: 'Isolasi dependensi aplikasi, pembuatan Dockerfile modular multi-stage, dan konsistensi lingkungan deployment.',
@@ -39,6 +42,7 @@ export default function Skills() {
       label: 'Git',
       symbol: '⌥',
       bg: 'bg-red-600 text-white border-red-400 shadow-[0_6px_0_#dc2626]',
+      activeBg: 'bg-red-500',
       tag: 'Version Control',
       punchline: "git commit -m 'fixed it for real this time'",
       description: 'Trunk-based development, semantic commits, branching workflow, dan kolaborasi repositori GitHub terstruktur.',
@@ -49,6 +53,7 @@ export default function Skills() {
       label: 'Cisco',
       symbol: '⊛',
       bg: 'bg-cyan-700 text-white border-cyan-500 shadow-[0_6px_0_#0e7490]',
+      activeBg: 'bg-cyan-600',
       tag: 'CCNA Networking',
       punchline: "packet tracer dreams & subnets for breakfast",
       description: 'Sertifikasi CCNA: Introduction to Networks. Pemahaman mendalam tentang switching, routing protocols, subnetting IP, dan LAN maintenance.',
@@ -61,6 +66,7 @@ export default function Skills() {
       label: 'Laravel',
       symbol: '⬡',
       bg: 'bg-rose-600 text-white border-rose-400 shadow-[0_6px_0_#e11d48]',
+      activeBg: 'bg-rose-500',
       tag: 'Backend Core',
       punchline: "eloquent relationships & zero-friction routing",
       description: 'Framework backend utama. Arsitektur MVC end-to-end, migrasi database, middleware autentikasi, integrasi KiriminAja API dan Payment Gateway.',
@@ -71,6 +77,7 @@ export default function Skills() {
       label: 'PHP',
       symbol: 'PHP',
       bg: 'bg-indigo-700 text-white border-indigo-500 shadow-[0_6px_0_#4338ca]',
+      activeBg: 'bg-indigo-600',
       tag: 'Backend Language',
       punchline: "powering 75% of the web, and my production APIs",
       description: 'Object-oriented programming, request lifecycle handling, composer dependency management, dan arsitektur backend e-commerce CV Milionare Aromas.',
@@ -81,6 +88,7 @@ export default function Skills() {
       label: 'MySQL',
       symbol: '🐬',
       bg: 'bg-blue-700 text-white border-blue-500 shadow-[0_6px_0_#1d4ed8]',
+      activeBg: 'bg-blue-600',
       tag: 'Relational DB',
       punchline: "SELECT * FROM solutions WHERE latency < 50ms",
       description: 'Pemodelan skema relasional 3NF, index optimization, foreign key cascading, dan transaksi ACID untuk pencatatan order e-commerce.',
@@ -91,6 +99,7 @@ export default function Skills() {
       label: 'Oracle',
       symbol: '◈',
       bg: 'bg-red-800 text-white border-red-600 shadow-[0_6px_0_#991b1b]',
+      activeBg: 'bg-red-700',
       tag: 'Database Academy',
       punchline: "enterprise-grade SQL & verified database design",
       description: 'Sertifikasi Oracle Academy: Database Programming with SQL & Database Design. Query profiling terstruktur dan pemodelan entitas relasional.',
@@ -103,6 +112,7 @@ export default function Skills() {
       label: 'Flutter',
       symbol: '◈',
       bg: 'bg-sky-500 text-white border-sky-300 shadow-[0_6px_0_#0369a1]',
+      activeBg: 'bg-sky-400',
       tag: 'Mobile Engineering',
       punchline: "60 FPS reactive UI & live on Google Play Store",
       description: 'Pengembangan aplikasi mobile lintas platform. Berhasil mempublikasikan aplikasi produktivitas "Rehat" secara global di Google Play Store.',
@@ -113,6 +123,7 @@ export default function Skills() {
       label: 'Dart',
       symbol: '🎯',
       bg: 'bg-teal-600 text-white border-teal-400 shadow-[0_6px_0_#0f766e]',
+      activeBg: 'bg-teal-500',
       tag: 'Mobile Language',
       punchline: "sound null safety & async futures that never fail",
       description: 'Bahasa utama untuk mobile. Pemrograman asynchronous berbasis Streams dan Futures, state management modular, dan performa kompilasi AOT.',
@@ -123,6 +134,7 @@ export default function Skills() {
       label: 'React',
       symbol: '⚛',
       bg: 'bg-cyan-600 text-white border-cyan-400 shadow-[0_6px_0_#0891b2]',
+      activeBg: 'bg-cyan-500',
       tag: 'Frontend Web',
       punchline: "declarative components & silky reactive state",
       description: 'Pembangunan antarmuka web modern, integrasi WebGL 3D Three.js, transisi GSAP interaktif, dan rendering arsitektur komponen modular.',
@@ -133,6 +145,7 @@ export default function Skills() {
       label: 'TS',
       symbol: 'TS',
       bg: 'bg-blue-600 text-white border-blue-400 shadow-[0_6px_0_#2563eb]',
+      activeBg: 'bg-blue-500',
       tag: 'Type Safety',
       punchline: "preventing 'undefined is not a function' since day one",
       description: 'Koleksi tipe data ketat, interface kontrak data, generic abstractions, dan keandalan kode skala besar.',
@@ -145,6 +158,7 @@ export default function Skills() {
       label: 'Java',
       symbol: '☕',
       bg: 'bg-amber-700 text-white border-amber-500 shadow-[0_6px_0_#b45309]',
+      activeBg: 'bg-amber-600',
       tag: 'OOP Systems',
       punchline: "pure OOP discipline & custom 2D game loops",
       description: 'Pemrograman berorientasi objek murni, implementasi design patterns, algoritma struktur data, dan pengembangan engine game desktop 2D kustom.',
@@ -155,6 +169,7 @@ export default function Skills() {
       label: 'JS',
       symbol: 'JS',
       bg: 'bg-yellow-500 text-zinc-950 font-bold border-yellow-300 shadow-[0_6px_0_#ca8a04]',
+      activeBg: 'bg-yellow-400',
       tag: 'Web Core',
       punchline: "the single-threaded async miracle of modern computing",
       description: 'Asynchronous event loop, ESNext features, V8 engine optimizations, Web Workers, dan manipulasi DOM performant.',
@@ -165,6 +180,7 @@ export default function Skills() {
       label: 'API',
       symbol: '⇄',
       bg: 'bg-emerald-700 text-white border-emerald-500 shadow-[0_6px_0_#047857]',
+      activeBg: 'bg-emerald-600',
       tag: 'Integrations',
       punchline: "KiriminAja logistics & Watzap messaging on autopilot",
       description: 'Perancangan API RESTful standar, integrasi payment gateway Midtrans, webhook otomatisasi notifikasi, dan Brevo SMTP terotentikasi.',
@@ -175,6 +191,7 @@ export default function Skills() {
       label: 'HTML5',
       symbol: '5',
       bg: 'bg-orange-600 text-white border-orange-400 shadow-[0_6px_0_#ea580c]',
+      activeBg: 'bg-orange-500',
       tag: 'Semantic Web',
       punchline: "accessible semantic markup & modern canvas API",
       description: 'Struktur semantik standar WCAG AA, integrasi canvas WebGL, responsive viewport optimization, dan metadata teroptimasi.',
@@ -183,7 +200,7 @@ export default function Skills() {
 
   const currentSkill = keycaps.find((k) => k.id === activeKey) || keycaps[0];
 
-  // Keyboard Event Listener
+  // Keyboard Event Listener (Pressing physical keys presses virtual 3D keycaps!)
   useEffect(() => {
     const handleKeyDown = (e) => {
       const char = e.key.toUpperCase();
@@ -324,6 +341,7 @@ export default function Skills() {
                       }}
                       title={`${kc.label} (Press ${kc.key})`}
                     >
+                      {/* Keycap top face */}
                       <div className="text-[10px] sm:text-xs opacity-75 mb-0.5 tracking-wider">
                         {kc.key}
                       </div>
@@ -331,6 +349,7 @@ export default function Skills() {
                         {kc.label}
                       </div>
 
+                      {/* Tactile bevel reflection */}
                       <div className="absolute inset-x-1 top-1 h-[2px] bg-white/30 rounded-full pointer-events-none" />
                     </button>
                   );

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 
 export default function Background3D() {
   const mountRef = useRef(null);
+  const telemetryRef = useRef({ qx: 0, qy: 0, qz: 0, qw: 1 });
   const [telemetry, setTelemetry] = useState({ qx: '0.00', qy: '-0.22', qz: '0.00', qw: '0.98' });
   const resetTriggerRef = useRef(false);
 
@@ -12,10 +13,10 @@ export default function Background3D() {
 
     // --- Scene & Camera Setup ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0a0a0a, 0.014);
+    scene.fog = new THREE.FogExp2(0x0c0c0c, 0.016);
 
     const camera = new THREE.PerspectiveCamera(
-      48,
+      50,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
@@ -29,18 +30,18 @@ export default function Background3D() {
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x0a0a0a, 0);
+    renderer.setClearColor(0x0c0c0c, 0);
     container.appendChild(renderer.domElement);
 
     // --- Lighting ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0x38bdf8, 1.6);
+    const keyLight = new THREE.DirectionalLight(0x38bdf8, 1.5);
     keyLight.position.set(15, 20, 15);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x818cf8, 0.9);
+    const fillLight = new THREE.DirectionalLight(0x818cf8, 0.8);
     fillLight.position.set(-15, -12, -10);
     scene.add(fillLight);
 
@@ -49,10 +50,11 @@ export default function Background3D() {
     scene.add(worldGroup);
 
     // --- 1. ALCHE-Style Curved 3D Spatial Grid (Photo 1 & 2) ---
-    const gridRadius = 36;
-    const gridHeight = 52;
+    // A large curved cylindrical coordinate grid with crosshairs
+    const gridRadius = 26;
+    const gridHeight = 44;
     const gridRadialSegments = 54;
-    const gridHeightSegments = 26;
+    const gridHeightSegments = 28;
 
     const cylGeo = new THREE.CylinderGeometry(
       gridRadius,
@@ -61,21 +63,52 @@ export default function Background3D() {
       gridRadialSegments,
       gridHeightSegments,
       true,
-      -Math.PI * 0.7,
-      Math.PI * 1.4
+      -Math.PI * 0.75,
+      Math.PI * 1.5
     );
 
     const wireframeGeo = new THREE.WireframeGeometry(cylGeo);
     const gridMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.14,
+      opacity: 0.16,
       blending: THREE.AdditiveBlending,
     });
     const gridMesh = new THREE.LineSegments(wireframeGeo, gridMat);
-    gridMesh.position.z = -10; // Securely in background, no clipping
     gridMesh.rotation.y = Math.PI;
     worldGroup.add(gridMesh);
+
+    // Crosshairs '+' at vertex intersections
+    const createCrosshairTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      // Draw '+'
+      ctx.beginPath();
+      ctx.moveTo(16, 6);
+      ctx.lineTo(16, 26);
+      ctx.moveTo(6, 16);
+      ctx.lineTo(26, 16);
+      ctx.stroke();
+      return new THREE.CanvasTexture(canvas);
+    };
+
+    const crosshairTex = createCrosshairTexture();
+    const crosshairMat = new THREE.PointsMaterial({
+      size: 0.65,
+      map: crosshairTex,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const crosshairPoints = new THREE.Points(cylGeo, crosshairMat);
+    crosshairPoints.rotation.y = Math.PI;
+    worldGroup.add(crosshairPoints);
 
     // --- 2. Central Computational Lattice (High-Tech 3D Core) ---
     const coreGroup = new THREE.Group();
@@ -87,7 +120,7 @@ export default function Background3D() {
     const outerMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.32,
+      opacity: 0.28,
       blending: THREE.AdditiveBlending,
     });
     const outerCoreMesh = new THREE.LineSegments(outerWireframe, outerMat);
@@ -106,23 +139,13 @@ export default function Background3D() {
     const innerCoreMesh = new THREE.Mesh(innerGeo, innerMat);
     coreGroup.add(innerCoreMesh);
 
-    // Inner specular edges
-    const innerEdgesGeo = new THREE.EdgesGeometry(innerGeo);
-    const innerEdgesMat = new THREE.LineBasicMaterial({
-      color: 0x60a5fa,
-      transparent: true,
-      opacity: 0.55,
-    });
-    const innerEdges = new THREE.LineSegments(innerEdgesGeo, innerEdgesMat);
-    coreGroup.add(innerEdges);
-
     // Gimbal rings
     const ringGeo1 = new THREE.RingGeometry(6.2, 6.25, 64);
     const ringMat1 = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.24,
+      opacity: 0.22,
     });
     const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
     ring1.rotation.x = Math.PI / 3;
@@ -133,90 +156,34 @@ export default function Background3D() {
       color: 0x818cf8,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.18,
+      opacity: 0.15,
     });
     const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
     ring2.rotation.y = Math.PI / 4;
     coreGroup.add(ring2);
 
-    // --- 3. Bintang Mengkilat & Berkilau (Sparkling Celestial Starfield) ---
-    const createStarGlowTexture = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 64;
-      canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, 64, 64);
-
-      // Radial star glow
-      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 1)'); // Inti putih cemerlang
-      grad.addColorStop(0.2, 'rgba(56, 189, 248, 0.95)'); // Pendaran cyan tajam
-      grad.addColorStop(0.5, 'rgba(129, 140, 248, 0.45)'); // Halo indigo lembut
-      grad.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Transparan penuh
-
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(32, 32, 32, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Sharp cross twinkle flare
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(32, 10);
-      ctx.lineTo(32, 54);
-      ctx.moveTo(10, 32);
-      ctx.lineTo(54, 32);
-      ctx.stroke();
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.minFilter = THREE.LinearFilter;
-      return texture;
-    };
-
-    const starTexture = createStarGlowTexture();
-
-    const starCount = window.innerWidth < 768 ? 850 : 1600;
-    const starPositions = new Float32Array(starCount * 3);
-    const starColors = new Float32Array(starCount * 3);
-
-    const colWhite = new THREE.Color(0xffffff);
-    const colCyan = new THREE.Color(0x38bdf8);
-    const colIndigo = new THREE.Color(0x818cf8);
-    const colSky = new THREE.Color(0x7dd3fc);
-
-    for (let i = 0; i < starCount; i++) {
-      const radius = 6 + Math.random() * 32;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-
-      starPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      starPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      starPositions[i * 3 + 2] = radius * Math.cos(phi);
-
-      const r = Math.random();
-      const col = r < 0.45 ? colWhite : r < 0.75 ? colCyan : r < 0.9 ? colSky : colIndigo;
-      starColors[i * 3] = col.r;
-      starColors[i * 3 + 1] = col.g;
-      starColors[i * 3 + 2] = col.b;
+    // --- 3. Ambient Code Particles ---
+    const particleCount = window.innerWidth < 768 ? 500 : 1000;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const r = 8 + Math.random() * 26;
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      particlePositions[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      particlePositions[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+      particlePositions[i * 3 + 2] = r * Math.cos(ph);
     }
-
-    const starGeo = new THREE.BufferGeometry();
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-
-    const starMat = new THREE.PointsMaterial({
-      size: 0.38,
-      map: starTexture,
-      vertexColors: true,
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x38bdf8,
+      size: 0.08,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.35,
       blending: THREE.AdditiveBlending,
-      depthWrite: false,
     });
-
-    const starfield = new THREE.Points(starGeo, starMat);
-    worldGroup.add(starfield);
+    const particles = new THREE.Points(particleGeo, particleMat);
+    worldGroup.add(particles);
 
     // --- High-Response Pointer Tracking & Inertia ---
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
@@ -238,6 +205,7 @@ export default function Background3D() {
     };
 
     const onMouseDown = (e) => {
+      // Allow drag when clicking background
       if (e.target.tagName === 'CANVAS' || e.target.id === 'spatial-bg') {
         isDragging = true;
         prevMousePos = { x: e.clientX, y: e.clientY };
@@ -276,12 +244,12 @@ export default function Background3D() {
         mouse.targetY = 0;
         dragVelocity.x = 0;
         dragVelocity.y = 0;
-        worldGroup.rotation.x *= 0.88;
-        worldGroup.rotation.y *= 0.88;
+        worldGroup.rotation.x *= 0.9;
+        worldGroup.rotation.y *= 0.9;
         resetTriggerRef.current = false;
       }
 
-      // Smooth mouse lerp with responsive damping
+      // Smooth mouse lerp
       mouse.x += (mouse.targetX - mouse.x) * 0.055;
       mouse.y += (mouse.targetY - mouse.y) * 0.055;
 
@@ -304,18 +272,16 @@ export default function Background3D() {
 
       // Continuous subtle ambient drift
       gridMesh.rotation.y = Math.PI + Math.sin(elapsed * 0.2) * 0.06;
+      crosshairPoints.rotation.y = gridMesh.rotation.y;
 
       coreGroup.rotation.y = elapsed * 0.15;
       coreGroup.rotation.x = elapsed * 0.08;
       ring1.rotation.z = elapsed * 0.18;
       ring2.rotation.z = -elapsed * 0.12;
 
-      // Dynamic glittering / sparkling twinkle of the stars
-      starMat.opacity = 0.78 + Math.sin(elapsed * 3.0) * 0.18;
-      starfield.rotation.y = elapsed * 0.02 + mouse.x * 0.12;
-      starfield.rotation.x = elapsed * 0.01 - mouse.y * 0.08;
+      particles.rotation.y = elapsed * 0.02 + mouse.x * 0.1;
 
-      // Update telemetry quaternion periodically
+      // Update telemetry quaternion every 10 frames
       frameCount++;
       if (frameCount % 10 === 0) {
         const q = worldGroup.quaternion;
@@ -347,20 +313,19 @@ export default function Background3D() {
       cylGeo.dispose();
       wireframeGeo.dispose();
       gridMat.dispose();
+      crosshairTex.dispose();
+      crosshairMat.dispose();
       outerGeo.dispose();
       outerWireframe.dispose();
       outerMat.dispose();
       innerGeo.dispose();
       innerMat.dispose();
-      innerEdgesGeo.dispose();
-      innerEdgesMat.dispose();
       ringGeo1.dispose();
       ringMat1.dispose();
       ringGeo2.dispose();
       ringMat2.dispose();
-      starGeo.dispose();
-      starMat.dispose();
-      starTexture.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
 
       renderer.dispose();
     };
@@ -379,10 +344,10 @@ export default function Background3D() {
         aria-hidden="true"
       />
 
-      {/* ALCHE-Style 3D Telemetry HUD */}
+      {/* ALCHE-Style 3D Telemetry HUD (Photo 1) */}
       <div className="fixed top-20 right-6 z-20 hidden lg:flex flex-col items-end gap-2 pointer-events-auto select-none">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-950/70 border border-zinc-800/80 backdrop-blur-md text-[10px] font-mono text-zinc-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
           <span>Spatial Quaternion</span>
           <span className="text-zinc-200">
             {telemetry.qx} {telemetry.qy} {telemetry.qz} {telemetry.qw}
