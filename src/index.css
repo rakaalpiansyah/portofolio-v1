@@ -1,0 +1,356 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: auto !important;
+    background-color: #0a0a0a;
+    color: #fafafa;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.24);
+  }
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+@layer components {
+  .card-surface {
+    background: rgba(24, 24, 27, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: border-color 0.2s ease;
+  }
+
+  .card-surface:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .nav-glass {
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .projects-track {
+    perspective: 1600px;
+    transform-style: preserve-3d;
+  }
+
+  .project-card {
+    --card-tilt-x: 0deg;
+    --card-tilt-y: 0deg;
+    --card-shift-x: 0px;
+    --card-shift-y: 0px;
+    position: relative;
+    width: 100%;
+    min-height: 620px;
+    transform-style: preserve-3d;
+    isolation: isolate;
+  }
+
+  .project-card-front {
+    position: relative;
+    z-index: 2;
+    min-height: 560px;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025)),
+      rgba(14, 14, 17, 0.74);
+    box-shadow:
+      0 28px 90px rgba(0, 0, 0, 0.44),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 1.75rem;
+    transform:
+      translate3d(var(--card-shift-x), var(--card-shift-y), 96px)
+      rotateX(var(--card-tilt-x))
+      rotateY(var(--card-tilt-y));
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 260ms ease,
+      background 260ms ease;
+  }
+
+  .project-card:hover .project-card-front {
+    border-color: rgba(125, 211, 252, 0.36);
+  }
+
+  .project-depth-scene {
+    position: absolute;
+    inset: 28px 0 auto auto;
+    z-index: 1;
+    width: min(72%, 440px);
+    height: 300px;
+    color: rgba(186, 230, 253, 0.9);
+    transform:
+      translate3d(34px, -16px, -90px)
+      rotateX(58deg)
+      rotateZ(-18deg);
+    transform-style: preserve-3d;
+    opacity: 1;
+    pointer-events: none;
+    transition:
+      transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 320ms ease;
+  }
+
+  .project-card:hover .project-depth-scene {
+    opacity: 1;
+    transform:
+      translate3d(58px, -28px, -120px)
+      rotateX(64deg)
+      rotateZ(-22deg);
+  }
+
+  .depth-grid {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(125, 211, 252, 0.28);
+    background-image:
+      linear-gradient(rgba(125, 211, 252, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(125, 211, 252, 0.18) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: linear-gradient(90deg, transparent, #000 16%, #000 76%, transparent);
+  }
+
+  .depth-slab {
+    position: absolute;
+    border: 1px solid rgba(125, 211, 252, 0.28);
+    background:
+      linear-gradient(135deg, rgba(14, 165, 233, 0.34), rgba(255, 255, 255, 0.06)),
+      rgba(15, 23, 42, 0.68);
+    box-shadow: 0 22px 70px rgba(14, 165, 233, 0.16);
+  }
+
+  .depth-slab-a {
+    inset: 58px 74px 76px 52px;
+    transform: translateZ(34px) rotateZ(7deg);
+  }
+
+  .depth-slab-b {
+    inset: 104px 132px 38px 120px;
+    transform: translateZ(72px) rotateZ(-11deg);
+  }
+
+  .depth-orbit {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border: 1px solid rgba(186, 230, 253, 0.62);
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    animation: depth-spin 8s linear infinite;
+  }
+
+  .depth-orbit-a {
+    width: 180px;
+    height: 180px;
+    transform: translate(-50%, -50%) translateZ(90px) rotateX(66deg);
+  }
+
+  .depth-orbit-b {
+    width: 250px;
+    height: 86px;
+    transform: translate(-50%, -50%) translateZ(52px) rotateY(34deg);
+    animation-duration: 12s;
+    animation-direction: reverse;
+  }
+
+  .depth-core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    width: 78px;
+    height: 78px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(3, 7, 18, 0.86);
+    box-shadow:
+      0 0 44px rgba(56, 189, 248, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    transform: translate(-50%, -50%) translateZ(126px) rotateZ(12deg);
+  }
+
+  .depth-label,
+  .depth-index {
+    position: absolute;
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    background: rgba(3, 7, 18, 0.74);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: rgba(224, 242, 254, 0.94);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transform-style: preserve-3d;
+  }
+
+  .depth-label {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .depth-label-one {
+    left: 26px;
+    top: 34px;
+    transform: translateZ(116px);
+  }
+
+  .depth-label-two {
+    right: 42px;
+    top: 112px;
+    transform: translateZ(82px);
+  }
+
+  .depth-label-three {
+    left: 128px;
+    bottom: 32px;
+    transform: translateZ(104px);
+  }
+
+  .depth-index {
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem 0.65rem;
+    color: rgba(255, 255, 255, 0.62);
+    transform: translateZ(44px);
+  }
+
+  .project-number {
+    flex: 0 0 auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    line-height: 1;
+    color: rgba(186, 230, 253, 0.74);
+    border: 1px solid rgba(125, 211, 252, 0.24);
+    background: rgba(8, 47, 73, 0.28);
+    padding: 0.55rem 0.65rem;
+    border-radius: 0.75rem;
+  }
+
+  .project-note {
+    border-radius: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(24, 24, 27, 0.58);
+    padding: 1rem;
+  }
+
+  .project-note span {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    color: rgba(125, 211, 252, 0.76);
+  }
+
+  .project-note p {
+    font-size: 0.77rem;
+    line-height: 1.65;
+    color: rgb(212, 212, 216);
+  }
+
+  .project-chip {
+    border-radius: 0.65rem;
+    border: 1px solid rgba(63, 63, 70, 0.74);
+    background: rgba(39, 39, 42, 0.72);
+    padding: 0.28rem 0.58rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    color: rgb(212, 212, 216);
+  }
+}
+
+@keyframes depth-spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (min-width: 1024px) {
+  .project-card {
+    width: 680px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .project-card {
+    width: 720px;
+  }
+}
+
+@media (max-width: 640px) {
+  .project-card {
+    min-height: auto;
+  }
+
+  .project-card-front {
+    min-height: auto;
+    padding: 1.25rem;
+    transform: translate3d(0, 0, 48px);
+  }
+
+  .project-depth-scene {
+    inset: 20px 4px auto auto;
+    width: 82%;
+    height: 220px;
+    opacity: 0.58;
+    transform:
+      translate3d(22px, -20px, -90px)
+      rotateX(62deg)
+      rotateZ(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .depth-orbit {
+    animation: none;
+  }
+
+  .project-card-front,
+  .project-depth-scene {
+    transition: none;
+  }
+}
+
+.custom-cursor {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s,
+              border-color 0.2s,
+              opacity 0.2s;
+}
+
+@media (pointer: coarse) {
+  .custom-cursor {
+    display: none !important;
+  }
+}
