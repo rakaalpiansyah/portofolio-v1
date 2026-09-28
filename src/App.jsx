@@ -13,6 +13,7 @@ import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import { LanguageProvider } from './context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,19 +63,21 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
-      <CustomCursor />
-      <Background3D />
-      <Navbar />
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <LanguageProvider>
+      <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
+        <CustomCursor />
+        <Background3D />
+        <Navbar />
+        <main className="relative z-10">
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }

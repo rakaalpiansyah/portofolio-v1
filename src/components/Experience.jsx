@@ -2,106 +2,78 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Briefcase, GraduationCap, MapPin, Sparkles, Layers } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Experience() {
+  const { t } = useLanguage();
   const sectionRef = useRef(null);
   const timelineRef = useRef(null);
   const spineLineRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState('all');
 
-  const experiences = [
+  const staticExperiences = [
     {
       id: 'sonasoft',
-      period: 'Feb 2026 - Jun 2026',
-      role: 'Back End Developer',
-      company: 'Sonasoft IT Services LLC',
-      location: 'Bandung, Indonesia (Remote)',
       type: 'work',
       category: 'work',
       isLatest: true,
-      tag: 'Pengalaman Industri',
-      highlights: [
-        'Mengembangkan arsitektur Backend REST API menggunakan framework Laravel 11 untuk kebutuhan layanan enterprise.',
-        'Merancang dan membangun modul Syirkah (skema kemitraan bisnis / bagi hasil) dengan validasi logika bisnis ketat dan struktur data terpercaya.',
-        'Mengimplementasikan Content Resources API modular untuk pengelolaan dan distribusi konten dinamis secara terstandar.',
-        'Menerapkan standar RESTful API modern: API resource transformation, modular form request validation, dan penanganan error terpusat.',
-      ],
       skills: ['Laravel 11', 'REST API', 'PHP', 'Backend Architecture', 'Content Resources', 'MySQL'],
     },
     {
       id: 'royale',
-      period: 'Magang / Internship',
-      role: 'Backend Web Developer',
-      company: 'PT. Royale Essence Indonesia',
-      location: 'Indonesia',
       type: 'work',
       category: 'work',
       isLatest: false,
-      tag: 'E-Commerce Backend',
-      highlights: [
-        'Mengembangkan dan memelihara arsitektur backend e-commerce menggunakan framework Laravel end-to-end.',
-        'Mengintegrasikan Payment Gateway untuk memproses transaksi pembayaran pelanggan secara otomatis, aman, dan real-time.',
-        'Mengimplementasikan API logistik KiriminAja untuk mengotomatisasi kalkulasi ongkos kirim dinamis (berat aktual vs volumetrik) serta otomasi request pickup dan pembuatan AWB.',
-        'Membangun sistem notifikasi pesan otomatis menggunakan API Watzap.id untuk pengiriman invoice dan status pesanan WhatsApp langsung ke pelanggan.',
-        'Mengonfigurasi layanan SMTP Brevo untuk pengiriman email transaksional yang dilengkapi otentikasi domain DKIM dan SPF.',
-      ],
       skills: ['Laravel', 'PHP', 'MySQL', 'Payment Gateway', 'KiriminAja API', 'Watzap API', 'Brevo SMTP'],
     },
     {
       id: 'informatika',
-      period: '2023 - Sekarang',
-      role: 'S1 Teknik Informatika',
-      company: 'Teknik Informatika',
-      location: 'Bandung, Indonesia',
       type: 'education',
       category: 'education',
       isLatest: false,
-      tag: 'Studi Akademik & Prestasi',
-      highlights: [
-        'Fokus akademik: Software Engineering, Web Development, Mobile Architecture, dan AI Engineering.',
-        'Meraih Juara Harapan 1 Lomba Karya Tulis MIPA Tingkat Nasional 2024 di Universitas Jambi bertema SDGs dengan solusi website pengelolaan sampah terpadu.',
-        'Mendalami arsitektur perangkat lunak modular, clean code, algoritma struktur data, dan pengembangan aplikasi Flutter.',
-      ],
       skills: ['Software Engineering', 'AI Engineering', 'Flutter/Dart', 'Web Development', 'Algorithms'],
     },
     {
       id: 'pos-indonesia',
-      period: 'Okt 2021 - Des 2021',
-      role: 'Magang / Praktik Kerja Lapangan (PKL)',
-      company: 'PT POS INDONESIA (PERSERO)',
-      location: 'Jawa Barat, Indonesia',
       type: 'work',
       category: 'work',
       isLatest: false,
-      tag: 'Operasional Logistik & Jaringan',
-      highlights: [
-        'Menangani proses entri data paket logistik menggunakan sistem internal perusahaan dengan tingkat akurasi tinggi.',
-        'Melakukan maintenance berkala jaringan lokal (LAN) kantor untuk memastikan stabilitas koneksi operasional harian.',
-        'Memberikan dukungan teknis (troubleshooting) perangkat keras dan perangkat lunak kepada seluruh staf kantor.',
-      ],
       skills: ['LAN Maintenance', 'Hardware & Software Troubleshooting', 'Data Logistics Operations'],
     },
   ];
 
+  const experiences = staticExperiences.map((item, idx) => {
+    const data = t.experience.items[idx] || {};
+    return {
+      ...item,
+      period: data.period || '',
+      role: data.role || '',
+      company: data.company || '',
+      location: data.location || '',
+      tag: data.tag || '',
+      highlights: data.highlights || [],
+    };
+  });
+
   const categories = [
     {
       id: 'all',
-      label: 'Semua Rekam Jejak',
-      shortLabel: 'Semua',
+      label: t.experience.allTab || 'Semua Rekam Jejak',
+      shortLabel: t.experience.allShort || 'Semua',
       count: experiences.length,
     },
     {
       id: 'work',
-      label: 'Pengalaman Industri & Magang',
-      shortLabel: 'Industri',
+      label: t.experience.workTab || 'Pengalaman Industri & Magang',
+      shortLabel: t.experience.workShort || 'Industri',
       count: experiences.filter((e) => e.category === 'work').length,
     },
     {
       id: 'education',
-      label: 'Pendidikan & Prestasi',
-      shortLabel: 'Pendidikan',
+      label: t.experience.eduTab || 'Pendidikan & Prestasi',
+      shortLabel: t.experience.eduShort || 'Pendidikan',
       count: experiences.filter((e) => e.category === 'education').length,
     },
   ];
@@ -191,11 +163,10 @@ export default function Experience() {
       {/* Header */}
       <div className="mb-14">
         <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
-          Pengalaman Kerja &amp; Pendidikan
+          {t.experience.heading}
         </h2>
         <p className="text-zinc-400 text-sm sm:text-base max-w-2xl leading-relaxed mb-8">
-          Rekam jejak terverifikasi dalam rekayasa backend industri, studi akademik teknik informatika,
-          dan infrastruktur jaringan.
+          {t.experience.subtitle}
         </p>
 
         {/* Category Filter Tabs */}
@@ -277,7 +248,7 @@ export default function Experience() {
                     {exp.isLatest && (
                       <span className="px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Terkini
+                        {t.experience.currentBadge || 'Terkini'}
                       </span>
                     )}
                     <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline">

@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Github, Linkedin, Instagram, Send, Copy, Check } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -92,11 +94,10 @@ export default function Contact() {
     >
       <div ref={contentRef}>
         <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
-          Mari Terhubung &amp; Berkolaborasi
+          {t.contact.heading}
         </h2>
         <p className="text-zinc-400 text-sm sm:text-base max-w-lg mb-14">
-          Terbuka untuk diskusi rekayasa perangkat lunak, peluang kerja sama proyek backend &amp; mobile, 
-          atau penjajakan karier profesional.
+          {t.contact.subtitle}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -104,16 +105,16 @@ export default function Contact() {
         <div className="md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 className="font-heading font-semibold text-lg text-white mb-5">
-              Kanal Komunikasi
+              {t.contact.channelsTitle}
             </h3>
 
             {/* Email Box */}
             <div className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 mb-5">
               <div className="text-[11px] font-mono text-zinc-500 mb-1.5 flex items-center justify-between">
-                <span>Alamat Email</span>
+                <span>{t.contact.emailLabel}</span>
                 {copied && (
                   <span className="text-emerald-400 text-[10px] font-mono flex items-center gap-1">
-                    <Check className="w-3 h-3" /> Disalin
+                    <Check className="w-3 h-3" /> {t.contact.copied}
                   </span>
                 )}
               </div>
@@ -174,15 +175,15 @@ export default function Contact() {
           </div>
 
           <div className="mt-6 pt-4 border-t border-zinc-800/60 text-xs text-zinc-500 flex items-center justify-between">
-            <span>Bandung, Indonesia</span>
-            <span>Remote / On-site</span>
+            <span>{t.contact.location}</span>
+            <span>{t.contact.mode}</span>
           </div>
         </div>
 
         {/* Message Form */}
         <div className="md:col-span-7 card-surface p-7 rounded-2xl">
           <h3 className="font-heading font-semibold text-lg text-white mb-5">
-            Kirimkan Pesan Langsung
+            {t.contact.formTitle}
           </h3>
 
           {submitStatus === 'success' ? (
@@ -190,16 +191,16 @@ export default function Contact() {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <Check className="w-6 h-6" />
               </div>
-              <h4 className="font-heading font-semibold text-white text-base">Pesan Berhasil Terkirim</h4>
+              <h4 className="font-heading font-semibold text-white text-base">{t.contact.successTitle}</h4>
               <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
-                Pesan Anda telah diteruskan langsung ke <span className="text-emerald-400 font-mono text-xs">{emailAddress}</span>. Terima kasih telah menghubungi!
+                {t.contact.successDesc} <span className="text-emerald-400 font-mono text-xs">{emailAddress}</span>.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitStatus(null)}
                 className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
               >
-                Kirim Pesan Lainnya
+                {t.contact.sendAnother}
               </button>
             </div>
           ) : submitStatus === 'fallback' ? (
@@ -207,34 +208,34 @@ export default function Contact() {
               <div className="w-12 h-12 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
                 <Mail className="w-6 h-6" />
               </div>
-              <h4 className="font-heading font-semibold text-white text-base">Draf Email Dibuka</h4>
+              <h4 className="font-heading font-semibold text-white text-base">{t.contact.fallbackTitle}</h4>
               <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
-                Aplikasi email Anda telah dibuka dengan draf pesan langsung ke <span className="text-sky-400 font-mono text-xs">{emailAddress}</span>.
+                {t.contact.fallbackDesc} <span className="text-sky-400 font-mono text-xs">{emailAddress}</span>.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitStatus(null)}
                 className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
               >
-                Kembali ke Form
+                {t.contact.backToForm}
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">Nama Lengkap</label>
+                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.nameLabel}</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Nama Anda"
+                    placeholder={t.contact.namePlaceholder}
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">Alamat Email</label>
+                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.emailInputLabel}</label>
                   <input
                     type="email"
                     required
@@ -247,25 +248,25 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">Topik / Keperluan</label>
+                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.topicLabel}</label>
                 <input
                   type="text"
                   required
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  placeholder="Proyek Backend / Aplikasi Mobile / Peluang Kolaborasi"
+                  placeholder={t.contact.topicPlaceholder}
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">Pesan</label>
+                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.messageLabel}</label>
                 <textarea
                   rows="4"
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Deskripsikan kebutuhan proyek atau pesan Anda..."
+                  placeholder={t.contact.messagePlaceholder}
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors resize-none"
                 />
               </div>
@@ -278,11 +279,11 @@ export default function Contact() {
                 {isSubmitting ? (
                   <>
                     <span className="w-4 h-4 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin" />
-                    <span>Mengirimkan Pesan...</span>
+                    <span>{t.contact.sending}</span>
                   </>
                 ) : (
                   <>
-                    <span>Kirim Pesan</span>
+                    <span>{t.contact.sendBtn}</span>
                     <Send className="w-4 h-4" />
                   </>
                 )}
@@ -291,11 +292,11 @@ export default function Contact() {
               <div className="text-center pt-2">
                 <a
                   href={`mailto:${emailAddress}?subject=${encodeURIComponent(
-                    formData.subject || 'Diskusi Proyek & Kolaborasi'
+                    formData.subject || (t.contact.topicPlaceholder)
                   )}`}
                   className="text-xs font-mono text-zinc-400 hover:text-white transition-colors underline-offset-4 hover:underline"
                 >
-                  atau klik untuk membuka aplikasi email langsung
+                  {t.contact.orMailto}
                 </a>
               </div>
             </form>

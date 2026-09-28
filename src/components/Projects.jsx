@@ -16,10 +16,12 @@ import {
   ShieldCheck,
   Layers,
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Projects() {
+  const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
   const headerRef = useRef(null);
@@ -28,140 +30,80 @@ export default function Projects() {
   const isAnimating = useRef(false);
   const touchStartX = useRef(0);
 
-  // Real verified projects from github.com/rakaalpiansyah
-  const projects = [
+  // Static configs for real verified projects
+  const staticProjectConfigs = [
     {
-      title: '"Rehat" Mental Productivity',
-      shortTitle: 'Rehat App',
-      category: 'Mobile Engineering & Play Store',
-      tag: 'Live on Google Play Store',
-      routeBadge: 'play.google.com/store/apps/rehat',
       icon: Smartphone,
-      subtitle: 'Aplikasi Produktivitas & Manajemen Interval Istirahat Mental',
-      description:
-        'Aplikasi mobile berbasis Flutter & Dart yang terpublikasi secara global di Google Play Store untuk membantu pengguna mengelola ritme kerja fokus dan mencegah burnout melalui interval istirahat terukur.',
-      challenge:
-        'Menjaga efisiensi daya baterai saat notifikasi interval berjalan di background dan mempertahankan UI responsif 60 FPS.',
-      solution:
-        'Menerapkan modular clean architecture, state management reaktif terisolasi, notifikasi lokal terjadwal, dan penyimpanan SQLite lokal yang ringan.',
       techStack: ['Flutter', 'Dart', 'Android Studio', 'SQLite', 'Play Console'],
       githubUrl: 'https://github.com/rakaalpiansyah/rehat-app',
       liveUrl: 'https://play.google.com',
       liveLabel: 'Google Play Store',
-      metrics: 'Global Play Store Release',
       color: 'from-sky-500/20 via-sky-600/10 to-transparent',
       accentColor: '#38bdf8',
       image: '/projects/rehat.png',
       type: 'mobile_app',
     },
     {
-      title: 'Meeting AI: Real-time Speech & Diarization',
-      shortTitle: 'Meeting AI',
-      category: 'AI Engineering & Speech Intelligence',
-      tag: 'Live on Railway Production',
-      routeBadge: 'api.meeting-ai.app/v1/transcribe',
       icon: Bot,
-      subtitle: 'Backend Transkripsi Otomatis, Speaker Diarization, & Analisis Rapat',
-      description:
-        'Layanan kecerdasan buatan berbasis FastAPI dan model Whisper AI untuk pemrosesan audio rapat, transkripsi real-time berlatensi rendah, pemisahan suara multi-pembicara (speaker diarization), dan analisis ringkasan cerdas.',
-      challenge:
-        'Tingginya latensi inferensi saat memproses file audio berdurasi panjang dan kompleksitas pemisahan suara tumpang tindih.',
-      solution:
-        'Pipeline asynchronous berbasis FastAPI, chunking audio streaming teroptimasi, caching semantic, dan deployment containerized di Railway Cloud.',
       techStack: ['Python 3.11', 'FastAPI', 'Whisper AI', 'PyTorch', 'Railway', 'Docker'],
       githubUrl: 'https://github.com/rakaalpiansyah/Meeting-AI-Backend',
       liveUrl: 'https://meeting-ai-backend-production-b61e.up.railway.app/docs',
       liveLabel: 'Railway Swagger Docs',
-      metrics: 'FastAPI Production Microservice',
       color: 'from-emerald-500/20 via-teal-600/10 to-transparent',
       accentColor: '#10b981',
       type: 'speech_ai',
     },
     {
-      title: 'AgriTraceChain: Blockchain Traceability',
-      shortTitle: 'AgriTraceChain',
-      category: 'Enterprise Blockchain & Smart Contracts',
-      tag: 'Hyperledger Fabric & Caliper',
-      routeBadge: 'fabric.agritrace/channel-agri',
       icon: Layers,
-      subtitle: 'Platform Rantai Pasok Pertanian & Smart Contract Multi-Organisasi',
-      description:
-        'Platform blockchain konsorsium enterprise berbasis Hyperledger Fabric untuk melacak perjalanan komoditas pertanian dari petani hingga pembeli secara transparan dan tamper-proof, dengan 4 smart contract (chaincode) serta benchmark performa via Hyperledger Caliper.',
-      challenge:
-        'Menghilangkan ketergantungan pada server pusat yang rentan manipulasi data dan mengkoordinasikan konsensus di antara 5 organisasi independen.',
-      solution:
-        'Merancang arsitektur konsorsium 5 organisasi (Farmer, Aggregator, Processor, Regulator, Buyer), deployment 4 smart contract modular, dan settlement otomatis Letter of Credit (LoC).',
       techStack: ['Hyperledger Fabric', 'Go / Node Chaincode', 'Docker', 'Hyperledger Caliper', 'Cryptography', 'Consortium Network'],
       githubUrl: 'https://github.com/rakaalpiansyah/agritraceChain',
-      metrics: '5-Org Consortium • Caliper Benchmarked',
       color: 'from-indigo-500/20 via-purple-600/10 to-transparent',
       accentColor: '#818cf8',
       type: 'blockchain',
     },
     {
-      title: 'PlantVillage AI: Deep Learning Crop Vision',
-      shortTitle: 'PlantVillage AI',
-      category: 'Computer Vision & Deep Learning',
-      tag: '97.12% Test Accuracy',
-      routeBadge: 'vision.plantvillage.ai/infer',
       icon: Cpu,
-      subtitle: 'Klasifikasi Patologi Penyakit Daun Tanaman Berbasis CNN & TFLite',
-      description:
-        'Sistem diagnosis citra patologi tanaman menggunakan arsitektur Custom CNN 4-Blok Konvolusi yang berhasil meraih akurasi pengujian 97.12% dan dikuantisasi ke TensorFlow Lite untuk inferensi edge CPU dalam ~6ms.',
-      challenge:
-        'Variasi pencahayaan dan background bising pada daun di lapangan, serta kebutuhan inferensi cepat tanpa ketergantungan GPU cloud.',
-      solution:
-        'Pipeline augmentasi citra variatif, arsitektur CNN dengan dropout regularized, serta optimasi ekspor TensorFlow Lite berbobot ringan.',
       techStack: ['Python', 'TensorFlow', 'Keras', 'TensorFlow Lite', 'OpenCV', 'NumPy'],
       githubUrl: 'https://github.com/rakaalpiansyah/plantvillage-disease-detection',
-      metrics: '97.12% Test Accuracy • ~6ms CPU',
       color: 'from-amber-500/20 via-yellow-600/10 to-transparent',
       accentColor: '#f59e0b',
       type: 'vision_ai',
     },
     {
-      title: 'GreenV: Smart Waste Management & SDGs',
-      shortTitle: 'GreenV Platform',
-      category: 'Web Architecture & Sustainable Tech',
-      tag: 'Juara Harapan 1 Nasional MIPA 2024',
-      routeBadge: 'greenv.sdgs.org/dashboard',
       icon: Recycle,
-      subtitle: 'Inovasi Digital Pengelolaan Sampah Terpadu & Reward Daur Ulang',
-      description:
-        'Platform web terpadu yang menghubungkan masyarakat penghasil limbah dengan pengepul daur ulang berizin, mengantarkan Juara Harapan 1 Lomba Karya Tulis Ilmiah Nasional SDGs 2024 di Universitas Jambi.',
-      challenge:
-        'Rendahnya motivasi pemilahan sampah mandiri dan ketiadaan koordinasi logistik rute penjemputan limbah bernilai ekonomi.',
-      solution:
-        'Membangun modul kalkulator reward poin sampah otomatis, pemantauan titik jemput kurir terintegrasi, dan analitik sirkulasi limbah.',
       techStack: ['Laravel', 'PHP', 'MySQL', 'Blade', 'REST API', 'Tailwind CSS'],
       githubUrl: 'https://github.com/rakaalpiansyah/web-GreenV',
-      metrics: 'Juara Harapan 1 Nasional MIPA SDGs',
       color: 'from-cyan-500/20 via-emerald-600/10 to-transparent',
       accentColor: '#06b6d4',
       type: 'waste_platform',
     },
     {
-      title: 'PT. Royale Essence Indonesia E-Commerce',
-      shortTitle: 'Royale Essence',
-      category: 'Enterprise Backend Architecture',
-      tag: 'PT. Royale Essence Indonesia',
-      routeBadge: 'royale-essence.co.id/api/v1',
       icon: ShoppingBag,
-      subtitle: 'Arsitektur Backend E-Commerce & Otomasi Ekspedisi Logistik',
-      description:
-        'Sistem backend e-commerce skala produksi dengan orkestrasi kurir logistik otomatis via KiriminAja API (pembandingan volumetrik vs aktual), payment gateway instan, dan webhook notifikasi transaksi WhatsApp.',
-      challenge:
-        'Kesalahan perhitungan ongkir manual pada paket berukuran besar dan beban verifikasi bukti transfer perbankan konvensional.',
-      solution:
-        'Integrasi API logistik KiriminAja untuk pembuatan AWB otomatis, payment gateway real-time terotentikasi, dan bot WhatsApp otomatisasi invoice.',
       techStack: ['Laravel 11', 'PHP', 'MySQL', 'KiriminAja API', 'Payment Gateway', 'Watzap API'],
       githubUrl: 'https://github.com/rakaalpiansyah',
-      metrics: 'End-to-End Automated Orders & Shipping',
       color: 'from-rose-500/20 via-red-600/10 to-transparent',
       accentColor: '#f43f5e',
       type: 'logistics_backend',
     },
   ];
+
+  const projects = staticProjectConfigs.map((cfg, idx) => {
+    const data = t.projects.items[idx] || {};
+    return {
+      ...cfg,
+      title: data.title || '',
+      shortTitle: data.shortTitle || '',
+      category: data.category || '',
+      tag: data.tag || '',
+      routeBadge: data.routeBadge || '',
+      subtitle: data.subtitle || '',
+      description: data.description || '',
+      challenge: data.challenge || '',
+      solution: data.solution || '',
+      metrics: data.metrics || '',
+      liveLabel: data.liveLabel || cfg.liveLabel,
+    };
+  });
 
   const currentProject = projects[activeIndex];
 
@@ -366,12 +308,12 @@ export default function Projects() {
       {/* Header */}
       <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
         <div>
-          <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2 block">
-            Selected Works
-          </span>
-          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
-            Proyek Rekayasa Unggulan
+          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
+            {t.projects.heading}
           </h2>
+          <p className="text-zinc-400 text-sm sm:text-base max-w-xl">
+            {t.projects.subtitle}
+          </p>
         </div>
 
         {/* 3D Slide Navigation Controls */}
@@ -661,11 +603,11 @@ export default function Projects() {
             {/* Challenge & Solution Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">Tantangan Rekayasa</div>
+                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.challengeLabel || 'Tantangan Rekayasa'}</div>
                 <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.challenge}</p>
               </div>
               <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">Solusi Arsitektur</div>
+                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.solutionLabel || 'Solusi Arsitektur'}</div>
                 <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.solution}</p>
               </div>
             </div>
@@ -705,7 +647,7 @@ export default function Projects() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap"
               >
                 <Github className="w-4 h-4" />
-                <span>GitHub Repository</span>
+                <span>{t.projects.sourceCode || 'GitHub Repository'}</span>
                 <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
               </a>
             </div>

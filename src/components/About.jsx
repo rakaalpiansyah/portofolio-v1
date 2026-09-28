@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, BookOpen, CheckCircle, Server, MapPin, GraduationCap, Briefcase, Bot, Globe, Cloud } from 'lucide-react';
+import { Award, BookOpen, CheckCircle, Server, MapPin, GraduationCap, Briefcase, Cloud } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,7 @@ export default function About() {
   const bracketsRef = useRef([]);
   const leftColRef  = useRef(null);
   const rightColRef = useRef(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -77,56 +79,24 @@ export default function About() {
     if (el && !bracketsRef.current.includes(el)) bracketsRef.current.push(el);
   };
 
-  const milestones = [
-    {
-      title: 'Juara Harapan 1 Nasional MIPA SDGs 2024',
-      org: 'Universitas Jambi',
-      desc: 'Inovasi website pengelolaan sampah terintegrasi model bisnis pengumpulan sampah berkelanjutan.',
-      icon: Award,
-      featured: true,
-    },
-    {
-      title: 'Cloud Technical Series - OnBoard Edition',
-      org: 'United Latino Students Association',
-      desc: 'Sertifikasi teknis arsitektur komputasi cloud, fondasi infrastruktur modern, dan orkestrasi layanan terdistribusi.',
-      icon: Cloud,
-    },
-    {
-      title: 'S1 Teknik Informatika',
-      org: 'Fakultas Sains & Teknologi',
-      desc: 'Fokus rekayasa perangkat lunak, modern web development, kecerdasan buatan (AI), dan sistem mobile.',
-      icon: BookOpen,
-    },
-    {
-      title: 'Sertifikasi Jaringan Cisco CCNA & Linux',
-      org: 'Cisco Networking Academy',
-      desc: 'Fondasi kuat dalam administrasi sistem operasi Linux dan konfigurasi protokol routing switching.',
-      icon: Server,
-    },
-    {
-      title: 'Sertifikasi Basis Data SQL & Desain',
-      org: 'Oracle Academy',
-      desc: 'Pemodelan relasional dan optimasi query terstruktur untuk integritas data tingkat enterprise.',
-      icon: CheckCircle,
-    },
-  ];
+  const milestoneIcons = [Award, Cloud, BookOpen, Server, CheckCircle];
 
   const quickStats = [
     {
       icon: MapPin,
-      label: 'Lokasi',
-      value: 'Bandung, Indonesia',
+      label: t.about.statLocation,
+      value: t.about.statLocationVal,
     },
     {
       icon: GraduationCap,
-      label: 'Pendidikan',
-      value: 'Teknik Informatika',
+      label: t.about.statEducation,
+      value: t.about.statEducationVal,
     },
     {
       icon: Briefcase,
-      label: 'Fokus Rekayasa',
-      value: 'Web Dev · AI · Backend · Mobile',
-      sub: 'Laravel · React · Flutter · Python',
+      label: t.about.statFocus,
+      value: t.about.statFocusVal,
+      sub: t.about.statFocusSub,
     },
   ];
 
@@ -177,7 +147,7 @@ export default function About() {
                 {/* Name badge */}
                 <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10 pointer-events-none">
                   <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-sky-300/80 mb-1">
-                    Software &amp; AI Engineer
+                    {t.about.nameBadgeRole}
                   </p>
                   <p className="font-heading font-bold text-white text-base leading-tight">
                     Raka Alpiansyah
@@ -192,7 +162,7 @@ export default function About() {
             {/* Status pill */}
             <div className="flex items-center gap-2 px-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span className="font-mono text-[11px] text-zinc-400">Tersedia untuk kolaborasi</span>
+              <span className="font-mono text-[11px] text-zinc-400">{t.about.available}</span>
             </div>
 
             {/* Quick-stat cards */}
@@ -215,7 +185,7 @@ export default function About() {
 
               {/* Stack tags */}
               <div className="card-surface rounded-xl px-4 py-3">
-                <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Stack Utama</p>
+                <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-2">{t.about.stackTitle}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map((tag) => (
                     <span
@@ -238,27 +208,21 @@ export default function About() {
             {/* Heading + narrative */}
             <div className="mb-8">
               <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight leading-tight mb-6">
-                Tentang Saya &amp; Fondasi Teknis
+                {t.about.heading}
               </h2>
 
               <p className="text-zinc-200 text-base sm:text-lg leading-relaxed mb-4">
-                Saya <strong>Raka Alpiansyah</strong>, seorang Software Engineer &amp; AI Engineer 
-                yang menempuh studi S1 Teknik Informatika. Minat rekayasa saya terfokus pada 
-                arsitektur backend scalable, modern web development, pengembangan aplikasi mobile dengan Flutter, 
-                serta penerapan solusi kecerdasan buatan (AI) terintegrasi.
+                {t.about.p1}
               </p>
               <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-                Fondasi rekayasa saya berakar dari pemahaman mendalam tentang arsitektur sistem, topologi jaringan,
-                protokol routing, dan sistem operasi Linux. Pengalaman praktis di industri melalui pengembangan
-                backend di Sonasoft IT Services LLC, PT. Royale Essence Indonesia, serta operasional sistem di PT POS Indonesia
-                membentuk komitmen saya terhadap kode yang efisien, teruji, dan scalable di lingkungan produksi.
+                {t.about.p2}
               </p>
             </div>
 
             {/* Milestones grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-zinc-800/80">
-              {milestones.map((item, idx) => {
-                const Icon = item.icon;
+              {t.about.milestones.map((item, idx) => {
+                const Icon = milestoneIcons[idx] || Award;
                 return (
                   <div
                     key={idx}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -200,224 +201,38 @@ export default function Skills() {
   const detailsPanelRef = useRef(null);
   const keyboardDeckRef = useRef(null);
 
-  // 16 Mechanical Keycaps with Official Brand Logos & Colors
-  const keycaps = [
-    // Row 1
-    {
-      id: 'linux',
-      key: 'L',
-      label: 'Linux',
-      Logo: LinuxLogo,
-      accentColor: '#38bdf8',
-      bg: 'bg-zinc-800 text-white border-zinc-600 shadow-[0_5px_0_#27272a]',
-      glowColor: 'rgba(56,189,248,0.25)',
-      tag: 'OS & Infrastructure',
-      punchline: "where 'chmod 777' is the ultimate flex",
-      description: 'Administrasi server Linux, shell bash automation, permissions management, dan sertifikasi resmi Linux Essentials dari Cisco Networking Academy.',
-      highlights: ['Bash Scripting', 'Server Hardening', 'Process Management', 'Cisco Certified'],
-    },
-    {
-      id: 'docker',
-      key: 'K',
-      label: 'Docker',
-      Logo: DockerLogo,
-      accentColor: '#0284c7',
-      bg: 'bg-sky-600 text-white border-sky-400 shadow-[0_5px_0_#0284c7]',
-      glowColor: 'rgba(2,132,199,0.3)',
-      tag: 'Containerization',
-      punchline: "works on my machine, and in production",
-      description: 'Isolasi dependensi aplikasi, pembuatan Dockerfile modular multi-stage, dan konsistensi lingkungan deployment skala produksi.',
-      highlights: ['Multi-stage Builds', 'Docker Compose', 'Container Security', 'Volume Persist'],
-    },
-    {
-      id: 'git',
-      key: 'G',
-      label: 'Git',
-      Logo: GitLogo,
-      accentColor: '#ef4444',
-      bg: 'bg-red-600 text-white border-red-400 shadow-[0_5px_0_#dc2626]',
-      glowColor: 'rgba(239,68,68,0.3)',
-      tag: 'Version Control',
-      punchline: "git commit -m 'fixed it for real this time'",
-      description: 'Trunk-based development, semantic commits, branching workflow, interactive rebase, dan kolaborasi repositori GitHub terstruktur.',
-      highlights: ['Trunk-based Workflow', 'Semantic Versioning', 'GitHub Actions', 'Conflict Resolution'],
-    },
-    {
-      id: 'cisco',
-      key: 'C',
-      label: 'Cisco',
-      Logo: CiscoLogo,
-      accentColor: '#06b6d4',
-      bg: 'bg-cyan-700 text-white border-cyan-500 shadow-[0_5px_0_#0e7490]',
-      glowColor: 'rgba(6,182,212,0.3)',
-      tag: 'CCNA Networking',
-      punchline: "packet tracer dreams & subnets for breakfast",
-      description: 'Sertifikasi CCNA: Introduction to Networks. Pemahaman mendalam tentang switching, routing protocols, subnetting IPv4/IPv6, dan LAN maintenance.',
-      highlights: ['VLANs & Trunks', 'OSPF Routing', 'Subnetting IPv4/v6', 'Cisco Packet Tracer'],
-    },
+  const { t } = useLanguage();
 
-    // Row 2
-    {
-      id: 'laravel',
-      key: 'V',
-      label: 'Laravel',
-      Logo: LaravelLogo,
-      accentColor: '#f43f5e',
-      bg: 'bg-rose-600 text-white border-rose-400 shadow-[0_5px_0_#e11d48]',
-      glowColor: 'rgba(244,63,94,0.3)',
-      tag: 'Backend Core',
-      punchline: "eloquent relationships & zero-friction routing",
-      description: 'Framework backend utama. Arsitektur MVC end-to-end, migrasi database, middleware autentikasi, integrasi KiriminAja API dan Payment Gateway.',
-      highlights: ['Eloquent ORM', 'RESTful API Resources', 'Queue Workers', 'Payment Webhooks'],
-    },
-    {
-      id: 'php',
-      key: 'P',
-      label: 'PHP',
-      Logo: PhpLogo,
-      accentColor: '#6366f1',
-      bg: 'bg-indigo-700 text-white border-indigo-500 shadow-[0_5px_0_#4338ca]',
-      glowColor: 'rgba(99,102,241,0.3)',
-      tag: 'Backend Language',
-      punchline: "powering 75% of the web, and my production APIs",
-      description: 'Object-oriented programming, request lifecycle handling, composer dependency management, dan arsitektur backend e-commerce PT. Royale Essence Indonesia.',
-      highlights: ['OOP Design Patterns', 'Composer Ecosystem', 'CURL & HTTP Clients', 'Security Best Practices'],
-    },
-    {
-      id: 'mysql',
-      key: 'M',
-      label: 'MySQL',
-      Logo: MysqlLogo,
-      accentColor: '#3b82f6',
-      bg: 'bg-blue-700 text-white border-blue-500 shadow-[0_5px_0_#1d4ed8]',
-      glowColor: 'rgba(59,130,246,0.3)',
-      tag: 'Relational DB',
-      punchline: "SELECT * FROM solutions WHERE latency < 50ms",
-      description: 'Pemodelan skema relasional 3NF, index optimization, foreign key cascading, dan transaksi ACID untuk pencatatan order e-commerce.',
-      highlights: ['3NF Schema Design', 'B-Tree Indexing', 'ACID Transactions', 'Query Optimization'],
-    },
-    {
-      id: 'oracle',
-      key: 'O',
-      label: 'Oracle',
-      Logo: OracleLogo,
-      accentColor: '#ef4444',
-      bg: 'bg-red-800 text-white border-red-600 shadow-[0_5px_0_#991b1b]',
-      glowColor: 'rgba(239,68,68,0.3)',
-      tag: 'Database Academy',
-      punchline: "enterprise-grade SQL & verified database design",
-      description: 'Sertifikasi Oracle Academy: Database Programming with SQL & Database Design. Query profiling terstruktur dan pemodelan entitas relasional.',
-      highlights: ['Oracle Academy Certified', 'Complex Joins & Subqueries', 'ERD Normalization', 'Stored Procedures'],
-    },
-
-    // Row 3
-    {
-      id: 'flutter',
-      key: 'F',
-      label: 'Flutter',
-      Logo: FlutterLogo,
-      accentColor: '#38bdf8',
-      bg: 'bg-sky-500 text-white border-sky-300 shadow-[0_5px_0_#0369a1]',
-      glowColor: 'rgba(56,189,248,0.3)',
-      tag: 'Mobile Engineering',
-      punchline: "60 FPS reactive UI & live on Google Play Store",
-      description: 'Pengembangan aplikasi mobile lintas platform. Berhasil mempublikasikan aplikasi produktivitas "Rehat" secara global di Google Play Store.',
-      highlights: ['Play Store Production', 'Custom Animations', 'Local SQLite Sync', 'Provider State Mgmt'],
-    },
-    {
-      id: 'dart',
-      key: 'D',
-      label: 'Dart',
-      Logo: DartLogo,
-      accentColor: '#14b8a6',
-      bg: 'bg-teal-600 text-white border-teal-400 shadow-[0_5px_0_#0f766e]',
-      glowColor: 'rgba(20,184,166,0.3)',
-      tag: 'Mobile Language',
-      punchline: "sound null safety & async futures that never fail",
-      description: 'Bahasa utama untuk mobile. Pemrograman asynchronous berbasis Streams dan Futures, state management modular, dan performa kompilasi AOT.',
-      highlights: ['Sound Null Safety', 'Async Streams & Futures', 'AOT Compilation', 'Functional Idioms'],
-    },
-    {
-      id: 'react',
-      key: 'R',
-      label: 'React',
-      Logo: ReactLogo,
-      accentColor: '#06b6d4',
-      bg: 'bg-cyan-600 text-white border-cyan-400 shadow-[0_5px_0_#0891b2]',
-      glowColor: 'rgba(6,182,212,0.3)',
-      tag: 'Frontend Web',
-      punchline: "declarative components & silky reactive state",
-      description: 'Pembangunan antarmuka web modern, integrasi WebGL 3D Three.js, transisi GSAP interaktif, dan rendering arsitektur komponen modular.',
-      highlights: ['Hooks & Custom Context', 'GSAP Animation Hooks', 'Three.js 3D Viewports', 'Responsive Architecture'],
-    },
-    {
-      id: 'ts',
-      key: 'T',
-      label: 'TS',
-      Logo: TsLogo,
-      accentColor: '#3b82f6',
-      bg: 'bg-blue-600 text-white border-blue-400 shadow-[0_5px_0_#2563eb]',
-      glowColor: 'rgba(59,130,246,0.3)',
-      tag: 'Type Safety',
-      punchline: "preventing 'undefined is not a function' since day one",
-      description: 'Koleksi tipe data ketat, interface kontrak data, generic abstractions, dan keandalan kode skala besar.',
-      highlights: ['Strict Type Interfaces', 'Generics & Utility Types', 'Refactoring Confidence', 'API Contracts'],
-    },
-
-    // Row 4 (Java, JS, API, AI / Py)
-    {
-      id: 'java',
-      key: 'J',
-      label: 'Java',
-      Logo: JavaLogo,
-      accentColor: '#f59e0b',
-      bg: 'bg-amber-700 text-white border-amber-500 shadow-[0_5px_0_#b45309]',
-      glowColor: 'rgba(245,158,11,0.3)',
-      tag: 'OOP Systems',
-      punchline: "pure OOP discipline & custom 2D game loops",
-      description: 'Pemrograman berorientasi objek murni, implementasi design patterns, algoritma struktur data, dan pengembangan engine game desktop 2D kustom.',
-      highlights: ['Custom 2D Game Engine', 'AABB Collision Physics', 'Continuous Game Loop', 'OOP Design Patterns'],
-    },
-    {
-      id: 'js',
-      key: 'S',
-      label: 'JS',
-      Logo: JsLogo,
-      accentColor: '#eab308',
-      bg: 'bg-yellow-500 text-zinc-950 font-bold border-yellow-300 shadow-[0_5px_0_#ca8a04]',
-      glowColor: 'rgba(234,179,8,0.35)',
-      tag: 'Web Core',
-      punchline: "the single-threaded async miracle of modern computing",
-      description: 'Asynchronous event loop, ESNext features, V8 engine optimizations, Web Workers, dan manipulasi DOM performant.',
-      highlights: ['Event Loop & Microtasks', 'Async / Await Patterns', 'DOM & Canvas APIs', 'ES6+ Architecture'],
-    },
-    {
-      id: 'rest',
-      key: 'A',
-      label: 'API',
-      Logo: ApiLogo,
-      accentColor: '#10b981',
-      bg: 'bg-emerald-700 text-white border-emerald-500 shadow-[0_5px_0_#047857]',
-      glowColor: 'rgba(16,185,129,0.3)',
-      tag: 'Integrations',
-      punchline: "KiriminAja logistics & Watzap messaging on autopilot",
-      description: 'Perancangan API RESTful standar, integrasi payment gateway Midtrans, webhook otomatisasi notifikasi, dan Brevo SMTP terotentikasi.',
-      highlights: ['KiriminAja Logistics API', 'Watzap Message Gateway', 'Midtrans Payment Webhook', 'Brevo SMTP Services'],
-    },
-    {
-      id: 'ai_python',
-      key: 'Y',
-      label: 'AI / Py',
-      Logo: PythonLogo,
-      accentColor: '#38bdf8',
-      bg: 'bg-emerald-600 text-white border-emerald-400 shadow-[0_5px_0_#059669]',
-      glowColor: 'rgba(56,189,248,0.3)',
-      tag: 'AI Engineering',
-      punchline: "LLM pipelines, intelligent agents & data automation",
-      description: 'Rekayasa solusi berbasis kecerdasan buatan (AI), otomatisasi cerdas, prompt engineering, integrasi model bahasa besar (LLM), dan pipeline analitik data.',
-      highlights: ['LLM Orchestration', 'Prompt Engineering', 'Data Automation', 'FastAPI Microservices'],
-    },
+  // Static visual attributes for 16 Mechanical Keycaps
+  const staticKeycaps = [
+    { id: 'linux', key: 'L', label: 'Linux', Logo: LinuxLogo, accentColor: '#38bdf8', bg: 'bg-zinc-800 text-white border-zinc-600 shadow-[0_5px_0_#27272a]', glowColor: 'rgba(56,189,248,0.25)' },
+    { id: 'docker', key: 'K', label: 'Docker', Logo: DockerLogo, accentColor: '#0284c7', bg: 'bg-sky-600 text-white border-sky-400 shadow-[0_5px_0_#0284c7]', glowColor: 'rgba(2,132,199,0.3)' },
+    { id: 'git', key: 'G', label: 'Git', Logo: GitLogo, accentColor: '#ef4444', bg: 'bg-red-700 text-white border-red-500 shadow-[0_5px_0_#b91c1c]', glowColor: 'rgba(239,68,68,0.3)' },
+    { id: 'cisco', key: 'C', label: 'Cisco', Logo: CiscoLogo, accentColor: '#06b6d4', bg: 'bg-cyan-700 text-white border-cyan-500 shadow-[0_5px_0_#0e7490]', glowColor: 'rgba(6,182,212,0.3)' },
+    { id: 'laravel', key: 'V', label: 'Laravel', Logo: LaravelLogo, accentColor: '#f43f5e', bg: 'bg-rose-600 text-white border-rose-400 shadow-[0_5px_0_#e11d48]', glowColor: 'rgba(244,63,94,0.3)' },
+    { id: 'php', key: 'P', label: 'PHP', Logo: PhpLogo, accentColor: '#6366f1', bg: 'bg-indigo-700 text-white border-indigo-500 shadow-[0_5px_0_#4338ca]', glowColor: 'rgba(99,102,241,0.3)' },
+    { id: 'mysql', key: 'M', label: 'MySQL', Logo: MysqlLogo, accentColor: '#3b82f6', bg: 'bg-blue-700 text-white border-blue-500 shadow-[0_5px_0_#1d4ed8]', glowColor: 'rgba(59,130,246,0.3)' },
+    { id: 'oracle', key: 'O', label: 'Oracle', Logo: OracleLogo, accentColor: '#ef4444', bg: 'bg-red-800 text-white border-red-600 shadow-[0_5px_0_#991b1b]', glowColor: 'rgba(239,68,68,0.3)' },
+    { id: 'flutter', key: 'F', label: 'Flutter', Logo: FlutterLogo, accentColor: '#38bdf8', bg: 'bg-sky-500 text-white border-sky-300 shadow-[0_5px_0_#0369a1]', glowColor: 'rgba(56,189,248,0.3)' },
+    { id: 'dart', key: 'D', label: 'Dart', Logo: DartLogo, accentColor: '#14b8a6', bg: 'bg-teal-600 text-white border-teal-400 shadow-[0_5px_0_#0f766e]', glowColor: 'rgba(20,184,166,0.3)' },
+    { id: 'react', key: 'R', label: 'React', Logo: ReactLogo, accentColor: '#06b6d4', bg: 'bg-cyan-600 text-white border-cyan-400 shadow-[0_5px_0_#0891b2]', glowColor: 'rgba(6,182,212,0.3)' },
+    { id: 'ts', key: 'T', label: 'TS', Logo: TsLogo, accentColor: '#3b82f6', bg: 'bg-blue-600 text-white border-blue-400 shadow-[0_5px_0_#2563eb]', glowColor: 'rgba(59,130,246,0.3)' },
+    { id: 'java', key: 'J', label: 'Java', Logo: JavaLogo, accentColor: '#f59e0b', bg: 'bg-amber-700 text-white border-amber-500 shadow-[0_5px_0_#b45309]', glowColor: 'rgba(245,158,11,0.3)' },
+    { id: 'js', key: 'S', label: 'JS', Logo: JsLogo, accentColor: '#eab308', bg: 'bg-yellow-500 text-zinc-950 font-bold border-yellow-300 shadow-[0_5px_0_#ca8a04]', glowColor: 'rgba(234,179,8,0.35)' },
+    { id: 'rest', key: 'A', label: 'API', Logo: ApiLogo, accentColor: '#10b981', bg: 'bg-emerald-700 text-white border-emerald-500 shadow-[0_5px_0_#047857]', glowColor: 'rgba(16,185,129,0.3)' },
+    { id: 'ai_python', key: 'Y', label: 'AI / Py', Logo: PythonLogo, accentColor: '#38bdf8', bg: 'bg-emerald-600 text-white border-emerald-400 shadow-[0_5px_0_#059669]', glowColor: 'rgba(56,189,248,0.3)' },
   ];
+
+  const keycaps = staticKeycaps.map((k) => {
+    const data = t.skills.keycaps[k.id] || {};
+    return {
+      ...k,
+      tag: data.tag || '',
+      punchline: data.punchline || '',
+      description: data.description || '',
+      highlights: data.highlights || [],
+    };
+  });
 
   const currentSkill = keycaps.find((k) => k.id === activeKey) || keycaps[0];
 
@@ -539,10 +354,10 @@ export default function Skills() {
       {/* Section Header */}
       <div ref={headerRef} className="flex flex-col items-center text-center mb-16">
         <h2 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
-          SKILLS
+          {t.skills.heading}
         </h2>
         <span className="font-mono text-xs sm:text-sm text-zinc-500 mt-2">
-          (hint: arahkan kursor ke tombol atau tekan keyboard Anda)
+          {t.skills.hint}
         </span>
       </div>
 
@@ -572,7 +387,7 @@ export default function Skills() {
                 />
                 <span>{currentSkill.tag}</span>
               </div>
-              <p className="text-zinc-500 font-mono text-[11px]">Mechanical Profile Active</p>
+              <p className="text-zinc-500 font-mono text-[11px]">{t.skills.profileBadge}</p>
             </div>
           </div>
 
@@ -591,7 +406,7 @@ export default function Skills() {
           {/* Core Competency Highlights */}
           <div className="mb-6">
             <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-wider mb-2">
-              Fokus Kompetensi Teknis
+              {t.skills.focusLabel}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {currentSkill.highlights.map((item) => (
@@ -609,7 +424,7 @@ export default function Skills() {
             <kbd className="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 font-bold">
               {currentSkill.key}
             </kbd>
-            <span>Tekan tombol [{currentSkill.key}] untuk beralih</span>
+            <span>{t.skills.pressKey ? t.skills.pressKey.replace('{key}', currentSkill.key) : `Tekan tombol [${currentSkill.key}] untuk beralih`}</span>
           </div>
         </div>
 
@@ -728,9 +543,9 @@ export default function Skills() {
               <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-500 select-none">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                  16 Keycaps Mekanikal
+                  {t.skills.keycapsCount || '16 Keycaps Mekanikal'}
                 </span>
-                <span>Klik atau arahkan kursor</span>
+                <span>{t.skills.keycapsAction || 'Klik atau arahkan kursor'}</span>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Terminal, Shield, Smartphone, Server, Bot } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Hero() {
   const heroRef = useRef(null);
@@ -10,12 +11,33 @@ export default function Hero() {
   const cardsRef = useRef(null);
   const descBoxRef = useRef(null);
   const [activeStack, setActiveStack] = useState('web_ai');
+  const { t } = useLanguage();
 
   const stackPills = [
-    { id: 'web_ai', label: 'Web Dev & AI', icon: Bot, desc: 'Pengembangan web modern berbasis React & Three.js serta integrasi solusi AI cerdas, LLM pipelines, dan automasi pemrosesan data.' },
-    { id: 'backend', label: 'Backend & API', icon: Server, desc: 'Laravel, PHP, RESTful APIs, Brevo SMTP, Payment Gateway, KiriminAja API, dan WhatsApp API.' },
-    { id: 'mobile', label: 'Mobile Engineering', icon: Smartphone, desc: 'Flutter & Dart, Android Studio, Aplikasi "Rehat" terpublikasi di Google Play Store.' },
-    { id: 'infra', label: 'Network & Cloud', icon: Shield, desc: 'Sertifikasi Cloud Technical Series, Cisco CCNA, administrasi Linux, Docker, dan arsitektur database Oracle.' },
+    {
+      id: 'web_ai',
+      label: t.hero.stacks.web_ai.label,
+      icon: Bot,
+      desc: t.hero.stacks.web_ai.desc,
+    },
+    {
+      id: 'backend',
+      label: t.hero.stacks.backend.label,
+      icon: Server,
+      desc: t.hero.stacks.backend.desc,
+    },
+    {
+      id: 'mobile',
+      label: t.hero.stacks.mobile.label,
+      icon: Smartphone,
+      desc: t.hero.stacks.mobile.desc,
+    },
+    {
+      id: 'infra',
+      label: t.hero.stacks.infra.label,
+      icon: Shield,
+      desc: t.hero.stacks.infra.desc,
+    },
   ];
 
   useEffect(() => {
@@ -38,22 +60,34 @@ export default function Hero() {
         duration: 0.9,
         delay: 0.15,
       })
-      .from(subtextRef.current, {
-        y: 20,
-        opacity: 0,
-        duration: 0.7,
-      }, '-=0.4')
-      .from(ctaRef.current, {
-        y: 20,
-        opacity: 0,
-        duration: 0.6,
-      }, '-=0.4')
-      .from(cardsRef.current?.children || [], {
-        y: 25,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.7,
-      }, '-=0.3');
+        .from(
+          subtextRef.current,
+          {
+            y: 20,
+            opacity: 0,
+            duration: 0.7,
+          },
+          '-=0.4'
+        )
+        .from(
+          ctaRef.current,
+          {
+            y: 20,
+            opacity: 0,
+            duration: 0.6,
+          },
+          '-=0.4'
+        )
+        .from(
+          cardsRef.current?.children || [],
+          {
+            y: 25,
+            opacity: 0,
+            stagger: 0.1,
+            duration: 0.7,
+          },
+          '-=0.3'
+        );
     }, heroRef);
 
     return () => ctx.revert();
@@ -73,9 +107,9 @@ export default function Hero() {
             ref={headlineRef}
             className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.1] mb-6"
           >
-            Raka Alpiansyah.{' '}
+            {t.hero.headlinePrefix}{' '}
             <span className="bg-gradient-to-r from-sky-400 to-zinc-400 bg-clip-text text-transparent">
-              Software &amp; AI Engineer.
+              {t.hero.headlineHighlight}
             </span>
           </h1>
 
@@ -83,8 +117,7 @@ export default function Hero() {
             ref={subtextRef}
             className="text-zinc-300 text-base sm:text-lg md:text-xl leading-relaxed mb-8 max-w-2xl"
           >
-            Software Engineer &amp; AI Engineer berlatar belakang Teknik Informatika. Berfokus pada rekayasa backend tangguh, 
-            pengembangan aplikasi web modern, mobile Flutter, dan arsitektur data cerdas dengan prinsip clean code.
+            {t.hero.subtext}
           </p>
 
           <div
@@ -95,13 +128,13 @@ export default function Hero() {
               href="#projects"
               className="px-7 py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm"
             >
-              Lihat Proyek Unggulan
+              {t.hero.viewProjects}
             </a>
             <a
               href="#contact"
               className="px-7 py-3 rounded-xl text-sm font-medium text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-white active:scale-95 transition-all duration-100"
             >
-              Hubungi Saya
+              {t.hero.contactMe}
             </a>
           </div>
         </div>
@@ -116,9 +149,9 @@ export default function Hero() {
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-zinc-800/80">
               <div className="flex items-center gap-2">
                 <Terminal className="w-4 h-4 text-sky-400" />
-                <span className="font-mono text-xs text-zinc-400">Interactive Tech Constellation</span>
+                <span className="font-mono text-xs text-zinc-300">{t.hero.inspectorTitle}</span>
               </div>
-              <span className="font-mono text-[11px] text-zinc-400">Teknik Informatika</span>
+              <span className="font-mono text-[11px] text-zinc-400">{t.hero.inspectorBadge}</span>
             </div>
 
             {/* Filter pills */}
@@ -156,29 +189,29 @@ export default function Hero() {
           <div className="lg:col-span-4 card-surface p-6 sm:p-7 rounded-2xl flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 text-xs font-mono text-sky-400 mb-3">
-                <Bot className="w-4 h-4" />
-                <span>Verified Milestones</span>
+                <Shield className="w-4 h-4" />
+                <span>{t.hero.milestonesBadge}</span>
               </div>
               <h3 className="font-heading font-semibold text-white text-base mb-2">
-                Pencapaian &amp; Kualifikasi
+                {t.hero.milestonesTitle}
               </h3>
               <p className="text-zinc-400 text-xs leading-relaxed mb-4">
-                Pengalaman produksi nyata dalam web dev, arsitektur AI, sertifikasi Cisco &amp; Oracle, serta aplikasi mobile aktif di Google Play Store.
+                {t.hero.milestonesDesc}
               </p>
             </div>
 
             <div className="space-y-2 pt-3 border-t border-zinc-800/80 font-mono text-[11px] text-zinc-400">
               <div className="flex items-center justify-between">
-                <span>Google Play Store</span>
-                <span className="text-white">Live App (Rehat)</span>
+                <span>{t.hero.m1Label}</span>
+                <span className="text-white">{t.hero.m1Val}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span>Juara 1 Harapan MIPA</span>
-                <span className="text-white">SDGs 2024</span>
+                <span>{t.hero.m2Label}</span>
+                <span className="text-white">{t.hero.m2Val}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span>Sertifikasi Resmi</span>
-                <span className="text-white">Cloud, Cisco, Oracle</span>
+                <span>{t.hero.m3Label}</span>
+                <span className="text-white">{t.hero.m3Val}</span>
               </div>
             </div>
           </div>

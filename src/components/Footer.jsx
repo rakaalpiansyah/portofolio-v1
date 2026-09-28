@@ -1,7 +1,9 @@
 import React from 'react';
 import { ArrowUp, Github, Linkedin, Instagram, Mail } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Footer() {
+  const { t } = useLanguage();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -14,7 +16,7 @@ export default function Footer() {
             Raka Alpiansyah
           </span>
           <span className="text-zinc-500 text-xs font-mono">
-            &copy; {new Date().getFullYear()} Software Engineer.
+            &copy; {new Date().getFullYear()} {t.footer.role || 'Software Engineer.'}
           </span>
         </div>
 
@@ -61,7 +63,8 @@ export default function Footer() {
           <button
             onClick={scrollToTop}
             className="p-2 ml-2 rounded-xl border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white transition-colors"
-            aria-label="Kembali ke atas"
+            aria-label={t.footer.backToTop || 'Kembali ke atas'}
+            title={t.footer.backToTop || 'Kembali ke atas'}
           >
             <ArrowUp className="w-4 h-4" />
           </button>
