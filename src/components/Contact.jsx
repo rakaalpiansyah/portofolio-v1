@@ -1,10 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Github, Linkedin, Instagram, Send, Copy, Check } from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'fallback' | null
+  const sectionRef = useRef(null);
+  const contentRef = useRef(null);
   const emailAddress = 'rakaalpiansyah@gmail.com';
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(contentRef.current?.children || [], {
+        y: 30,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(emailAddress);
@@ -12,26 +43,63 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 4500);
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${emailAddress}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          _subject: `[Portfolio] Pesan Baru dari ${formData.name}: ${formData.subject}`,
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error('FormSubmit network response not ok');
+      }
+    } catch (err) {
+      // Graceful fallback: Open mailto client with prefilled draft
+      const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(
+        formData.subject || 'Pesan dari Portofolio'
+      )}&body=${encodeURIComponent(
+        `Halo Raka,\n\nNama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
+      )}`;
+      window.location.href = mailtoUrl;
+      setSubmitStatus('fallback');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section
       id="contact"
+      ref={sectionRef}
       className="relative py-28 px-4 sm:px-6 max-w-5xl mx-auto"
     >
-      <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
-        Mari Terhubung &amp; Berkolaborasi
-      </h2>
-      <p className="text-zinc-400 text-sm sm:text-base max-w-lg mb-14">
-        Terbuka untuk diskusi rekayasa perangkat lunak, peluang kerja sama proyek backend &amp; mobile, 
-        atau penjajakan karier profesional.
-      </p>
+      <div ref={contentRef}>
+        <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
+          Mari Terhubung &amp; Berkolaborasi
+        </h2>
+        <p className="text-zinc-400 text-sm sm:text-base max-w-lg mb-14">
+          Terbuka untuk diskusi rekayasa perangkat lunak, peluang kerja sama proyek backend &amp; mobile, 
+          atau penjajakan karier profesional.
+        </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Contact Info Card */}
         <div className="md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
           <div>
@@ -53,7 +121,7 @@ export default function Contact() {
                 <span className="text-sm text-zinc-200 truncate font-mono">{emailAddress}</span>
                 <button
                   onClick={copyToClipboard}
-                  className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-400 hover:text-white transition-colors flex-shrink-0"
+                  className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-400 hover:text-white active:scale-90 transition-all duration-100 flex-shrink-0"
                   title="Salin Email"
                   aria-label="Salin alamat email"
                 >
@@ -106,7 +174,7 @@ export default function Contact() {
           </div>
 
           <div className="mt-6 pt-4 border-t border-zinc-800/60 text-xs text-zinc-500 flex items-center justify-between">
-            <span>Bandung / Ciamis, Indonesia</span>
+            <span>Bandung, Indonesia</span>
             <span>Remote / On-site</span>
           </div>
         </div>
@@ -117,15 +185,39 @@ export default function Contact() {
             Kirimkan Pesan Langsung
           </h3>
 
-          {formSubmitted ? (
+          {submitStatus === 'success' ? (
             <div className="p-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                <Check className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                <Check className="w-6 h-6" />
               </div>
-              <h4 className="font-heading font-semibold text-white">Pesan Berhasil Terkirim</h4>
-              <p className="text-zinc-300 text-sm">
-                Terima kasih atas pesannya. Raka Alpiansyah akan segera merespons ke alamat email Anda.
+              <h4 className="font-heading font-semibold text-white text-base">Pesan Berhasil Terkirim</h4>
+              <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
+                Pesan Anda telah diteruskan langsung ke <span className="text-emerald-400 font-mono text-xs">{emailAddress}</span>. Terima kasih telah menghubungi!
               </p>
+              <button
+                type="button"
+                onClick={() => setSubmitStatus(null)}
+                className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+              >
+                Kirim Pesan Lainnya
+              </button>
+            </div>
+          ) : submitStatus === 'fallback' ? (
+            <div className="p-8 rounded-xl bg-sky-500/10 border border-sky-500/20 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
+                <Mail className="w-6 h-6" />
+              </div>
+              <h4 className="font-heading font-semibold text-white text-base">Draf Email Dibuka</h4>
+              <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
+                Aplikasi email Anda telah dibuka dengan draf pesan langsung ke <span className="text-sky-400 font-mono text-xs">{emailAddress}</span>.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSubmitStatus(null)}
+                className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+              >
+                Kembali ke Form
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,6 +227,8 @@ export default function Contact() {
                   <input
                     type="text"
                     required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Nama Anda"
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
                   />
@@ -144,6 +238,8 @@ export default function Contact() {
                   <input
                     type="email"
                     required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="email@contoh.com"
                     className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
                   />
@@ -155,6 +251,8 @@ export default function Contact() {
                 <input
                   type="text"
                   required
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="Proyek Backend / Aplikasi Mobile / Peluang Kolaborasi"
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
                 />
@@ -165,6 +263,8 @@ export default function Contact() {
                 <textarea
                   rows="4"
                   required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Deskripsikan kebutuhan proyek atau pesan Anda..."
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors resize-none"
                 />
@@ -172,14 +272,36 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                Kirim Pesan
-                <Send className="w-4 h-4" />
+                {isSubmitting ? (
+                  <>
+                    <span className="w-4 h-4 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin" />
+                    <span>Mengirimkan Pesan...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Kirim Pesan</span>
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
               </button>
+
+              <div className="text-center pt-2">
+                <a
+                  href={`mailto:${emailAddress}?subject=${encodeURIComponent(
+                    formData.subject || 'Diskusi Proyek & Kolaborasi'
+                  )}`}
+                  className="text-xs font-mono text-zinc-400 hover:text-white transition-colors underline-offset-4 hover:underline"
+                >
+                  atau klik untuk membuka aplikasi email langsung
+                </a>
+              </div>
             </form>
           )}
         </div>
+      </div>
       </div>
     </section>
   );

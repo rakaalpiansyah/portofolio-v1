@@ -30,16 +30,14 @@ export default function Navbar() {
             : 'bg-zinc-900/40 backdrop-blur-md border border-white/[0.06]'
         }`}
       >
-        {/* Monogram / Brand */}
+        {/* Brand / Nameplate */}
         <a
           href="#"
           className="flex items-center gap-2.5 text-zinc-100 group transition-opacity hover:opacity-90"
         >
-          <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700/80 flex items-center justify-center font-heading font-bold text-xs text-white group-hover:border-sky-400 transition-colors">
-            RA
-          </div>
+          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)] group-hover:scale-125 transition-transform duration-200" />
           <div className="flex flex-col">
-            <span className="font-heading font-semibold text-xs sm:text-sm text-white tracking-tight">
+            <span className="font-heading font-bold text-xs sm:text-sm text-white tracking-tight group-hover:text-sky-400 transition-colors">
               Raka Alpiansyah
             </span>
             <span className="text-[10px] text-zinc-400 font-mono -mt-0.5">
@@ -64,7 +62,7 @@ export default function Navbar() {
         {/* Status indicator & CTA */}
         <div className="hidden sm:flex items-center gap-3">
           <span className="text-[11px] font-mono text-zinc-400">
-            Ciamis / Bandung
+            Bandung, Indonesia
           </span>
 
           <a

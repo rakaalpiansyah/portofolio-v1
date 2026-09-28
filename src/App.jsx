@@ -37,14 +37,32 @@ export default function App() {
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
+    // Smooth anchor scrolling using Lenis
+    const handleAnchorClick = (e) => {
+      const anchor = e.target.closest('a[href^="#"]');
+      if (anchor) {
+        const href = anchor.getAttribute('href');
+        if (href && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target, { offset: -40, duration: 1.2 });
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+
     return () => {
+      document.removeEventListener('click', handleAnchorClick);
       gsap.ticker.remove(updateLenis);
       lenis.destroy();
     };
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
       <CustomCursor />
       <Background3D />
       <Navbar />
