@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Terminal, Shield, Smartphone, Server, Bot } from 'lucide-react';
+import { Cpu, Shield, Smartphone, Server, Bot } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Hero() {
@@ -148,7 +148,7 @@ export default function Hero() {
           <div className="lg:col-span-8 card-surface p-6 sm:p-7 rounded-2xl">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-zinc-800/80">
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-sky-400" />
+                <Cpu className="w-4 h-4 text-sky-400" />
                 <span className="font-mono text-xs text-zinc-300">{t.hero.inspectorTitle}</span>
               </div>
               <span className="font-mono text-[11px] text-zinc-400">{t.hero.inspectorBadge}</span>
@@ -179,7 +179,7 @@ export default function Hero() {
             {/* Active stack description */}
             <div
               ref={descBoxRef}
-              className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 text-xs sm:text-sm text-zinc-300 font-mono leading-relaxed min-h-[56px] flex items-center"
+              className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed min-h-[56px] flex items-center"
             >
               {stackPills.find((p) => p.id === activeStack)?.desc}
             </div>

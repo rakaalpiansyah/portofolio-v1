@@ -3,7 +3,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import Background3D from './components/Background3D';
+import BackgroundAmbient from './components/BackgroundAmbient';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -66,7 +66,7 @@ export default function App() {
     <LanguageProvider>
       <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
         <CustomCursor />
-        <Background3D />
+        <BackgroundAmbient />
         <Navbar />
         <main className="relative z-10">
           <Hero />
