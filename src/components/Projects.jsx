@@ -38,7 +38,7 @@ export default function Projects() {
       githubUrl: 'https://github.com/rakaalpiansyah/rehat-app',
       liveUrl: 'https://play.google.com',
       liveLabel: 'Google Play Store',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       image: '/projects/rehat.webp',
       type: 'mobile_app',
@@ -49,7 +49,7 @@ export default function Projects() {
       githubUrl: 'https://github.com/rakaalpiansyah/Meeting-AI-Backend',
       liveUrl: 'https://meeting-ai-backend-production-b61e.up.railway.app/docs',
       liveLabel: 'Railway Swagger Docs',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       type: 'speech_ai',
     },
@@ -57,7 +57,7 @@ export default function Projects() {
       icon: Layers,
       techStack: ['Hyperledger Fabric', 'Go / Node Chaincode', 'Docker', 'Hyperledger Caliper', 'Cryptography', 'Consortium Network'],
       githubUrl: 'https://github.com/rakaalpiansyah/agritraceChain',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       type: 'blockchain',
     },
@@ -65,7 +65,7 @@ export default function Projects() {
       icon: Cpu,
       techStack: ['Python', 'TensorFlow', 'Keras', 'TensorFlow Lite', 'OpenCV', 'NumPy'],
       githubUrl: 'https://github.com/rakaalpiansyah/plantvillage-disease-detection',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       type: 'vision_ai',
     },
@@ -73,7 +73,7 @@ export default function Projects() {
       icon: Recycle,
       techStack: ['Laravel', 'PHP', 'MySQL', 'Blade', 'REST API', 'Tailwind CSS'],
       githubUrl: 'https://github.com/rakaalpiansyah/web-GreenV',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       type: 'waste_platform',
     },
@@ -81,7 +81,7 @@ export default function Projects() {
       icon: ShoppingBag,
       techStack: ['Laravel 11', 'PHP', 'MySQL', 'KiriminAja API', 'Payment Gateway', 'Watzap API'],
       githubUrl: 'https://github.com/rakaalpiansyah',
-      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       type: 'logistics_backend',
     },
@@ -354,7 +354,7 @@ export default function Projects() {
           <div className="lg:col-span-6 flex justify-center py-6">
             <div
               ref={card3dRef}
-              className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-sky-500/[0.08] via-zinc-950/95 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
+              className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-zinc-900/70 via-zinc-950 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
               style={{
                 transformStyle: 'preserve-3d',
               }}

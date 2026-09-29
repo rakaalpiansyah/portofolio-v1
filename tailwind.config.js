@@ -14,6 +14,7 @@ export default {
         },
       },
       fontFamily: {
+        display: ['"Instrument Serif"', 'serif'],
         heading: ['"Space Grotesk"', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],

@@ -64,7 +64,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
+      <div className="relative min-h-screen bg-black text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
         <CustomCursor />
         <BackgroundSpatial />
         <Navbar />

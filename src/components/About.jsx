@@ -10,7 +10,6 @@ export default function About() {
   const sectionRef  = useRef(null);
   const photoWrapRef = useRef(null);
   const photoRef    = useRef(null);
-  const bracketsRef = useRef([]);
   const leftColRef  = useRef(null);
   const rightColRef = useRef(null);
   const { t } = useLanguage();
@@ -42,21 +41,6 @@ export default function About() {
         delay: 0.15,
       });
 
-      // Corner brackets draw in
-      gsap.set(bracketsRef.current, { opacity: 0, scale: 0.82 });
-      gsap.to(bracketsRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.55,
-        stagger: 0.07,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
-        },
-        delay: 0.55,
-      });
-
       // Right column children stagger
       gsap.from(rightColRef.current?.children || [], {
         y: 28,
@@ -74,10 +58,6 @@ export default function About() {
 
     return () => ctx.revert();
   }, []);
-
-  const addBracket = (el) => {
-    if (el && !bracketsRef.current.includes(el)) bracketsRef.current.push(el);
-  };
 
   const milestoneIcons = [Award, Cloud, BookOpen, Server, CheckCircle];
 
@@ -118,12 +98,6 @@ export default function About() {
           >
             {/* Photo frame */}
             <div ref={photoWrapRef} className="relative select-none">
-              {/* Corner brackets */}
-              <span ref={addBracket} className="absolute -top-3 -left-3 z-20 w-7 h-7 border-t-2 border-l-2 border-sky-400/70 pointer-events-none" />
-              <span ref={addBracket} className="absolute -top-3 -right-3 z-20 w-7 h-7 border-t-2 border-r-2 border-sky-400/70 pointer-events-none" />
-              <span ref={addBracket} className="absolute -bottom-3 -left-3 z-20 w-7 h-7 border-b-2 border-l-2 border-sky-400/70 pointer-events-none" />
-              <span ref={addBracket} className="absolute -bottom-3 -right-3 z-20 w-7 h-7 border-b-2 border-r-2 border-sky-400/70 pointer-events-none" />
-
               {/* Photo */}
               <div
                 ref={photoRef}
@@ -211,8 +185,17 @@ export default function About() {
           >
             {/* Heading + narrative */}
             <div className="mb-8">
-              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight leading-tight mb-6">
-                {t.about.heading}
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="w-6 h-px bg-zinc-700" />
+                <span className="text-[11px] text-zinc-400 uppercase tracking-[0.25em] font-mono">
+                  PROFILE &amp; FOUNDATION
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-white tracking-tight leading-tight mb-6">
+                Tentang Saya &amp;{' '}
+                <span className="font-display italic text-zinc-300 font-normal">
+                  Fondasi Teknis
+                </span>
               </h2>
 
               <p className="text-zinc-200 text-base sm:text-lg leading-relaxed mb-4">

@@ -5,7 +5,7 @@
 @layer base {
   html {
     scroll-behavior: auto !important;
-    background-color: #0a0a0a;
+    background-color: #000000;
     color: #fafafa;
   }
 
@@ -13,7 +13,7 @@
     width: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+    background: #000000;
   }
   ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
@@ -34,13 +34,16 @@ html.lenis, html.lenis body {
 
 @layer components {
   .card-surface {
-    background: rgba(24, 24, 27, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: border-color 0.2s ease;
+    background: rgba(10, 10, 12, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
   }
 
   .card-surface:hover {
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(14, 14, 18, 0.85);
   }
 
   .nav-glass {
@@ -423,4 +426,50 @@ html.lenis, html.lenis body {
 
 .animate-aurora-pulse {
   animation: aurora-pulse 18s ease-in-out infinite alternate;
+}
+
+/* ─── Cinematic Accent & Animation Utilities ─────────────────────── */
+.accent-gradient {
+  background: linear-gradient(90deg, #89AACC 0%, #38bdf8 50%, #4E85BF 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200%);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-down {
+  animation: scroll-down 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes role-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) skewY(2deg);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) skewY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-role-fade-in {
+  animation: role-fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

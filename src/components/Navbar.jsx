@@ -37,9 +37,14 @@ export default function Navbar() {
           href="#"
           className="flex items-center gap-2.5 text-zinc-100 group transition-opacity hover:opacity-90"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)] group-hover:scale-125 transition-transform duration-200" />
+          <div className="relative w-8 h-8 rounded-full p-[1.5px] transition-transform duration-300 group-hover:scale-110">
+            <span className="absolute inset-0 rounded-full accent-gradient opacity-90 animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="relative w-full h-full rounded-full bg-zinc-950 flex items-center justify-center font-display italic text-xs text-white">
+              RA
+            </div>
+          </div>
           <div className="flex flex-col">
-            <span className="font-heading font-bold text-xs sm:text-sm text-white tracking-tight group-hover:text-sky-400 transition-colors">
+            <span className="font-display italic text-base text-white tracking-tight group-hover:text-sky-300 transition-colors">
               Raka Alpiansyah
             </span>
             <span className="text-[10px] text-zinc-400 font-mono -mt-0.5">

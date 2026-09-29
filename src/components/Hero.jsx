@@ -1,220 +1,158 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Cpu, Shield, Smartphone, Server, Bot } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Hero() {
   const heroRef = useRef(null);
-  const headlineRef = useRef(null);
-  const subtextRef = useRef(null);
-  const ctaRef = useRef(null);
-  const cardsRef = useRef(null);
-  const descBoxRef = useRef(null);
-  const [activeStack, setActiveStack] = useState('web_ai');
-  const { t } = useLanguage();
+  const [roleIndex, setRoleIndex] = useState(0);
+  const { t, language } = useLanguage();
 
-  const stackPills = [
-    {
-      id: 'web_ai',
-      label: t.hero.stacks.web_ai.label,
-      icon: Bot,
-      desc: t.hero.stacks.web_ai.desc,
-    },
-    {
-      id: 'backend',
-      label: t.hero.stacks.backend.label,
-      icon: Server,
-      desc: t.hero.stacks.backend.desc,
-    },
-    {
-      id: 'mobile',
-      label: t.hero.stacks.mobile.label,
-      icon: Smartphone,
-      desc: t.hero.stacks.mobile.desc,
-    },
-    {
-      id: 'infra',
-      label: t.hero.stacks.infra.label,
-      icon: Shield,
-      desc: t.hero.stacks.infra.desc,
-    },
+  const roles = [
+    'Software Engineer',
+    'AI Practitioner',
+    'Backend Crafter',
+    'Fullstack Builder',
   ];
 
+  // Role cycler every 2.4s
   useEffect(() => {
-    if (descBoxRef.current) {
-      gsap.fromTo(
-        descBoxRef.current,
-        { opacity: 0.2, y: 6 },
-        { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }
-      );
-    }
-  }, [activeStack]);
+    const roleInterval = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 2400);
+    return () => clearInterval(roleInterval);
+  }, [roles.length]);
 
+  // GSAP Entrance Timeline for text elements
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.from(headlineRef.current, {
-        y: 35,
-        opacity: 0,
-        duration: 0.9,
-        delay: 0.15,
-      })
-        .from(
-          subtextRef.current,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.7,
-          },
+      tl.fromTo(
+        '.hero-eyebrow',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.15 }
+      )
+        .fromTo(
+          '.hero-name',
+          { opacity: 0, y: 45, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.hero-role',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          '-=0.6'
+        )
+        .fromTo(
+          '.hero-subtext',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.hero-status',
+          { opacity: 0, scale: 0.9 },
+          { opacity: 1, scale: 1, duration: 0.7 },
           '-=0.4'
         )
-        .from(
-          ctaRef.current,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.6,
-          },
+        .fromTo(
+          '.hero-cta',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 },
           '-=0.4'
-        )
-        .from(
-          cardsRef.current?.children || [],
-          {
-            y: 25,
-            opacity: 0,
-            stagger: 0.1,
-            duration: 0.7,
-          },
-          '-=0.3'
         );
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
 
+  const isId = language === 'id';
+
   return (
     <section
+      id="hero"
       ref={heroRef}
-      className="relative min-h-[100dvh] flex items-center px-4 sm:px-6 pt-24 pb-16 overflow-hidden"
+      className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden pt-28 pb-16"
     >
-      {/* Subtle single ambient light */}
-      <div className="absolute top-1/4 left-1/3 w-[650px] h-[380px] bg-sky-500/[0.04] rounded-full blur-[170px] pointer-events-none" />
 
-      <div className="w-full max-w-6xl mx-auto relative z-10">
-        <div className="max-w-3xl">
-          <h1
-            ref={headlineRef}
-            className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.1] mb-6"
-          >
-            {t.hero.headlinePrefix}{' '}
-            <span className="bg-gradient-to-r from-sky-400 to-zinc-400 bg-clip-text text-transparent">
-              {t.hero.headlineHighlight}
-            </span>
-          </h1>
-
-          <p
-            ref={subtextRef}
-            className="text-zinc-300 text-base sm:text-lg md:text-xl leading-relaxed mb-8 max-w-2xl"
-          >
-            {t.hero.subtext}
-          </p>
-
-          <div
-            ref={ctaRef}
-            className="flex flex-col sm:flex-row items-start gap-3 mb-14"
-          >
-            <a
-              href="#projects"
-              className="px-7 py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm"
-            >
-              {t.hero.viewProjects}
-            </a>
-            <a
-              href="#contact"
-              className="px-7 py-3 rounded-xl text-sm font-medium text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-white active:scale-95 transition-all duration-100"
-            >
-              {t.hero.contactMe}
-            </a>
-          </div>
+      {/* Centered Hero Content (Framed by the swirling 3D singularity) */}
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+        {/* Eyebrow */}
+        <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
+          <span className="w-8 h-px bg-zinc-700/80" />
+          <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
+            COLLECTION &apos;26 &bull; INFORMATICS &apos;23 &bull; BANDUNG, ID
+          </span>
+          <span className="w-8 h-px bg-zinc-700/80" />
         </div>
 
-        {/* Interactive Architecture & Tech Inspector Bar (IT Engineering Feel) */}
-        <div
-          ref={cardsRef}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-4"
-        >
-          {/* Main interactive architecture card */}
-          <div className="lg:col-span-8 card-surface p-6 sm:p-7 rounded-2xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-zinc-800/80">
-              <div className="flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-sky-400" />
-                <span className="font-mono text-xs text-zinc-300">{t.hero.inspectorTitle}</span>
-              </div>
-              <span className="font-mono text-[11px] text-zinc-400">{t.hero.inspectorBadge}</span>
-            </div>
+        {/* Massive Editorial Name */}
+        <h1 className="hero-name text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display italic leading-[0.88] tracking-tight text-white mb-6 select-none">
+          Raka Alpiansyah
+        </h1>
 
-            {/* Filter pills */}
-            <div className="flex flex-wrap gap-2 mb-5">
-              {stackPills.map((pill) => {
-                const Icon = pill.icon;
-                const isActive = activeStack === pill.id;
-                return (
-                  <button
-                    key={pill.id}
-                    onClick={() => setActiveStack(pill.id)}
-                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium active:scale-95 transition-all duration-100 ${
-                      isActive
-                        ? 'bg-zinc-100 text-zinc-950 shadow-sm'
-                        : 'bg-zinc-900/60 text-zinc-400 border border-zinc-800 hover:text-white hover:border-zinc-700'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{pill.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+        {/* Dynamic Role Cycler */}
+        <p className="hero-role text-lg sm:text-xl md:text-2xl text-zinc-200 font-light mb-4 flex items-center justify-center gap-2 flex-wrap">
+          <span>{isId ? 'Seorang' : 'A'}</span>
+          <span
+            key={roleIndex}
+            className="font-display italic text-sky-400 text-2xl sm:text-3xl md:text-4xl animate-role-fade-in inline-block font-semibold"
+          >
+            {roles[roleIndex]}
+          </span>
+          <span>{isId ? 'berdomisili di Bandung, Indonesia.' : 'lives in Bandung, Indonesia.'}</span>
+        </p>
 
-            {/* Active stack description */}
-            <div
-              ref={descBoxRef}
-              className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 text-xs sm:text-sm text-zinc-300 font-sans leading-relaxed min-h-[56px] flex items-center"
-            >
-              {stackPills.find((p) => p.id === activeStack)?.desc}
-            </div>
-          </div>
+        {/* Description */}
+        <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-6 font-light">
+          {isId
+            ? 'Mahasiswa aktif S1 Teknik Informatika (Angkatan 2023) & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
+            : 'Undergraduate Informatics Engineering student (\'23) & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
+        </p>
 
-          {/* Quick Real Credentials Card */}
-          <div className="lg:col-span-4 card-surface p-6 sm:p-7 rounded-2xl flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-sky-400 mb-3">
-                <Shield className="w-4 h-4" />
-                <span>{t.hero.milestonesBadge}</span>
-              </div>
-              <h3 className="font-heading font-semibold text-white text-base mb-2">
-                {t.hero.milestonesTitle}
-              </h3>
-              <p className="text-zinc-400 text-xs leading-relaxed mb-4">
-                {t.hero.milestonesDesc}
-              </p>
-            </div>
+        {/* Engineering Status Pill */}
+        <div className="hero-status inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] font-mono text-zinc-300 mb-10 backdrop-blur-md shadow-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>
+            {isId
+              ? 'S1 Teknik Informatika (\'23) • Bandung, ID • Available for Projects'
+              : 'Undergraduate Informatics (\'23) • Bandung, ID • Available for Projects'}
+          </span>
+        </div>
 
-            <div className="space-y-2 pt-3 border-t border-zinc-800/80 font-mono text-[11px] text-zinc-400">
-              <div className="flex items-center justify-between">
-                <span>{t.hero.m1Label}</span>
-                <span className="text-white">{t.hero.m1Val}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>{t.hero.m2Label}</span>
-                <span className="text-white">{t.hero.m2Val}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>{t.hero.m3Label}</span>
-                <span className="text-white">{t.hero.m3Val}</span>
-              </div>
-            </div>
-          </div>
+        {/* CTA Buttons */}
+        <div className="hero-cta inline-flex flex-wrap items-center justify-center gap-4">
+          {/* Primary "Explore Projects" button */}
+          <a
+            href="#projects"
+            className="group relative rounded-full p-[2px] transition-transform duration-200 hover:scale-105"
+          >
+            <span className="absolute -inset-[1px] rounded-full accent-gradient opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+            <span className="relative flex items-center gap-2 rounded-full text-xs sm:text-sm font-medium px-7 py-3.5 bg-zinc-950 text-white group-hover:bg-zinc-900 transition-colors duration-200">
+              <span>{isId ? 'Lihat Proyek Unggulan' : 'Explore Projects'}</span>
+              <ArrowUpRight className="w-4 h-4 text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </span>
+          </a>
+
+          {/* Secondary "Reach Out" button */}
+          <a
+            href="#contact"
+            className="group relative rounded-full text-xs sm:text-sm font-medium px-7 py-3.5 bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-all duration-200 hover:scale-105 backdrop-blur-md"
+          >
+            <span>{isId ? 'Hubungi Saya' : 'Initiate Contact'}</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10">
+        <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-mono">
+          SCROLL
+        </span>
+        <div className="w-px h-10 bg-zinc-800 overflow-hidden relative">
+          <div className="w-full h-1/2 accent-gradient animate-scroll-down" />
         </div>
       </div>
     </section>
