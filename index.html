@@ -9,10 +9,14 @@
     <title>Raka Alpiansyah | Software &amp; AI Engineer Portfolio</title>
     <meta name="description" content="Portofolio Software Engineer &amp; AI Engineer Raka Alpiansyah - Berfokus pada Modern Web Development, AI Engineering, Backend Architecture, dan Mobile Flutter." />
 
-    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono with display=swap for high performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Preload & Non-blocking stylesheet loading for 100 Lighthouse performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
   </head>
   <body class="bg-[#0a0a0a] text-zinc-100 font-body selection:bg-sky-500/25 selection:text-sky-200 overflow-x-hidden antialiased">
     <div id="root"></div>

@@ -40,7 +40,7 @@ export default function Projects() {
       liveLabel: 'Google Play Store',
       color: 'from-sky-500/20 via-sky-600/10 to-transparent',
       accentColor: '#38bdf8',
-      image: '/projects/rehat.png',
+      image: '/projects/rehat.webp',
       type: 'mobile_app',
     },
     {
@@ -398,6 +398,10 @@ export default function Projects() {
                     <img
                       src={currentProject.image}
                       alt={currentProject.title}
+                      width="220"
+                      height="220"
+                      loading="lazy"
+                      decoding="async"
                       className="max-h-[200px] sm:max-h-[220px] w-auto object-contain rounded-xl shadow-2xl border border-white/10 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-300"
                     />
                   </div>

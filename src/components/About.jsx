@@ -130,8 +130,12 @@ export default function About() {
                 className="relative overflow-hidden rounded-2xl w-full"
               >
                 <img
-                  src="/foto1.jpeg"
+                  src="/foto1.webp"
                   alt="Raka Alpiansyah - Software Engineer"
+                  width="480"
+                  height="480"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto block object-cover"
                   draggable="false"
                 />
