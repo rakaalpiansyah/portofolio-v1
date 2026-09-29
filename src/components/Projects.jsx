@@ -30,7 +30,7 @@ export default function Projects() {
   const isAnimating = useRef(false);
   const touchStartX = useRef(0);
 
-  // Static configs for real verified projects
+  // Static configs for real verified projects — unified to signature Sky Blue accent (Anti-slop / Taste)
   const staticProjectConfigs = [
     {
       icon: Smartphone,
@@ -38,7 +38,7 @@ export default function Projects() {
       githubUrl: 'https://github.com/rakaalpiansyah/rehat-app',
       liveUrl: 'https://play.google.com',
       liveLabel: 'Google Play Store',
-      color: 'from-sky-500/20 via-sky-600/10 to-transparent',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
       image: '/projects/rehat.webp',
       type: 'mobile_app',
@@ -49,40 +49,40 @@ export default function Projects() {
       githubUrl: 'https://github.com/rakaalpiansyah/Meeting-AI-Backend',
       liveUrl: 'https://meeting-ai-backend-production-b61e.up.railway.app/docs',
       liveLabel: 'Railway Swagger Docs',
-      color: 'from-emerald-500/20 via-teal-600/10 to-transparent',
-      accentColor: '#10b981',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      accentColor: '#38bdf8',
       type: 'speech_ai',
     },
     {
       icon: Layers,
       techStack: ['Hyperledger Fabric', 'Go / Node Chaincode', 'Docker', 'Hyperledger Caliper', 'Cryptography', 'Consortium Network'],
       githubUrl: 'https://github.com/rakaalpiansyah/agritraceChain',
-      color: 'from-indigo-500/20 via-purple-600/10 to-transparent',
-      accentColor: '#818cf8',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      accentColor: '#38bdf8',
       type: 'blockchain',
     },
     {
       icon: Cpu,
       techStack: ['Python', 'TensorFlow', 'Keras', 'TensorFlow Lite', 'OpenCV', 'NumPy'],
       githubUrl: 'https://github.com/rakaalpiansyah/plantvillage-disease-detection',
-      color: 'from-amber-500/20 via-yellow-600/10 to-transparent',
-      accentColor: '#f59e0b',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      accentColor: '#38bdf8',
       type: 'vision_ai',
     },
     {
       icon: Recycle,
       techStack: ['Laravel', 'PHP', 'MySQL', 'Blade', 'REST API', 'Tailwind CSS'],
       githubUrl: 'https://github.com/rakaalpiansyah/web-GreenV',
-      color: 'from-cyan-500/20 via-emerald-600/10 to-transparent',
-      accentColor: '#06b6d4',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      accentColor: '#38bdf8',
       type: 'waste_platform',
     },
     {
       icon: ShoppingBag,
       techStack: ['Laravel 11', 'PHP', 'MySQL', 'KiriminAja API', 'Payment Gateway', 'Watzap API'],
       githubUrl: 'https://github.com/rakaalpiansyah',
-      color: 'from-rose-500/20 via-red-600/10 to-transparent',
-      accentColor: '#f43f5e',
+      color: 'from-sky-500/10 via-zinc-900/40 to-transparent',
+      accentColor: '#38bdf8',
       type: 'logistics_backend',
     },
   ];
@@ -354,18 +354,18 @@ export default function Projects() {
           <div className="lg:col-span-6 flex justify-center py-6">
             <div
               ref={card3dRef}
-              className={`w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br ${currentProject.color} bg-zinc-950/90 border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.14)] flex flex-col justify-between transition-colors relative overflow-hidden`}
+              className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-sky-500/[0.08] via-zinc-950/95 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
               style={{
                 transformStyle: 'preserve-3d',
               }}
             >
               {/* App / Window Header */}
               <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4 select-none">
-                {/* Window Control Buttons */}
+                {/* Sleek Hardware Minimal Window Control Dots (Linear / Dark IDE standard) */}
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
                 </div>
 
                 {/* Route / URL Badge */}
@@ -373,22 +373,19 @@ export default function Projects() {
                   {currentProject.routeBadge}
                 </span>
 
-                {/* Status Dot */}
+                {/* Unified Status Dot */}
                 <div className="flex items-center gap-1.5">
-                  <span
-                    className="w-2 h-2 rounded-full animate-pulse"
-                    style={{ backgroundColor: currentProject.accentColor }}
-                  />
+                  <span className="w-2 h-2 rounded-full animate-pulse bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
                 </div>
               </div>
 
               {/* Visual Mockup & Viewport Area */}
               <div className="relative rounded-2xl glass-surface p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
-                {/* Ambient backglow */}
+                {/* Ambient backglow — Unified Brand Glow */}
                 <div
                   className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
                   style={{
-                    background: `radial-gradient(circle, ${currentProject.accentColor} 0%, transparent 70%)`,
+                    background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)',
                   }}
                 />
 
@@ -411,7 +408,7 @@ export default function Projects() {
                 {currentProject.type === 'speech_ai' && (
                   <div className="relative z-10 w-full space-y-3 font-mono">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-emerald-400">
+                      <span className="flex items-center gap-1.5 text-sky-400">
                         <Activity className="w-3.5 h-3.5 animate-pulse" /> WHISPER STREAMING
                       </span>
                       <span>00:14 / LIVE</span>
@@ -422,23 +419,23 @@ export default function Projects() {
                       {[35, 60, 90, 45, 80, 100, 70, 50, 85, 95, 40, 65, 80, 30, 75, 90, 60, 40].map((h, i) => (
                         <span
                           key={i}
-                          className="w-1.5 rounded-full bg-emerald-400/80 transition-all duration-150"
+                          className="w-1.5 rounded-full bg-sky-400/80 transition-all duration-150"
                           style={{ height: `${h}%` }}
                         />
                       ))}
                     </div>
 
                     {/* Speaker Diarization Preview Box */}
-                    <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-emerald-500/30 text-[11px] leading-relaxed">
-                      <span className="text-emerald-400 font-bold">[Speaker 01 - 00:08]:</span>{' '}
+                    <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-sky-500/30 text-[11px] leading-relaxed">
+                      <span className="text-sky-400 font-bold">[Speaker 01 - 00:08]:</span>{' '}
                       <span className="text-zinc-200">
                         &quot;Model diarization membagi audio rapat secara presisi dengan latensi rendah.&quot;
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>HTTP 200 OK • JSON</span>
-                      <span className="text-emerald-400">Railway Deployed</span>
+                      <span className="text-emerald-400">HTTP 200 OK • JSON</span>
+                      <span className="text-sky-400">Railway Deployed</span>
                     </div>
                   </div>
                 )}
@@ -447,16 +444,16 @@ export default function Projects() {
                 {currentProject.type === 'vision_ai' && (
                   <div className="relative z-10 w-full space-y-3 font-mono">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-amber-400">
+                      <span className="flex items-center gap-1.5 text-sky-400">
                         <Sparkles className="w-3.5 h-3.5" /> CNN 4-BLOCK INFERENCE
                       </span>
                       <span className="text-emerald-400 font-bold">ACC: 97.12%</span>
                     </div>
 
                     {/* Vision Detection Scanning Reticle */}
-                    <div className="relative h-20 rounded-xl bg-zinc-900/80 border border-dashed border-amber-500/40 p-2.5 flex items-center justify-between">
+                    <div className="relative h-20 rounded-xl bg-zinc-900/80 border border-dashed border-sky-500/40 p-2.5 flex items-center justify-between">
                       <div className="space-y-1">
-                        <span className="text-[10px] text-amber-400 uppercase block tracking-wider">
+                        <span className="text-[10px] text-sky-400 uppercase block tracking-wider">
                           Target Diagnosa
                         </span>
                         <span className="font-heading text-sm font-bold text-white block">
@@ -466,14 +463,14 @@ export default function Projects() {
                           Inferensi CPU ~6ms (TFLite)
                         </span>
                       </div>
-                      <div className="w-12 h-12 rounded-lg border-2 border-amber-400/70 bg-amber-400/10 flex items-center justify-center text-amber-300 font-bold text-xs">
+                      <div className="w-12 h-12 rounded-lg border-2 border-sky-400/70 bg-sky-400/10 flex items-center justify-center text-sky-300 font-bold text-xs">
                         97%
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] text-zinc-400">
                       <span>TensorFlow Lite Quantized</span>
-                      <span className="text-amber-400">Edge Device Ready</span>
+                      <span className="text-sky-400">Edge Device Ready</span>
                     </div>
                   </div>
                 )}
@@ -482,27 +479,27 @@ export default function Projects() {
                 {currentProject.type === 'waste_platform' && (
                   <div className="relative z-10 w-full space-y-3 font-mono">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-cyan-400">
+                      <span className="flex items-center gap-1.5 text-sky-400">
                         <Recycle className="w-3.5 h-3.5" /> UNIVERSITAS JAMBI SDGs
                       </span>
-                      <span className="text-yellow-400 font-bold">JUARA 1 HARAPAN</span>
+                      <span className="text-zinc-200 font-bold">JUARA 1 HARAPAN</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-cyan-500/30 flex items-center justify-between">
+                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 flex items-center justify-between">
                       <div>
                         <span className="text-[10px] text-zinc-400 block mb-0.5">Sirkulasi Sampah Terverifikasi</span>
                         <span className="font-heading text-base font-extrabold text-white">
                           Waste-to-Reward Calculator
                         </span>
                       </div>
-                      <div className="px-2.5 py-1 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-bold">
+                      <div className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold">
                         Eco Point
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] text-zinc-400">
                       <span>Smart Pickup Routing</span>
-                      <span className="text-cyan-400">SDGs Action 2024</span>
+                      <span className="text-sky-400">SDGs Action 2024</span>
                     </div>
                   </div>
                 )}
@@ -511,13 +508,13 @@ export default function Projects() {
                 {currentProject.type === 'logistics_backend' && (
                   <div className="relative z-10 w-full space-y-3 font-mono">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-rose-400">
+                      <span className="flex items-center gap-1.5 text-sky-400">
                         <ShieldCheck className="w-3.5 h-3.5" /> LOGISTICS AUTOMATION
                       </span>
                       <span className="text-emerald-400">AUTO-AWB</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-rose-500/30 space-y-2">
+                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 space-y-2">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-white font-bold">KiriminAja Logistics API</span>
                         <span className="text-emerald-400 text-[10px] font-bold">Connected</span>
@@ -530,7 +527,7 @@ export default function Projects() {
 
                     <div className="flex items-center justify-between text-[10px] text-zinc-400">
                       <span>Automated Shipping Rates</span>
-                      <span className="text-rose-400">Production Ready</span>
+                      <span className="text-sky-400">Production Ready</span>
                     </div>
                   </div>
                 )}
@@ -539,7 +536,7 @@ export default function Projects() {
                 {currentProject.type === 'blockchain' && (
                   <div className="relative z-10 w-full space-y-3 font-mono">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-indigo-400">
+                      <span className="flex items-center gap-1.5 text-sky-400">
                         <Layers className="w-3.5 h-3.5" /> FABRIC CHANNEL: AGRI
                       </span>
                       <span className="text-emerald-400 font-bold">5 ORGS CONSENSUS</span>
@@ -547,31 +544,31 @@ export default function Projects() {
 
                     {/* Cryptographic Block Nodes Flow */}
                     <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-indigo-500/40">
+                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
                         <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #142</span>
-                        <span className="text-indigo-300 font-bold block truncate">Farmer Reg</span>
+                        <span className="text-sky-300 font-bold block truncate">Farmer Reg</span>
                         <span className="text-emerald-400 text-[9px]">Confirmed</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-indigo-500/40">
+                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
                         <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #143</span>
-                        <span className="text-indigo-300 font-bold block truncate">Certify Batch</span>
+                        <span className="text-sky-300 font-bold block truncate">Certify Batch</span>
                         <span className="text-emerald-400 text-[9px]">Confirmed</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-indigo-500/40">
+                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
                         <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #144</span>
-                        <span className="text-indigo-300 font-bold block truncate">LoC Settle</span>
+                        <span className="text-sky-300 font-bold block truncate">LoC Settle</span>
                         <span className="text-emerald-400 text-[9px]">Confirmed</span>
                       </div>
                     </div>
 
                     <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-white/10 flex items-center justify-between text-[10px]">
                       <span className="text-zinc-300">4 Chaincodes Deployed</span>
-                      <span className="text-indigo-400 font-bold">Caliper Benchmarked</span>
+                      <span className="text-sky-400 font-bold">Caliper Benchmarked</span>
                     </div>
 
                     <div className="flex items-center justify-between text-[10px] text-zinc-400">
                       <span>Immutable Ledger Record</span>
-                      <span className="text-indigo-400">Zero-Tamper Audit</span>
+                      <span className="text-sky-400">Zero-Tamper Audit</span>
                     </div>
                   </div>
                 )}
