@@ -383,7 +383,7 @@ export default function Projects() {
               </div>
 
               {/* Visual Mockup & Viewport Area */}
-              <div className="relative rounded-2xl bg-black/50 border border-white/10 p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
+              <div className="relative rounded-2xl glass-surface p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
                 {/* Ambient backglow */}
                 <div
                   className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
@@ -662,7 +662,7 @@ export default function Projects() {
       {/* Project Selector (Bottom Segmented Control Navigation) */}
       <div className="mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
         {/* Segmented control bar */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 backdrop-blur-md shadow-lg max-w-full">
+        <div className="inline-flex items-center gap-1 p-1 rounded-2xl glass-pill max-w-full">
           {projects.map((p, idx) => {
             const isActive = activeIndex === idx;
             return (

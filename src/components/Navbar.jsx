@@ -49,12 +49,12 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav Items */}
-        <div className="hidden md:flex items-center gap-1 bg-zinc-900/60 px-2.5 py-1 rounded-full border border-zinc-800/60">
+        <div className="hidden md:flex items-center gap-1 glass-pill px-2.5 py-1 rounded-full">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="px-3.5 py-1 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all duration-150"
+              className="px-3.5 py-1 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-all duration-150"
             >
               {link.label}
             </a>
@@ -64,10 +64,10 @@ export default function Navbar() {
         {/* Language Switcher & CTA */}
         <div className="hidden sm:flex items-center gap-2.5">
           {/* Language Switcher Pill */}
-          <div className="inline-flex items-center p-0.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] font-mono select-none">
+          <div className="inline-flex items-center p-0.5 rounded-full glass-pill text-[11px] font-mono select-none">
             <button
               onClick={() => setLang('id')}
-              className={`px-2 py-0.5 rounded-full transition-all duration-150 ${
+              className={`px-2.5 py-0.5 rounded-full transition-all duration-150 ${
                 lang === 'id'
                   ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
                   : 'text-zinc-400 hover:text-white'
@@ -79,7 +79,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setLang('en')}
-              className={`px-2 py-0.5 rounded-full transition-all duration-150 ${
+              className={`px-2.5 py-0.5 rounded-full transition-all duration-150 ${
                 lang === 'en'
                   ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
                   : 'text-zinc-400 hover:text-white'
@@ -102,7 +102,7 @@ export default function Navbar() {
         {/* Mobile: Lang Switcher & Menu Button */}
         <div className="sm:hidden flex items-center gap-2">
           {/* Quick Mobile Language Switcher */}
-          <div className="inline-flex items-center p-0.5 rounded-full bg-zinc-900/90 border border-zinc-800 text-[10px] font-mono select-none">
+          <div className="inline-flex items-center p-0.5 rounded-full glass-pill text-[10px] font-mono select-none">
             <button
               onClick={() => setLang('id')}
               className={`px-2 py-0.5 rounded-full transition-all ${
@@ -139,7 +139,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-4 top-20 p-5 rounded-2xl bg-zinc-950/95 backdrop-blur-2xl border border-zinc-800 shadow-[0_16px_40px_rgba(0,0,0,0.8)] flex flex-col gap-3 z-50">
+        <div className="md:hidden fixed inset-x-4 top-20 p-5 rounded-2xl glass-surface flex flex-col gap-3 z-50">
           <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80 text-xs font-medium text-zinc-400">
             <span>{t.nav.mobileNavTitle}</span>
             <span className="font-mono text-[11px] text-zinc-500">Raka Alpiansyah</span>

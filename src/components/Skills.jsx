@@ -457,7 +457,7 @@ export default function Skills() {
                 </div>
 
                 {/* OLED Mini Status Pill */}
-                <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-black/60 border border-zinc-800 font-mono text-[10px]">
+                <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full glass-pill font-mono text-[10px]">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
                   <span className="text-zinc-400 uppercase">ONLINE</span>
                   <span className="text-zinc-600">|</span>

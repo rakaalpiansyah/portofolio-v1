@@ -170,7 +170,7 @@ export default function Experience() {
         </p>
 
         {/* Category Filter Tabs */}
-        <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 backdrop-blur-md max-w-full overflow-x-auto no-scrollbar">
+        <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl glass-pill max-w-full overflow-x-auto no-scrollbar">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
