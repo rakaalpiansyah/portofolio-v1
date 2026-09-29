@@ -354,3 +354,39 @@ html.lenis, html.lenis body {
     display: none !important;
   }
 }
+
+/* ─── Living Aurora Ambient Animations ───────────────────────────── */
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(60px, 45px, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-45px, 25px, 0) scale(0.96);
+  }
+}
+
+@keyframes aurora-pulse {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.42;
+  }
+  50% {
+    transform: translate3d(-50px, -35px, 0) scale(1.1);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(35px, 25px, 0) scale(1);
+    opacity: 0.46;
+  }
+}
+
+.animate-aurora-drift {
+  animation: aurora-drift 22s ease-in-out infinite alternate;
+}
+
+.animate-aurora-pulse {
+  animation: aurora-pulse 18s ease-in-out infinite alternate;
+}
