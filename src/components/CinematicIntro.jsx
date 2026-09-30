@@ -196,8 +196,8 @@ export default function CinematicIntro({ onComplete }) {
               ref={roleRef}
               className="text-base sm:text-xl md:text-2xl lg:text-3xl font-heading font-extrabold uppercase text-white tracking-widest flex items-center justify-center will-change-transform drop-shadow-2xl whitespace-nowrap"
             >
-              <span className="text-sky-400 font-mono text-xs sm:text-sm md:text-base mr-3 font-normal">
-                0{activeWordIndex + 1} //
+              <span className="text-sky-400 font-mono text-xs sm:text-sm md:text-base mr-3 font-light">
+                0{activeWordIndex + 1}
               </span>
               <span>{roles[activeWordIndex]}</span>
             </div>
@@ -218,7 +218,7 @@ export default function CinematicIntro({ onComplete }) {
         {/* BOTTOM PRECISION PROGRESS RAIL & SKIP HINT */}
         <footer className="w-full">
           <div className="w-full flex items-center justify-between font-mono text-[10px] text-zinc-500 uppercase tracking-widest mb-3">
-            <span>SYS_INIT // {counter}%</span>
+            <span>PORTFOLIO &bull; {counter}%</span>
             <span className="text-zinc-500">
               CLICK TO SKIP [ESC]
             </span>
