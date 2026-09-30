@@ -62,7 +62,7 @@ export const translations = {
       statFocusVal: 'Web Dev · AI · Backend · Mobile',
       statFocusSub: 'Laravel · React · Flutter · Python',
       stackTitle: 'Stack Utama',
-      p1: 'Saya Raka Alpiansyah, seorang Software Engineer & AI Engineer yang menempuh studi S1 Teknik Informatika. Minat rekayasa saya terfokus pada arsitektur backend scalable, modern web development, pengembangan aplikasi mobile dengan Flutter, serta penerapan solusi kecerdasan buatan (AI) terintegrasi.',
+      p1: 'Saya Raka Alpiansyah, seorang Software Engineer & AI Engineer berlatar belakang Teknik Informatika. Minat rekayasa saya terfokus pada arsitektur backend scalable, modern web development, pengembangan aplikasi mobile dengan Flutter, serta penerapan solusi kecerdasan buatan (AI) terintegrasi.',
       p2: 'Fondasi rekayasa saya berakar dari pemahaman mendalam tentang arsitektur sistem, topologi jaringan, protokol routing, dan sistem operasi Linux. Pengalaman praktis di industri melalui pengembangan backend di Sonasoft IT Services LLC, PT. Royale Essence Indonesia, serta operasional sistem di PT POS Indonesia membentuk komitmen saya terhadap kode yang efisien, teruji, dan scalable di lingkungan produksi.',
       milestones: [
         {
@@ -336,13 +336,13 @@ export const translations = {
         },
         {
           id: 'informatika',
-          period: '2023 - Sekarang',
-          role: 'S1 Teknik Informatika',
+          period: 'Pendidikan & Riset',
+          role: 'Teknik Informatika',
           company: 'Teknik Informatika',
           location: 'Bandung, Indonesia',
-          tag: 'Studi Akademik & Prestasi',
+          tag: 'Studi & Prestasi',
           highlights: [
-            'Fokus akademik: Software Engineering, Web Development, Mobile Architecture, dan AI Engineering.',
+            'Fokus: Software Engineering, Web Development, Mobile Architecture, dan AI Engineering.',
             'Meraih Juara 1 Lomba Karya Tulis MIPA Tingkat Nasional 2024 di Universitas Jambi bertema SDGs dengan solusi website pengelolaan sampah terpadu.',
             'Mendalami arsitektur perangkat lunak modular, clean code, algoritma struktur data, dan pengembangan aplikasi Flutter.',
           ],
@@ -457,7 +457,7 @@ export const translations = {
       statFocusVal: 'Web Dev · AI · Backend · Mobile',
       statFocusSub: 'Laravel · React · Flutter · Python',
       stackTitle: 'Core Stack',
-      p1: 'I am Raka Alpiansyah, a Software Engineer & AI Engineer pursuing my Bachelor of Science in Informatics Engineering. My engineering passions center on scalable backend architectures, modern interactive web applications, cross-platform mobile development with Flutter, and integrated artificial intelligence solutions.',
+      p1: 'I am Raka Alpiansyah, a Software Engineer & AI Engineer with an Informatics Engineering background. My engineering passions center on scalable backend architectures, modern interactive web applications, cross-platform mobile development with Flutter, and integrated artificial intelligence solutions.',
       p2: 'My technical foundation is built on deep systems thinking: network topologies, routing protocols, and enterprise Linux administration. Industry experience across backend development at Sonasoft IT Services LLC, PT. Royale Essence Indonesia, and systems operations at PT POS Indonesia has reinforced my dedication to writing clean, tested, and scalable code in production.',
       milestones: [
         {
@@ -731,13 +731,13 @@ export const translations = {
         },
         {
           id: 'informatika',
-          period: '2023 - Present',
-          role: 'B.S. Informatics Engineering',
+          period: 'Education & Research',
+          role: 'Informatics Engineering',
           company: 'Informatics Engineering',
           location: 'Bandung, Indonesia',
           tag: 'Academic & Honors',
           highlights: [
-            'Academic focus: Software Engineering, Web Development, Mobile Architecture, and AI Engineering.',
+            'Engineering focus: Software Engineering, Web Development, Mobile Architecture, and AI Engineering.',
             'Won 1st Place in the 2024 National MIPA Scientific Paper Competition at Universitas Jambi with an integrated digital waste management solution.',
             'Deepened expertise in modular software architecture, clean code, data structure algorithms, and Flutter mobile applications.',
           ],

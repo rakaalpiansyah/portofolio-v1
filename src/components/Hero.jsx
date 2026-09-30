@@ -139,8 +139,8 @@ export default function Hero({ isRevealed = true }) {
         {/* Description */}
         <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-6 font-light">
           {isId
-            ? 'Mahasiswa aktif S1 Teknik Informatika (Angkatan 2023) & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
-            : 'Undergraduate Informatics Engineering student (\'23) & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
+            ? 'Teknik Informatika & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
+            : 'Informatics Engineering & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
         </p>
 
         {/* Engineering Status Pill */}
@@ -148,8 +148,8 @@ export default function Hero({ isRevealed = true }) {
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span>
             {isId
-              ? 'S1 Teknik Informatika (\'23) • Bandung, ID • Available for Projects'
-              : 'Undergraduate Informatics (\'23) • Bandung, ID • Available for Projects'}
+              ? 'Teknik Informatika • Bandung, ID • Available for Projects'
+              : 'Informatics Engineering • Bandung, ID • Available for Projects'}
           </span>
         </div>
 
