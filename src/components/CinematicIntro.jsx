@@ -2,32 +2,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 /**
- * CinematicIntro (V2 - Multi-Column Shutter & Kinetic Mask Reveal)
+ * CinematicIntro (V3 - Bulletproof Modern Kinetic Screen Entrance)
  * 
- * 2-Second Modern Kinetic Screen Entrance (Awwwards 2026 Creative Standard)
+ * 2-Second Cinematic Screen Entrance Animation (Awwwards 2026 Standard)
  * 
  * Standards applied (4 skills: UI/UX Pro Max, Impeccable, Taste, Anti-Slop UI):
- * 1. Masked Slide-Up Entrance: Telemetry headers and central counter emerge from
- *    overflow-hidden clip masks with high-velocity ease ('power3.out').
- * 2. Tabular Rolling Counter: High-fashion 000 -> 100% counter in Instrument Serif italic,
- *    synced with a kinetic discipline cycler.
- * 3. 4-Column Staggered Shutter Curtain Wipe: When 100% is reached, the screen slices
- *    into 4 vertical architectural monolith columns that slide up with expo.inOut stagger.
- * 4. Hairline 1px Progress Rail & Live Telemetry without cheap neon glow blobs.
- * 5. Instant skip on click or keypress + deterministic safety timeout fallback.
+ * 1. Robust Fullscreen Architecture: Uses a solid, unclipped fixed OLED black curtain (#000000)
+ *    that never squishes, collapses, or clips text under any screen resolution.
+ * 2. High-Velocity Theatre Curtain Wipe: On 100%, content glides upward followed by
+ *    an ultra-smooth full-screen shutter lift (yPercent: -100, ease: 'power4.inOut').
+ * 3. Kinetic Telemetry: Live status ticker that transitions from 'INITIALIZING' to
+ *    'SYSTEM READY // 100%' as the counter reaches completion.
+ * 4. Tabular 000 -> 100% Rolling Counter in Instrument Serif italic with real-time progress track.
+ * 5. Instant skip on click or ESC + deterministic safety fallback.
  */
 export default function CinematicIntro({ onComplete }) {
-  const containerRef = useRef(null);
-  const col1Ref = useRef(null);
-  const col2Ref = useRef(null);
-  const col3Ref = useRef(null);
-  const col4Ref = useRef(null);
-
-  const headerLeftRef = useRef(null);
-  const headerRightRef = useRef(null);
+  const curtainRef = useRef(null);
+  const contentRef = useRef(null);
   const counterRef = useRef(null);
   const wordRef = useRef(null);
-  const footerRef = useRef(null);
   const progressLineRef = useRef(null);
 
   const [counter, setCounter] = useState(0);
@@ -49,84 +42,65 @@ export default function CinematicIntro({ onComplete }) {
       return;
     }
 
-    const colRefs = [col1Ref.current, col2Ref.current, col3Ref.current, col4Ref.current];
+    const curtain = curtainRef.current;
+    const content = contentRef.current;
+    if (!curtain || !content) return;
 
-    // ── 1. ENTRANCE REVEAL (0s) ──
-    const tlEntrance = gsap.timeline();
-    tlEntrance
-      .from([headerLeftRef.current, headerRightRef.current], {
-        yPercent: 120,
-        opacity: 0,
-        duration: 0.55,
-        ease: 'power3.out',
-        stagger: 0.08,
-      })
-      .from(
-        [wordRef.current, counterRef.current, footerRef.current],
-        {
-          yPercent: 60,
-          opacity: 0,
-          duration: 0.65,
-          ease: 'power3.out',
-          stagger: 0.06,
-        },
-        '-=0.3'
-      );
+    // Initial smooth entrance of the intro container
+    gsap.fromTo(
+      content,
+      { opacity: 0, y: 15 },
+      { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+    );
 
-    // ── 2. NUMERIC 000 -> 100 COUNTER ACCELERATION ──
     const startTime = performance.now();
-    const duration = 1450; // counter finishes at 1.45s
+    const duration = 1500; // Counter reaches 100 in 1.5s
     let animFrame;
-    let hasTriggeredExit = false;
+    let hasCompleted = false;
 
-    // ── 3. 4-COLUMN SHUTTER CURTAIN EXIT REVEAL ──
+    // ── THEATRE SHUTTER CURTAIN REVEAL ──
     const triggerCurtainReveal = () => {
-      if (hasTriggeredExit) return;
-      hasTriggeredExit = true;
+      if (hasCompleted) return;
+      hasCompleted = true;
 
-      const tlExit = gsap.timeline({
+      const tl = gsap.timeline({
         onComplete: () => {
           if (onCompleteRef.current) onCompleteRef.current();
         },
       });
 
-      // Phase A: Content elements slide upward into masks
-      tlExit
+      // 1. Text elements slide upward with crisp ease
+      tl.to(content, {
+        opacity: 0,
+        y: -40,
+        duration: 0.35,
+        ease: 'power3.in',
+      })
+        // 2. Solid black curtain lifts upward like an architectural shutter
         .to(
-          [headerLeftRef.current, headerRightRef.current, wordRef.current, counterRef.current, footerRef.current],
-          {
-            yPercent: -120,
-            opacity: 0,
-            duration: 0.32,
-            ease: 'power3.in',
-            stagger: 0.03,
-          }
-        )
-        // Phase B: 4 Vertical Columns slide up with staggered cinematic sweep
-        .to(
-          colRefs,
+          curtain,
           {
             yPercent: -100,
-            duration: 0.78,
-            ease: 'expo.inOut',
-            stagger: 0.05,
+            duration: 0.75,
+            ease: 'power4.inOut',
           },
           '-=0.08'
         );
     };
 
+    // requestAnimationFrame counter 000 -> 100
     const updateCounter = (now) => {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
-      // Fast start, smooth settle curve
+      // Smooth cubic curve
       const eased = 1 - Math.pow(1 - progress, 2.8);
       const currentVal = Math.floor(eased * 100);
       setCounter(currentVal);
 
       // Cycle words dynamically
-      if (progress < 0.33) {
+      if (progress < 0.35) {
         setActiveWordIndex(0);
-      } else if (progress < 0.70) {
+      } else if (progress < 0.72) {
         setActiveWordIndex(1);
       } else {
         setActiveWordIndex(2);
@@ -136,14 +110,14 @@ export default function CinematicIntro({ onComplete }) {
         animFrame = requestAnimationFrame(updateCounter);
       } else {
         setCounter(100);
-        // Brief 120ms lock beat before curtain wipe
-        setTimeout(triggerCurtainReveal, 120);
+        // Brief 100ms lock beat before curtain lift
+        setTimeout(triggerCurtainReveal, 100);
       }
     };
 
     animFrame = requestAnimationFrame(updateCounter);
 
-    // Deterministic safety fallback
+    // Deterministic safety timeout (never freeze)
     const fallbackTimer = setTimeout(() => {
       triggerCurtainReveal();
     }, 2400);
@@ -151,14 +125,13 @@ export default function CinematicIntro({ onComplete }) {
     return () => {
       cancelAnimationFrame(animFrame);
       clearTimeout(fallbackTimer);
-      tlEntrance.kill();
     };
   }, []);
 
   // Instant skip on click
   const handleSkip = () => {
     if (onCompleteRef.current) {
-      gsap.to(containerRef.current, {
+      gsap.to(curtainRef.current, {
         opacity: 0,
         duration: 0.22,
         ease: 'power2.out',
@@ -169,95 +142,78 @@ export default function CinematicIntro({ onComplete }) {
 
   return (
     <div
-      ref={containerRef}
+      ref={curtainRef}
       onClick={handleSkip}
-      className="fixed inset-0 z-[9999] select-none cursor-pointer overflow-hidden"
+      className="fixed inset-0 z-[9999] bg-black text-white flex flex-col justify-between p-6 sm:p-10 md:p-12 select-none cursor-pointer overflow-hidden will-change-transform"
       role="dialog"
       aria-label="Portfolio Introduction"
     >
-      {/* ── 4-COLUMN SHUTTER BACKGROUND SLABS ── */}
-      <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-4 pointer-events-none z-0">
-        <div
-          ref={col1Ref}
-          className="bg-black border-r border-zinc-900/60 h-full will-change-transform"
-        />
-        <div
-          ref={col2Ref}
-          className="bg-black border-r border-zinc-900/60 h-full will-change-transform"
-        />
-        <div
-          ref={col3Ref}
-          className="bg-black border-r border-zinc-900/60 h-full will-change-transform"
-        />
-        <div
-          ref={col4Ref}
-          className="bg-black h-full will-change-transform"
-        />
-      </div>
+      {/* Background subtle noise/vignette */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950/60 to-black pointer-events-none" />
 
-      {/* ── FOREGROUND CONTENT WRAPPER ── */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-between p-6 sm:p-10 pointer-events-none">
-        
-        {/* Top Telemetry Header (Masked Slide Reveal) */}
-        <header className="flex items-center justify-between font-mono text-[11px] sm:text-xs text-zinc-400 uppercase tracking-[0.25em]">
-          <div className="overflow-hidden py-1">
-            <div ref={headerLeftRef} className="flex items-center gap-2 will-change-transform">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white font-medium">RAKA ALPIANSYAH</span>
-              <span className="hidden sm:inline text-zinc-500">// COLLECTION '26</span>
-            </div>
+      {/* ── ALL FOREGROUND CONTENT ── */}
+      <div
+        ref={contentRef}
+        className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none"
+      >
+        {/* TOP TELEMETRY BAR */}
+        <header className="w-full flex items-center justify-between font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em]">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-white font-medium">RAKA ALPIANSYAH</span>
+            <span className="text-zinc-600">//</span>
+            <span className="hidden sm:inline text-zinc-400">COLLECTION '26</span>
           </div>
 
-          <div className="overflow-hidden py-1">
-            <div ref={headerRightRef} className="flex items-center gap-2 text-zinc-400 will-change-transform">
-              <span>BANDUNG, ID</span>
-              <span className="text-zinc-600">&bull;</span>
-              <span className="text-sky-400 font-mono">INITIALIZING</span>
-            </div>
+          <div className="flex items-center gap-2 text-zinc-400">
+            <span>BANDUNG, ID</span>
+            <span className="text-zinc-700">&bull;</span>
+            <span className={counter === 100 ? 'text-emerald-400 font-semibold transition-colors' : 'text-sky-400'}>
+              {counter === 100 ? 'SYSTEM READY' : 'INITIALIZING'}
+            </span>
           </div>
         </header>
 
-        {/* Center Monumental Counter & Masked Discipline */}
-        <main className="flex flex-col items-center justify-center my-auto">
-          {/* Discipline Word Cycler with Mask */}
-          <div className="overflow-hidden mb-3">
+        {/* CENTER MONUMENTAL TABULAR COUNTER & DISCIPLINE */}
+        <main className="flex flex-col items-center justify-center my-auto text-center">
+          {/* Rotating Creative Word with smooth key transition */}
+          <div className="h-6 sm:h-7 mb-4 flex items-center justify-center overflow-hidden">
             <div
+              key={activeWordIndex}
               ref={wordRef}
-              className="text-xs sm:text-sm font-mono text-zinc-400 tracking-[0.3em] uppercase text-center px-4 will-change-transform"
+              className="text-xs sm:text-sm font-mono text-zinc-400 tracking-[0.3em] uppercase animate-role-fade-in"
             >
-              <span className="text-sky-400 font-semibold mr-2">0{activeWordIndex + 1} /</span>
+              <span className="text-sky-400 font-medium mr-2">0{activeWordIndex + 1} /</span>
               <span>{words[activeWordIndex]}</span>
             </div>
           </div>
 
-          {/* Monumental 000-100 Tabular Counter in Instrument Serif italic */}
-          <div className="overflow-hidden py-2">
-            <div
-              ref={counterRef}
-              className="font-display italic text-8xl sm:text-9xl md:text-[11.5rem] leading-none text-white tracking-tight tabular-nums select-none flex items-baseline will-change-transform drop-shadow-2xl"
-            >
-              <span>{String(counter).padStart(3, '0')}</span>
-              <span className="font-sans text-3xl sm:text-4xl text-sky-400 font-light ml-2">
-                %
-              </span>
-            </div>
+          {/* Monumental 000-100 Counter in Instrument Serif italic */}
+          <div
+            ref={counterRef}
+            className="font-display italic text-8xl sm:text-9xl md:text-[11.5rem] lg:text-[13rem] leading-none text-white tracking-tight tabular-nums select-none flex items-baseline drop-shadow-2xl"
+          >
+            <span>{String(counter).padStart(3, '0')}</span>
+            <span className="font-sans text-3xl sm:text-4xl md:text-5xl text-sky-400 font-light ml-2">
+              %
+            </span>
           </div>
 
-          {/* Micro Telemetry Ticker */}
-          <div className="flex items-center gap-3 font-mono text-[10px] text-zinc-500 uppercase tracking-widest mt-4">
+          {/* Live Micro-Telemetry Status */}
+          <div className="flex items-center gap-3 font-mono text-[10px] sm:text-[11px] text-zinc-500 uppercase tracking-widest mt-6">
             <span>CORE: RUNNING</span>
             <span className="text-zinc-700">&bull;</span>
             <span className="text-zinc-400">LATENCY: 12MS</span>
             <span className="text-zinc-700">&bull;</span>
-            <span className="text-sky-400">STATUS: OPTIMAL</span>
+            <span className="text-sky-400 font-medium">STATUS: OPTIMAL</span>
           </div>
         </main>
 
-        {/* Bottom Hairline Progress Bar & Skip Hint */}
-        <footer ref={footerRef} className="w-full will-change-transform">
+        {/* BOTTOM PRECISION PROGRESS RAIL & SKIP HINT */}
+        <footer className="w-full">
           <div className="w-full flex items-center justify-between font-mono text-[10px] text-zinc-500 uppercase tracking-widest mb-3">
             <span>PIPELINE BUFFER // {counter}%</span>
-            <span className="text-zinc-500 hover:text-zinc-300 transition-colors">
+            <span className="text-zinc-500">
               CLICK ANYWHERE TO SKIP [ESC]
             </span>
           </div>
