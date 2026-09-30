@@ -510,7 +510,7 @@ export default function Projects() {
                       <span className="flex items-center gap-1.5 text-sky-400">
                         <Recycle className="w-3.5 h-3.5" /> UNIVERSITAS JAMBI SDGs
                       </span>
-                      <span className="text-zinc-200 font-bold">JUARA 1 HARAPAN</span>
+                      <span className="text-zinc-200 font-bold">JUARA 1</span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 flex items-center justify-between">

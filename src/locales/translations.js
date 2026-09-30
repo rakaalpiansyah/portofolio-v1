@@ -27,7 +27,7 @@ export const translations = {
         'Pengalaman produksi nyata dalam web dev, arsitektur AI, sertifikasi Cisco & Oracle, serta aplikasi mobile aktif di Google Play Store.',
       m1Label: 'Google Play Store',
       m1Val: 'Live App (Rehat)',
-      m2Label: 'Juara 1 Harapan MIPA',
+      m2Label: 'Juara 1 MIPA',
       m2Val: 'SDGs 2024',
       m3Label: 'Sertifikasi Resmi',
       m3Val: 'Cloud, Cisco, Oracle',
@@ -66,20 +66,14 @@ export const translations = {
       p2: 'Fondasi rekayasa saya berakar dari pemahaman mendalam tentang arsitektur sistem, topologi jaringan, protokol routing, dan sistem operasi Linux. Pengalaman praktis di industri melalui pengembangan backend di Sonasoft IT Services LLC, PT. Royale Essence Indonesia, serta operasional sistem di PT POS Indonesia membentuk komitmen saya terhadap kode yang efisien, teruji, dan scalable di lingkungan produksi.',
       milestones: [
         {
-          title: 'Juara Harapan 1 Nasional MIPA SDGs 2024',
+          title: 'Juara 1 Nasional MIPA SDGs 2024',
           org: 'Universitas Jambi',
           desc: 'Inovasi website pengelolaan sampah terintegrasi model bisnis pengumpulan sampah berkelanjutan.',
-          featured: true,
         },
         {
           title: 'Cloud Technical Series - OnBoard Edition',
           org: 'United Latino Students Association',
           desc: 'Sertifikasi teknis arsitektur komputasi cloud, fondasi infrastruktur modern, dan orkestrasi layanan terdistribusi.',
-        },
-        {
-          title: 'S1 Teknik Informatika',
-          org: 'Fakultas Sains & Teknologi',
-          desc: 'Fokus rekayasa perangkat lunak, modern web development, kecerdasan buatan (AI), dan sistem mobile.',
         },
         {
           title: 'Sertifikasi Jaringan Cisco CCNA & Linux',
@@ -272,16 +266,16 @@ export const translations = {
           title: 'GreenV: Smart Waste Management & SDGs',
           shortTitle: 'GreenV Platform',
           category: 'Web Architecture & Sustainable Tech',
-          tag: 'Juara Harapan 1 Nasional MIPA 2024',
+          tag: 'Juara 1 Nasional MIPA 2024',
           routeBadge: 'greenv.sdgs.org/dashboard',
           subtitle: 'Inovasi Digital Pengelolaan Sampah Terpadu & Reward Daur Ulang',
           description:
-            'Platform web terpadu yang menghubungkan masyarakat penghasil limbah dengan pengepul daur ulang berizin, mengantarkan Juara Harapan 1 Lomba Karya Tulis Ilmiah Nasional SDGs 2024 di Universitas Jambi.',
+            'Platform web terpadu yang menghubungkan masyarakat penghasil limbah dengan pengepul daur ulang berizin, mengantarkan Juara 1 Lomba Karya Tulis Ilmiah Nasional SDGs 2024 di Universitas Jambi.',
           challenge:
             'Rendahnya motivasi pemilahan sampah mandiri dan ketiadaan koordinasi logistik rute penjemputan limbah bernilai ekonomi.',
           solution:
             'Membangun modul kalkulator reward poin sampah otomatis, pemantauan titik jemput kurir terintegrasi, dan analitik sirkulasi limbah.',
-          metrics: 'Juara Harapan 1 Nasional MIPA SDGs',
+          metrics: 'Juara 1 Nasional MIPA SDGs',
         },
         {
           title: 'PT. Royale Essence Indonesia E-Commerce',
@@ -349,7 +343,7 @@ export const translations = {
           tag: 'Studi Akademik & Prestasi',
           highlights: [
             'Fokus akademik: Software Engineering, Web Development, Mobile Architecture, dan AI Engineering.',
-            'Meraih Juara Harapan 1 Lomba Karya Tulis MIPA Tingkat Nasional 2024 di Universitas Jambi bertema SDGs dengan solusi website pengelolaan sampah terpadu.',
+            'Meraih Juara 1 Lomba Karya Tulis MIPA Tingkat Nasional 2024 di Universitas Jambi bertema SDGs dengan solusi website pengelolaan sampah terpadu.',
             'Mendalami arsitektur perangkat lunak modular, clean code, algoritma struktur data, dan pengembangan aplikasi Flutter.',
           ],
         },
@@ -428,7 +422,7 @@ export const translations = {
         'Production-tested experience across web development, AI architectures, Cisco & Oracle certifications, and live mobile apps on Google Play Store.',
       m1Label: 'Google Play Store',
       m1Val: 'Live App (Rehat)',
-      m2Label: 'National 4th Place MIPA',
+      m2Label: '1st Place National MIPA',
       m2Val: 'SDGs 2024',
       m3Label: 'Official Certifications',
       m3Val: 'Cloud, Cisco, Oracle',
@@ -467,20 +461,14 @@ export const translations = {
       p2: 'My technical foundation is built on deep systems thinking: network topologies, routing protocols, and enterprise Linux administration. Industry experience across backend development at Sonasoft IT Services LLC, PT. Royale Essence Indonesia, and systems operations at PT POS Indonesia has reinforced my dedication to writing clean, tested, and scalable code in production.',
       milestones: [
         {
-          title: 'National 4th Place MIPA SDGs 2024',
+          title: '1st Place National MIPA SDGs 2024',
           org: 'Universitas Jambi',
           desc: 'Integrated digital waste management web platform driving sustainable community recycling and logistics.',
-          featured: true,
         },
         {
           title: 'Cloud Technical Series - OnBoard Edition',
           org: 'United Latino Students Association',
           desc: 'Technical certification covering cloud computing architectures, modern infrastructure foundations, and distributed service orchestration.',
-        },
-        {
-          title: 'B.S. Informatics Engineering',
-          org: 'Faculty of Science & Technology',
-          desc: 'Academic focus in software engineering, modern web architectures, artificial intelligence, and mobile systems.',
         },
         {
           title: 'Cisco CCNA & Linux Network Certification',
@@ -673,16 +661,16 @@ export const translations = {
           title: 'GreenV: Smart Waste Management & SDGs',
           shortTitle: 'GreenV Platform',
           category: 'Web Architecture & Sustainable Tech',
-          tag: 'National 4th Place MIPA SDGs 2024',
+          tag: '1st Place National MIPA SDGs 2024',
           routeBadge: 'greenv.sdgs.org/dashboard',
           subtitle: 'Integrated Waste Management Innovation & Recycling Rewards Platform',
           description:
-            'An integrated web platform connecting waste producers with licensed recycling centers, winning 4th Place in the 2024 National Scientific Paper Competition at Universitas Jambi.',
+            'An integrated web platform connecting waste producers with licensed recycling centers, winning 1st Place in the 2024 National Scientific Paper Competition at Universitas Jambi.',
           challenge:
             'Low public incentives for independent waste sorting and the absence of logistics route coordination for recyclable materials.',
           solution:
             'Developed an automated waste reward calculator, integrated courier pickup coordination, and recycling circulation analytics.',
-          metrics: 'National 4th Place MIPA SDGs',
+          metrics: '1st Place National MIPA SDGs',
         },
         {
           title: 'PT. Royale Essence Indonesia E-Commerce',
@@ -750,7 +738,7 @@ export const translations = {
           tag: 'Academic & Honors',
           highlights: [
             'Academic focus: Software Engineering, Web Development, Mobile Architecture, and AI Engineering.',
-            'Won 4th Place in the 2024 National MIPA Scientific Paper Competition at Universitas Jambi with an integrated digital waste management solution.',
+            'Won 1st Place in the 2024 National MIPA Scientific Paper Competition at Universitas Jambi with an integrated digital waste management solution.',
             'Deepened expertise in modular software architecture, clean code, data structure algorithms, and Flutter mobile applications.',
           ],
         },

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, BookOpen, CheckCircle, Server, MapPin, GraduationCap, Briefcase, Cloud } from 'lucide-react';
+import { Award, Server, MapPin, GraduationCap, Briefcase, Cloud, Database } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -76,7 +76,7 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
-  const milestoneIcons = [Award, Cloud, BookOpen, Server, CheckCircle];
+  const milestoneIcons = [Award, Cloud, Server, Database];
 
   const quickStats = [
     {
@@ -201,45 +201,40 @@ export default function About() {
             className="lg:col-span-7 flex flex-col justify-between pt-1"
           >
             {/* Heading + narrative */}
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="flex items-center gap-2.5 mb-3">
                 <span className="w-6 h-px bg-zinc-700" />
                 <span className="text-[11px] text-zinc-400 uppercase tracking-[0.25em] font-mono">
                   PROFILE &amp; FOUNDATION
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-white tracking-tight leading-tight mb-6">
-                Tentang Saya &amp;{' '}
-                <span className="font-display italic text-zinc-300 font-normal">
-                  Fondasi Teknis
-                </span>
+              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-5">
+                {t.about.heading}
               </h2>
 
-              <p className="text-zinc-200 text-base sm:text-lg leading-relaxed mb-4">
+              <p className="text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
                 {t.about.p1}
               </p>
-              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+              <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
                 {t.about.p2}
               </p>
             </div>
 
             {/* Milestones grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-zinc-800/80">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-5 border-t border-zinc-800/80">
               {t.about.milestones.map((item, idx) => {
                 const Icon = milestoneIcons[idx] || Award;
                 return (
                   <div
                     key={idx}
-                    className={`card-surface p-5 rounded-2xl flex flex-col justify-between ${
-                      item.featured ? 'sm:col-span-2' : ''
-                    }`}
+                    className="card-surface p-4 sm:p-4.5 rounded-xl flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-300"
                   >
                     <div>
-                      <div className="flex items-center gap-2.5 mb-2.5">
+                      <div className="flex items-center gap-2 mb-2">
                         <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                        <span className="font-mono text-[11px] text-zinc-400">{item.org}</span>
+                        <span className="font-mono text-[11px] text-zinc-400 truncate">{item.org}</span>
                       </div>
-                      <h3 className="font-heading font-semibold text-white text-sm mb-1.5 leading-snug">
+                      <h3 className="font-heading font-semibold text-white text-xs sm:text-sm mb-1.5 leading-snug">
                         {item.title}
                       </h3>
                       <p className="text-zinc-400 text-xs leading-relaxed">{item.desc}</p>
