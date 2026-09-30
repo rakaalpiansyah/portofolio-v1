@@ -65,7 +65,14 @@ export default function App() {
     };
   }, []);
 
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  const handleStartReveal = () => {
+    setIsRevealed(true);
+  };
+
   const handleIntroComplete = () => {
+    setIsRevealed(true);
     setIntroComplete(true);
     setTimeout(() => {
       ScrollTrigger.refresh();
@@ -75,12 +82,17 @@ export default function App() {
   return (
     <LanguageProvider>
       <div className="relative min-h-screen bg-black text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
-        {!introComplete && <CinematicIntro onComplete={handleIntroComplete} />}
+        {!introComplete && (
+          <CinematicIntro
+            onStartReveal={handleStartReveal}
+            onComplete={handleIntroComplete}
+          />
+        )}
         <CustomCursor />
         <BackgroundSpatial />
-        <Navbar />
+        <Navbar isRevealed={isRevealed} />
         <main className="relative z-10">
-          <Hero />
+          <Hero isRevealed={isRevealed} />
           <About />
           <EngineeringManifesto />
           <Skills />

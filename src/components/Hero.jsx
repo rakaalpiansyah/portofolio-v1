@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero() {
+export default function Hero({ isRevealed = true }) {
   const heroRef = useRef(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const { t, language } = useLanguage();
@@ -28,62 +28,77 @@ export default function Hero() {
 
   // GSAP Entrance Timeline for text elements
   useEffect(() => {
+    if (!heroRef.current) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      if (isRevealed) {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.fromTo(
-        '.hero-eyebrow',
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.15 }
-      )
-        .fromTo(
-          '.hero-name',
-          { opacity: 0, y: 45, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2 },
-          '-=0.5'
+        tl.fromTo(
+          '.hero-eyebrow',
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.85, delay: 0.1 }
         )
-        .fromTo(
-          '.hero-role',
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          '-=0.6'
-        )
-        .fromTo(
-          '.hero-subtext',
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          '-=0.5'
-        )
-        .fromTo(
-          '.hero-status',
-          { opacity: 0, scale: 0.9 },
-          { opacity: 1, scale: 1, duration: 0.7 },
-          '-=0.4'
-        )
-        .fromTo(
-          '.hero-cta',
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 },
-          '-=0.4'
+          .fromTo(
+            '.hero-name',
+            { opacity: 0, y: 55, scale: 0.95, filter: 'blur(16px)' },
+            { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.3, ease: 'power4.out' },
+            '-=0.45'
+          )
+          .fromTo(
+            '.hero-role',
+            { opacity: 0, y: 25 },
+            { opacity: 1, y: 0, duration: 0.85 },
+            '-=0.6'
+          )
+          .fromTo(
+            '.hero-subtext',
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.85 },
+            '-=0.5'
+          )
+          .fromTo(
+            '.hero-status',
+            { opacity: 0, scale: 0.85 },
+            { opacity: 1, scale: 1, duration: 0.75, ease: 'back.out(1.4)' },
+            '-=0.4'
+          )
+          .fromTo(
+            '.hero-cta a',
+            { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.8, stagger: 0.12 },
+            '-=0.4'
+          )
+          .fromTo(
+            '.hero-scroll-indicator',
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.7 },
+            '-=0.3'
+          );
+      } else {
+        gsap.set(
+          ['.hero-eyebrow', '.hero-name', '.hero-role', '.hero-subtext', '.hero-status', '.hero-cta a', '.hero-scroll-indicator'],
+          { opacity: 0 }
         );
+      }
 
-      // Smooth scroll out animation for hero content
+      // Smooth scroll out animation for hero content (Bidirectional scrub)
       gsap.to('.hero-content-wrap', {
-        y: -110,
+        y: -120,
         opacity: 0,
-        scale: 0.94,
+        scale: 0.93,
+        filter: 'blur(6px)',
         ease: 'none',
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
-          end: 'bottom 25%',
-          scrub: 0.6,
+          end: 'bottom 20%',
+          scrub: 0.7,
         },
       });
     }, heroRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isRevealed]);
 
   const isId = language === 'id';
 
@@ -163,7 +178,7 @@ export default function Hero() {
       </div>
 
       {/* Scroll Down Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10">
+      <div className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10">
         <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-mono">
           SCROLL
         </span>

@@ -18,7 +18,7 @@ import gsap from 'gsap';
  *    lifts upward with power4.inOut, revealing Hero with breathtaking depth.
  * 5. Instant skip on click or ESC + deterministic safety fallback.
  */
-export default function CinematicIntro({ onComplete }) {
+export default function CinematicIntro({ onStartReveal, onComplete }) {
   const curtainRef = useRef(null);
   const contentRef = useRef(null);
   const counterRef = useRef(null);
@@ -35,6 +35,8 @@ export default function CinematicIntro({ onComplete }) {
     'FULLSTACK DEVELOPER',
   ];
 
+  const onStartRevealRef = useRef(onStartReveal);
+  onStartRevealRef.current = onStartReveal;
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
@@ -88,6 +90,11 @@ export default function CinematicIntro({ onComplete }) {
     const triggerCurtainReveal = () => {
       if (hasCompleted) return;
       hasCompleted = true;
+
+      // Notify parent that curtain is opening so Hero and Navbar can trigger their entrance!
+      if (onStartRevealRef.current) {
+        onStartRevealRef.current();
+      }
 
       const tl = gsap.timeline({
         onComplete: () => {
@@ -158,6 +165,7 @@ export default function CinematicIntro({ onComplete }) {
 
   // Instant skip on click
   const handleSkip = () => {
+    if (onStartRevealRef.current) onStartRevealRef.current();
     if (onCompleteRef.current) {
       gsap.to(curtainRef.current, {
         opacity: 0,
@@ -194,11 +202,8 @@ export default function CinematicIntro({ onComplete }) {
           <div className="h-12 sm:h-14 mb-4 flex items-center justify-center overflow-visible">
             <div
               ref={roleRef}
-              className="text-base sm:text-xl md:text-2xl lg:text-3xl font-heading font-extrabold uppercase text-white tracking-widest flex items-center justify-center will-change-transform drop-shadow-2xl whitespace-nowrap"
+              className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-heading font-extrabold uppercase text-white tracking-widest flex items-center justify-center will-change-transform drop-shadow-2xl whitespace-nowrap"
             >
-              <span className="text-sky-400 font-mono text-xs sm:text-sm md:text-base mr-3 font-light">
-                0{activeWordIndex + 1}
-              </span>
               <span>{roles[activeWordIndex]}</span>
             </div>
           </div>

@@ -1,11 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function Navbar() {
+export default function Navbar({ isRevealed = true }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef(null);
   const { lang, setLang, t } = useLanguage();
+
+  useEffect(() => {
+    if (!headerRef.current) return;
+    if (isRevealed) {
+      gsap.fromTo(
+        headerRef.current,
+        { y: -60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.0, ease: 'power4.out', delay: 0.1 }
+      );
+    } else {
+      gsap.set(headerRef.current, { y: -60, opacity: 0 });
+    }
+  }, [isRevealed]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +39,10 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4 sm:pt-5 transition-all duration-300">
+    <header
+      ref={headerRef}
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4 sm:pt-5 transition-all duration-300"
+    >
       <nav
         className={`w-full max-w-5xl flex items-center justify-between px-5 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${
           scrolled
