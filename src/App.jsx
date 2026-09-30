@@ -9,6 +9,7 @@ import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import EngineeringManifesto from './components/EngineeringManifesto';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Experience from './components/Experience';
@@ -81,6 +82,7 @@ export default function App() {
         <main className="relative z-10">
           <Hero />
           <About />
+          <EngineeringManifesto />
           <Skills />
           <Projects />
           <Experience />
