@@ -2,35 +2,31 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * EngineeringManifesto (V2 - 1 View Full & Edge-to-Edge)
+ * EngineeringManifesto (V3 - Bespoke 3D Monogram & Monumental Brutalist Canvas)
  * 
  * Inspired by Pablo Miguez's iconic "MOTION IS THE FUTURE" editorial statement,
- * tailored for Raka Alpiansyah as "SOFTWARE ENGINEER IS THE FUTURE".
+ * elevated for Raka Alpiansyah as "SOFTWARE ENGINEER IS THE FUTURE".
  * 
  * Standards applied (4 skills: UI/UX Pro Max, Impeccable, Taste, Anti-Slop UI):
- * 1. 1 View Full (100dvh Pinned Section): Locks deterministically into full view,
+ * 1. Zero-Slop Architecture: All extraneous headers, coordinates, badges, and tooltips
+ *    removed. The screen belongs entirely to monumental typography & the 3D sculpture.
+ * 2. Bespoke 3D Sculptural "RA" Monogram (Three.js): Custom beveled titanium & obsidian
+ *    dual-tone architectural monogram with luminous cyan-sky chamfered edges, reacting
+ *    to real-time scroll scrub and mouse drag/tilt.
+ * 3. 1 View Full (100dvh Pinned Section): Locks deterministically into full view,
  *    scrubbing the entrance, presentation lock, and exit motion seamlessly on scroll.
- * 2. Edge-to-Edge (Mentok Kanan-Kiri): Fluid brutalist typography stretching from
+ * 4. Edge-to-Edge (Mentok Kanan-Kiri): Fluid brutalist typography stretching from
  *    extreme left to extreme right with zero restrictive container boxes.
- * 3. Museum-Grade 3D Gyroscope (Three.js): Titanium & ruthenium PBR gimbal rings
- *    with an inner glowing wireframe node lattice (symbolizing software architecture & AI pipelines),
- *    reacting to scroll scrub and mouse drag/tilt.
- * 4. Zero Slop: No ugly tooltips, no noisy floating badges; pure typography + 3D sculpture.
  */
 export default function EngineeringManifesto() {
-  const { language } = useLanguage();
-  const isId = language === 'id';
-
   const sectionRef = useRef(null);
-  const containerRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Typography refs
+  // Typography refs for GSAP scrub
   const wareRef = useRef(null);
   const engineerRef = useRef(null);
   const isRef = useRef(null);
@@ -39,7 +35,7 @@ export default function EngineeringManifesto() {
   const [isDragging, setIsDragging] = useState(false);
 
   // ═══════════════════════════════════════════════════════════════════
-  // 1. THREE.JS 3D ARCHITECTURAL GIMBAL SCENE
+  // 1. THREE.JS BESPOKE 3D "RA" ARCHITECTURAL TITANIUM MONOGRAM
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const section = sectionRef.current;
@@ -56,9 +52,9 @@ export default function EngineeringManifesto() {
       0.1,
       100
     );
-    camera.position.set(0, 0, 8.2);
+    camera.position.set(0, 0, 7.8);
 
-    // High Performance WebGL Renderer
+    // Renderer
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
@@ -68,35 +64,99 @@ export default function EngineeringManifesto() {
     renderer.setSize(section.clientWidth, section.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMappingExposure = 1.3;
 
-    // Studio Lighting Rig (Clean & Architectural)
-    const ambientLight = new THREE.AmbientLight(0x0a0f1d, 1.6);
+    // Studio Lighting Rig
+    const ambientLight = new THREE.AmbientLight(0x0a0f1d, 1.8);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 4.0);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
     keyLight.position.set(6, 8, 7);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x64748b, 1.8);
-    fillLight.position.set(-6, -5, 4);
+    const fillLight = new THREE.DirectionalLight(0x64748b, 2.0);
+    fillLight.position.set(-6, -4, 5);
     scene.add(fillLight);
 
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.0);
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.5);
     rimLight.position.set(0, -6, -4);
     scene.add(rimLight);
 
-    // Dynamic mouse spotlight
-    const cursorLight = new THREE.PointLight(0xffffff, 3.8, 16);
+    // Mouse-controlled specular point light
+    const cursorLight = new THREE.PointLight(0xffffff, 4.0, 15);
     cursorLight.position.set(0, 0, 4);
     scene.add(cursorLight);
 
-    // Master 3D Group
-    const gyroGroup = new THREE.Group();
-    scene.add(gyroGroup);
+    // Master 3D Monogram Group
+    const masterGroup = new THREE.Group();
+    scene.add(masterGroup);
 
-    // Physically Based Metallic Materials
-    const titaniumMat = new THREE.MeshPhysicalMaterial({
+    // ── PROCEDURAL 3D "RA" MONOGRAM GEOMETRY ──
+    // Letter R Shape
+    const rShape = new THREE.Shape();
+    rShape.moveTo(-1.65, -1.1);
+    rShape.lineTo(-1.65, 1.1);
+    rShape.lineTo(-0.25, 1.1);
+    rShape.quadraticCurveTo(0.3, 1.1, 0.3, 0.55);
+    rShape.quadraticCurveTo(0.3, 0.0, -0.25, 0.0);
+    rShape.lineTo(0.3, -1.1);
+    rShape.lineTo(-0.22, -1.1);
+    rShape.lineTo(-0.65, -0.22);
+    rShape.lineTo(-1.25, -0.22);
+    rShape.lineTo(-1.25, -1.1);
+    rShape.closePath();
+
+    const rHole = new THREE.Path();
+    rHole.moveTo(-1.25, 0.38);
+    rHole.lineTo(-0.25, 0.38);
+    rHole.quadraticCurveTo(-0.02, 0.38, -0.02, 0.55);
+    rHole.quadraticCurveTo(-0.02, 0.72, -0.25, 0.72);
+    rHole.lineTo(-1.25, 0.72);
+    rHole.closePath();
+    rShape.holes.push(rHole);
+
+    // Letter A Shape
+    const aShape = new THREE.Shape();
+    aShape.moveTo(0.25, -1.1);
+    aShape.lineTo(0.85, 1.1);
+    aShape.lineTo(1.15, 1.1);
+    aShape.lineTo(1.75, -1.1);
+    aShape.lineTo(1.28, -1.1);
+    aShape.lineTo(1.14, -0.42);
+    aShape.lineTo(0.86, -0.42);
+    aShape.lineTo(0.72, -1.1);
+    aShape.closePath();
+
+    const aHole = new THREE.Path();
+    aHole.moveTo(1.0, 0.65);
+    aHole.lineTo(0.85, -0.12);
+    aHole.lineTo(1.15, -0.12);
+    aHole.closePath();
+    aShape.holes.push(aHole);
+
+    // Extrusion Settings with Sharp Beveled Chamfers
+    const extrudeSettings = {
+      depth: 0.38,
+      bevelEnabled: true,
+      bevelSegments: 5,
+      steps: 1,
+      bevelSize: 0.045,
+      bevelThickness: 0.045,
+    };
+
+    const geoR = new THREE.ExtrudeGeometry(rShape, extrudeSettings);
+    const geoA = new THREE.ExtrudeGeometry(aShape, extrudeSettings);
+
+    geoR.center();
+    geoA.center();
+
+    // Spacing between R and A
+    geoR.translate(-0.8, 0, 0);
+    geoA.translate(0.8, 0, 0);
+
+    // Luxury Dual-Tone Materials:
+    // Front face: Polished brushed platinum titanium
+    const faceMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color(0xf8fafc),
       metalness: 0.98,
       roughness: 0.1,
@@ -105,72 +165,54 @@ export default function EngineeringManifesto() {
       reflectivity: 1.0,
     });
 
-    const obsidianMat = new THREE.MeshPhysicalMaterial({
+    // Sides & Bevel: Deep dark obsidian ruthenium
+    const sideMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color(0x0f172a),
-      metalness: 0.96,
-      roughness: 0.16,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.1,
+      metalness: 0.95,
+      roughness: 0.2,
+      clearcoat: 0.8,
     });
 
-    // Mesh 1: Outer Aerospace Titanium Gimbal Ring
-    const outerRingGeo = new THREE.TorusGeometry(2.35, 0.1, 32, 80);
-    const outerRing = new THREE.Mesh(outerRingGeo, titaniumMat);
-    outerRing.rotation.set(0.4, 0.25, 0.5);
-    gyroGroup.add(outerRing);
+    const materials = [faceMaterial, sideMaterial];
 
-    // Mesh 2: Middle Ruthenium Counter-Gimbal Ring
-    const midRingGeo = new THREE.TorusGeometry(1.85, 0.09, 32, 72);
-    const midRing = new THREE.Mesh(midRingGeo, obsidianMat);
-    midRing.rotation.set(Math.PI / 2 + 0.2, 0.3, -0.4);
-    gyroGroup.add(midRing);
+    const meshR = new THREE.Mesh(geoR, materials);
+    const meshA = new THREE.Mesh(geoA, materials);
+    masterGroup.add(meshR);
+    masterGroup.add(meshA);
 
-    // Mesh 3: Inner Architectural Octahedron Node Lattice (System Logic)
-    const latticeGeo = new THREE.IcosahedronGeometry(1.15, 1);
-    const wireframeGeo = new THREE.WireframeGeometry(latticeGeo);
-    const wireframeMat = new THREE.LineBasicMaterial({
+    // Incandescent Sky Edge Highlights (Glint along beveled chamfers)
+    const edgeMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.45,
     });
-    const innerLattice = new THREE.LineSegments(wireframeGeo, wireframeMat);
-    gyroGroup.add(innerLattice);
+    const edgesR = new THREE.LineSegments(new THREE.EdgesGeometry(geoR, 25), edgeMat);
+    const edgesA = new THREE.LineSegments(new THREE.EdgesGeometry(geoA, 25), edgeMat);
+    meshR.add(edgesR);
+    meshA.add(edgesA);
 
-    // Center Quantum Specular Core
-    const coreGeo = new THREE.SphereGeometry(0.38, 24, 24);
-    const coreMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0284c7,
-      metalness: 0.9,
-      roughness: 0.15,
-      clearcoat: 1.0,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.25,
-    });
-    const coreSphere = new THREE.Mesh(coreGeo, coreMat);
-    gyroGroup.add(coreSphere);
-
-    // Outer Orbit Coordinate Ring
-    const orbitGeo = new THREE.TorusGeometry(3.1, 0.015, 16, 96);
+    // Sleek Aerospace Orbit Coordinate Ring
+    const orbitGeo = new THREE.TorusGeometry(3.1, 0.016, 16, 96);
     const orbitMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.22,
+      opacity: 0.28,
     });
     const orbitRing = new THREE.Mesh(orbitGeo, orbitMat);
-    orbitRing.rotation.x = Math.PI / 3.2;
-    gyroGroup.add(orbitRing);
+    orbitRing.rotation.x = Math.PI / 2.8;
+    masterGroup.add(orbitRing);
 
-    // Coordinate nodes along orbit
+    // 4 Coordinate Laser Dots on Orbit
     const dotGeo = new THREE.SphereGeometry(0.04, 12, 12);
     const dotMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI) / 3;
+    for (let i = 0; i < 4; i++) {
+      const angle = (i * Math.PI) / 2;
       const dot = new THREE.Mesh(dotGeo, dotMat);
       dot.position.set(Math.cos(angle) * 3.1, Math.sin(angle) * 3.1, 0);
       orbitRing.add(dot);
     }
 
-    // Interactive mouse & scroll state
+    // Interaction & Animation variables
     const mouse = {
       targetX: 0,
       targetY: 0,
@@ -195,9 +237,9 @@ export default function EngineeringManifesto() {
       mouse.targetX = (clientX / rect.width) * 2 - 1;
       mouse.targetY = -(clientY / rect.height) * 2 + 1;
 
-      // Update cursor light
-      cursorLight.position.x = mouse.targetX * 5;
-      cursorLight.position.y = mouse.targetY * 4;
+      // Update specular point light
+      cursorLight.position.x = mouse.targetX * 5.5;
+      cursorLight.position.y = mouse.targetY * 4.5;
 
       if (mouse.isDown) {
         const deltaX = e.clientX - mouse.prevX;
@@ -226,16 +268,16 @@ export default function EngineeringManifesto() {
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('pointerup', handlePointerUp);
 
-    // Responsive camera zoom
+    // Responsive Camera Zoom
     const handleResize = () => {
       if (!section || !renderer || !camera) return;
       const width = section.clientWidth;
       const height = section.clientHeight;
       camera.aspect = width / height;
       if (width < 768) {
-        camera.position.z = 10.2; // Move further back on mobile
+        camera.position.z = 9.8; // Further on mobile so "RA" fits seamlessly
       } else {
-        camera.position.z = 8.2;
+        camera.position.z = 7.8;
       }
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
@@ -266,15 +308,12 @@ export default function EngineeringManifesto() {
 
       if (!prefersReducedMotion) {
         // Continuous rotation blended with scroll scrub and cursor drag
-        const scrollRot = scrollProgress * Math.PI * 2.4;
-        gyroGroup.rotation.y = scrollRot + mouse.currX * 0.4 + mouse.dragRotY;
-        gyroGroup.rotation.x = 0.2 + mouse.currY * 0.3 + mouse.dragRotX;
+        const scrollRot = scrollProgress * Math.PI * 2.2;
+        masterGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
+        masterGroup.rotation.x = 0.15 + mouse.currY * 0.35 + mouse.dragRotX;
 
-        // Counter-rotations
-        innerLattice.rotation.y -= delta * 0.5;
-        innerLattice.rotation.z += delta * 0.35;
-        midRing.rotation.z += delta * 0.2;
-        orbitRing.rotation.z += delta * 0.15;
+        // Counter-rotation of orbit ring
+        orbitRing.rotation.z += delta * 0.2;
       }
 
       renderer.render(scene, camera);
@@ -293,17 +332,13 @@ export default function EngineeringManifesto() {
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('resize', handleResize);
 
-      outerRingGeo.dispose();
-      midRingGeo.dispose();
-      latticeGeo.dispose();
-      wireframeGeo.dispose();
-      coreGeo.dispose();
+      geoR.dispose();
+      geoA.dispose();
       orbitGeo.dispose();
       dotGeo.dispose();
-      titaniumMat.dispose();
-      obsidianMat.dispose();
-      wireframeMat.dispose();
-      coreMat.dispose();
+      faceMaterial.dispose();
+      sideMaterial.dispose();
+      edgeMat.dispose();
       orbitMat.dispose();
       dotMat.dispose();
       renderer.dispose();
@@ -335,7 +370,7 @@ export default function EngineeringManifesto() {
       gsap.set(future, { x: '40vw' });
 
       // PINNED TIMELINE:
-      // The section locks into 1 full screen view as it reaches top of screen
+      // Locks into 1 full screen view as it reaches top of screen
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -375,7 +410,6 @@ export default function EngineeringManifesto() {
         );
 
       // ── PHASE 2: Lock & Admire (45% -> 70%) ──
-      // Subtle scale pulse and 3D focus
       tl.to(
         [ware, engineer, isWord, future],
         { opacity: 1, ease: 'none' },
@@ -412,13 +446,13 @@ export default function EngineeringManifesto() {
     <section
       id="manifesto"
       ref={sectionRef}
-      className="relative w-full h-[100dvh] bg-black text-white flex flex-col justify-between overflow-hidden select-none"
+      className="relative w-full h-[100dvh] bg-black text-white flex flex-col justify-center overflow-hidden select-none"
       aria-label="Software Engineer Manifesto"
     >
       {/* Screen-reader accessible landmark */}
       <h2 className="sr-only">Software Engineer is the Future</h2>
 
-      {/* 3D WebGL Canvas Layer (Zero ugly browser tooltips) */}
+      {/* 3D WebGL Canvas Layer */}
       <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center pointer-events-auto">
         <canvas
           ref={canvasRef}
@@ -426,28 +460,12 @@ export default function EngineeringManifesto() {
         />
       </div>
 
-      {/* Top Architectural Border */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent z-10" />
-
-      {/* ── TOP EDITORIAL BAR (EDGE-TO-EDGE) ── */}
-      <header className="relative z-10 w-full px-4 sm:px-8 pt-6 sm:pt-8 flex items-center justify-between pointer-events-none font-mono text-[10px] sm:text-xs text-zinc-500 uppercase tracking-[0.25em]">
-        <div className="flex items-center gap-2.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-          <span className="text-zinc-400">MANIFESTO // '26</span>
-        </div>
-        <div className="text-zinc-500 tracking-widest hidden sm:block">
-          BANDUNG, ID &bull; 6&deg;54&apos;S 107&deg;36&apos;E
-        </div>
-      </header>
-
       {/* ═══════════════════════════════════════════════════════════════
           MAIN KINETIC BRUTALIST TYPOGRAPHY GRID
-          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI)
+          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI) - ZERO SLOP CLUTTER
           ═══════════════════════════════════════════════════════════════ */}
-      <div
-        ref={containerRef}
-        className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none"
-      >
+      <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none">
+        
         {/* ROW 1: SOFTWARE (FLUSH TO THE EXTREME LEFT) */}
         <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.80]">
           <div className="flex items-baseline font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-white drop-shadow-2xl whitespace-nowrap">
@@ -491,21 +509,6 @@ export default function EngineeringManifesto() {
           </span>
         </div>
       </div>
-
-      {/* ── BOTTOM EDITORIAL FOOTER (EDGE-TO-EDGE) ── */}
-      <footer className="relative z-10 w-full px-4 sm:px-8 pb-6 sm:pb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 pointer-events-none">
-        <p className="text-xs sm:text-sm text-zinc-400 max-w-lg font-light leading-snug">
-          {isId
-            ? 'Rekayasa perangkat lunak adalah arsitektur masa depan komputasi, keandalan sistem terdistribusi, dan ekosistem AI berkinerja tinggi.'
-            : 'Software engineering is the architecture of computational futures, distributed system resilience, and high-performance AI ecosystems.'}
-        </p>
-
-        <div className="flex items-center gap-3 font-mono text-[10px] sm:text-[11px] text-zinc-500 uppercase tracking-widest">
-          <span>RAKA ALPIANSYAH</span>
-          <span className="text-zinc-700">&bull;</span>
-          <span className="text-sky-400">INFORMATICS</span>
-        </div>
-      </footer>
     </section>
   );
 }
