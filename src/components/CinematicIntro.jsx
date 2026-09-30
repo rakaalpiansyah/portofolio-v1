@@ -2,38 +2,64 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
 /**
- * CinematicIntro (V3 - Bulletproof Modern Kinetic Screen Entrance)
+ * CinematicIntro (V4 - Hyper-Kinetic "Outside-In" Role Warp & Pure Editorial Canvas)
  * 
- * 2-Second Cinematic Screen Entrance Animation (Awwwards 2026 Standard)
+ * 2-Second Modern Screen Entrance Animation (Awwwards 2026 Creative Standard)
  * 
  * Standards applied (4 skills: UI/UX Pro Max, Impeccable, Taste, Anti-Slop UI):
- * 1. Robust Fullscreen Architecture: Uses a solid, unclipped fixed OLED black curtain (#000000)
- *    that never squishes, collapses, or clips text under any screen resolution.
- * 2. High-Velocity Theatre Curtain Wipe: On 100%, content glides upward followed by
- *    an ultra-smooth full-screen shutter lift (yPercent: -100, ease: 'power4.inOut').
- * 3. Kinetic Telemetry: Live status ticker that transitions from 'INITIALIZING' to
- *    'SYSTEM READY // 100%' as the counter reaches completion.
- * 4. Tabular 000 -> 100% Rolling Counter in Instrument Serif italic with real-time progress track.
+ * 1. Zero Top-Header Clutter: The top telemetry header is completely removed.
+ *    The screen is an uncluttered, monumental cinematic stage.
+ * 2. "Outside-In" Kinetic Role Warp:
+ *    4 disciplines (Informatics Engineering, Software Engineer, AI Engineer, Fullstack Developer)
+ *    blast in from the outside (scale: 2.1, letter-spacing: 0.5em, blur: 12px) and snap
+ *    into the focal center with high-velocity 'expo.out' ease.
+ * 3. Monumental Tabular Rolling Counter: High-fashion 000 -> 100% in Instrument Serif italic.
+ * 4. Solid Theatre Shutter Wipe: When 100% completes, content glides up and the black curtain
+ *    lifts upward with power4.inOut, revealing Hero with breathtaking depth.
  * 5. Instant skip on click or ESC + deterministic safety fallback.
  */
 export default function CinematicIntro({ onComplete }) {
   const curtainRef = useRef(null);
   const contentRef = useRef(null);
   const counterRef = useRef(null);
-  const wordRef = useRef(null);
+  const roleRef = useRef(null);
   const progressLineRef = useRef(null);
 
   const [counter, setCounter] = useState(0);
   const [activeWordIndex, setActiveWordIndex] = useState(0);
 
-  const words = [
-    'BACKEND ARCHITECTURE',
-    'APPLIED ARTIFICIAL INTELLIGENCE',
-    'SOFTWARE ENGINEERING',
+  const roles = [
+    'INFORMATICS ENGINEERING',
+    'SOFTWARE ENGINEER',
+    'AI ENGINEER',
+    'FULLSTACK DEVELOPER',
   ];
 
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
+
+  // ── "OUTSIDE-IN" KINETIC WARP SNAP ON EACH ROLE CHANGE ──
+  useEffect(() => {
+    if (!roleRef.current) return;
+
+    gsap.fromTo(
+      roleRef.current,
+      {
+        scale: 2.1,
+        opacity: 0,
+        letterSpacing: '0.5em',
+        filter: 'blur(12px)',
+      },
+      {
+        scale: 1.0,
+        opacity: 1,
+        letterSpacing: '0.16em',
+        filter: 'blur(0px)',
+        duration: 0.38,
+        ease: 'expo.out',
+      }
+    );
+  }, [activeWordIndex]);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -54,7 +80,7 @@ export default function CinematicIntro({ onComplete }) {
     );
 
     const startTime = performance.now();
-    const duration = 1500; // Counter reaches 100 in 1.5s
+    const duration = 1750; // Counter takes 1.75s to step through all 4 roles
     let animFrame;
     let hasCompleted = false;
 
@@ -73,7 +99,7 @@ export default function CinematicIntro({ onComplete }) {
       tl.to(content, {
         opacity: 0,
         y: -40,
-        duration: 0.35,
+        duration: 0.32,
         ease: 'power3.in',
       })
         // 2. Solid black curtain lifts upward like an architectural shutter
@@ -81,7 +107,7 @@ export default function CinematicIntro({ onComplete }) {
           curtain,
           {
             yPercent: -100,
-            duration: 0.75,
+            duration: 0.72,
             ease: 'power4.inOut',
           },
           '-=0.08'
@@ -93,25 +119,27 @@ export default function CinematicIntro({ onComplete }) {
       const elapsed = now - startTime;
       const progress = Math.min(1, elapsed / duration);
       // Smooth cubic curve
-      const eased = 1 - Math.pow(1 - progress, 2.8);
+      const eased = 1 - Math.pow(1 - progress, 2.6);
       const currentVal = Math.floor(eased * 100);
       setCounter(currentVal);
 
-      // Cycle words dynamically
-      if (progress < 0.35) {
+      // Cycle across 4 roles smoothly based on 25% increments
+      if (progress < 0.25) {
         setActiveWordIndex(0);
-      } else if (progress < 0.72) {
+      } else if (progress < 0.5) {
         setActiveWordIndex(1);
-      } else {
+      } else if (progress < 0.75) {
         setActiveWordIndex(2);
+      } else {
+        setActiveWordIndex(3);
       }
 
       if (progress < 1) {
         animFrame = requestAnimationFrame(updateCounter);
       } else {
         setCounter(100);
-        // Brief 100ms lock beat before curtain lift
-        setTimeout(triggerCurtainReveal, 100);
+        // Brief 120ms lock beat before curtain lift
+        setTimeout(triggerCurtainReveal, 120);
       }
     };
 
@@ -120,7 +148,7 @@ export default function CinematicIntro({ onComplete }) {
     // Deterministic safety timeout (never freeze)
     const fallbackTimer = setTimeout(() => {
       triggerCurtainReveal();
-    }, 2400);
+    }, 2600);
 
     return () => {
       cancelAnimationFrame(animFrame);
@@ -148,43 +176,30 @@ export default function CinematicIntro({ onComplete }) {
       role="dialog"
       aria-label="Portfolio Introduction"
     >
-      {/* Background subtle noise/vignette */}
+      {/* Background subtle vignette */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950/60 to-black pointer-events-none" />
 
-      {/* ── ALL FOREGROUND CONTENT ── */}
+      {/* ── ALL FOREGROUND CONTENT (TOP TEXT REMOVED AS REQUESTED) ── */}
       <div
         ref={contentRef}
         className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none"
       >
-        {/* TOP TELEMETRY BAR */}
-        <header className="w-full flex items-center justify-between font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em]">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-white font-medium">RAKA ALPIANSYAH</span>
-            <span className="text-zinc-600">//</span>
-            <span className="hidden sm:inline text-zinc-400">COLLECTION '26</span>
-          </div>
+        {/* Top spacer (clean open headspace) */}
+        <div className="w-full h-8" />
 
-          <div className="flex items-center gap-2 text-zinc-400">
-            <span>BANDUNG, ID</span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className={counter === 100 ? 'text-emerald-400 font-semibold transition-colors' : 'text-sky-400'}>
-              {counter === 100 ? 'SYSTEM READY' : 'INITIALIZING'}
-            </span>
-          </div>
-        </header>
-
-        {/* CENTER MONUMENTAL TABULAR COUNTER & DISCIPLINE */}
-        <main className="flex flex-col items-center justify-center my-auto text-center">
-          {/* Rotating Creative Word with smooth key transition */}
-          <div className="h-6 sm:h-7 mb-4 flex items-center justify-center overflow-hidden">
+        {/* CENTER MONUMENTAL STAGE: OUTSIDE-IN ROLE WARP + TABULAR COUNTER */}
+        <main className="flex flex-col items-center justify-center my-auto text-center px-4">
+          
+          {/* Dynamic Role Container ("Dari Luar Masuk Ke Dalam") */}
+          <div className="h-12 sm:h-14 mb-4 flex items-center justify-center overflow-visible">
             <div
-              key={activeWordIndex}
-              ref={wordRef}
-              className="text-xs sm:text-sm font-mono text-zinc-400 tracking-[0.3em] uppercase animate-role-fade-in"
+              ref={roleRef}
+              className="text-base sm:text-xl md:text-2xl lg:text-3xl font-heading font-extrabold uppercase text-white tracking-widest flex items-center justify-center will-change-transform drop-shadow-2xl whitespace-nowrap"
             >
-              <span className="text-sky-400 font-medium mr-2">0{activeWordIndex + 1} /</span>
-              <span>{words[activeWordIndex]}</span>
+              <span className="text-sky-400 font-mono text-xs sm:text-sm md:text-base mr-3 font-normal">
+                0{activeWordIndex + 1} //
+              </span>
+              <span>{roles[activeWordIndex]}</span>
             </div>
           </div>
 
@@ -198,23 +213,14 @@ export default function CinematicIntro({ onComplete }) {
               %
             </span>
           </div>
-
-          {/* Live Micro-Telemetry Status */}
-          <div className="flex items-center gap-3 font-mono text-[10px] sm:text-[11px] text-zinc-500 uppercase tracking-widest mt-6">
-            <span>CORE: RUNNING</span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className="text-zinc-400">LATENCY: 12MS</span>
-            <span className="text-zinc-700">&bull;</span>
-            <span className="text-sky-400 font-medium">STATUS: OPTIMAL</span>
-          </div>
         </main>
 
         {/* BOTTOM PRECISION PROGRESS RAIL & SKIP HINT */}
         <footer className="w-full">
           <div className="w-full flex items-center justify-between font-mono text-[10px] text-zinc-500 uppercase tracking-widest mb-3">
-            <span>PIPELINE BUFFER // {counter}%</span>
+            <span>SYS_INIT // {counter}%</span>
             <span className="text-zinc-500">
-              CLICK ANYWHERE TO SKIP [ESC]
+              CLICK TO SKIP [ESC]
             </span>
           </div>
 
