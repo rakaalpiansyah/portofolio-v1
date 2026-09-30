@@ -64,10 +64,17 @@ export default function App() {
     };
   }, []);
 
+  const handleIntroComplete = () => {
+    setIntroComplete(true);
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
+  };
+
   return (
     <LanguageProvider>
       <div className="relative min-h-screen bg-black text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
-        {!introComplete && <CinematicIntro onComplete={() => setIntroComplete(true)} />}
+        {!introComplete && <CinematicIntro onComplete={handleIntroComplete} />}
         <CustomCursor />
         <BackgroundSpatial />
         <Navbar />

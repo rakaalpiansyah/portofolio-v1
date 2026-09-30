@@ -25,6 +25,7 @@ export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
   const headerRef = useRef(null);
+  const showcaseRef = useRef(null);
   const card3dRef = useRef(null);
   const detailsColRef = useRef(null);
   const isAnimating = useRef(false);
@@ -370,6 +371,7 @@ export default function Projects() {
 
       {/* Main 3D Perspective Showcase */}
       <div
+        ref={showcaseRef}
         className="perspective-[1600px] w-full"
         style={{ perspective: '1600px' }}
         onTouchStart={handleTouchStart}

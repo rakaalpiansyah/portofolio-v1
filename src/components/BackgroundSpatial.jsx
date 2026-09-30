@@ -69,6 +69,9 @@ export default function BackgroundSpatial() {
     const terrainMaterial = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
+      extensions: {
+        derivatives: true,
+      },
       uniforms: {
         uTime: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },

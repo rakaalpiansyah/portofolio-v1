@@ -29,16 +29,49 @@ export default function CinematicIntro({ onComplete }) {
     'SOFTWARE ENGINEERING',
   ];
 
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      if (onComplete) onComplete();
+      if (onCompleteRef.current) onCompleteRef.current();
       return;
     }
 
     const startTime = performance.now();
     const duration = 1600; // Counter takes 1.6s
     let animFrame;
+    let hasCompleted = false;
+
+    const triggerCurtainReveal = () => {
+      if (hasCompleted) return;
+      hasCompleted = true;
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          if (onCompleteRef.current) onCompleteRef.current();
+        },
+      });
+
+      // Scale down inner elements, then wipe curtain upwards
+      tl.to([counterRef.current, wordRef.current, progressLineRef.current], {
+        opacity: 0,
+        y: -20,
+        duration: 0.35,
+        ease: 'power2.in',
+      })
+        .to(
+          curtainRef.current,
+          {
+            scaleY: 0,
+            transformOrigin: 'top center',
+            duration: 0.75,
+            ease: 'power4.inOut',
+          },
+          '-=0.1'
+        );
+    };
 
     // requestAnimationFrame counter 000 -> 100
     const updateCounter = (now) => {
@@ -62,43 +95,22 @@ export default function CinematicIntro({ onComplete }) {
         animFrame = requestAnimationFrame(updateCounter);
       } else {
         setCounter(100);
-        // Trigger curtain reveal timeline
         triggerCurtainReveal();
       }
     };
 
     animFrame = requestAnimationFrame(updateCounter);
 
-    const triggerCurtainReveal = () => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          if (onComplete) onComplete();
-        },
-      });
-
-      // Scale down inner elements, then wipe curtain upwards
-      tl.to([counterRef.current, wordRef.current, progressLineRef.current], {
-        opacity: 0,
-        y: -20,
-        duration: 0.35,
-        ease: 'power2.in',
-      })
-        .to(
-          curtainRef.current,
-          {
-            scaleY: 0,
-            transformOrigin: 'top center',
-            duration: 0.75,
-            ease: 'power4.inOut',
-          },
-          '-=0.1'
-        );
-    };
+    // Safety fallback timer so it never gets stuck
+    const fallbackTimer = setTimeout(() => {
+      triggerCurtainReveal();
+    }, 2500);
 
     return () => {
       cancelAnimationFrame(animFrame);
+      clearTimeout(fallbackTimer);
     };
-  }, [onComplete]);
+  }, []);
 
   // Instant skip on click
   const handleSkip = () => {
