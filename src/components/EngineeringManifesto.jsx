@@ -87,128 +87,148 @@ export default function EngineeringManifesto() {
     cursorLight.position.set(0, 0, 4);
     scene.add(cursorLight);
 
-    // Master 3D Monogram Group
+    // Master 3D Code Architecture Group
     const masterGroup = new THREE.Group();
     scene.add(masterGroup);
 
-    // ── PROCEDURAL 3D "RA" MONOGRAM GEOMETRY ──
-    // Letter R Shape
-    const rShape = new THREE.Shape();
-    rShape.moveTo(-1.65, -1.1);
-    rShape.lineTo(-1.65, 1.1);
-    rShape.lineTo(-0.25, 1.1);
-    rShape.quadraticCurveTo(0.3, 1.1, 0.3, 0.55);
-    rShape.quadraticCurveTo(0.3, 0.0, -0.25, 0.0);
-    rShape.lineTo(0.3, -1.1);
-    rShape.lineTo(-0.22, -1.1);
-    rShape.lineTo(-0.65, -0.22);
-    rShape.lineTo(-1.25, -0.22);
-    rShape.lineTo(-1.25, -1.1);
-    rShape.closePath();
+    // ── PROCEDURAL 3D "< / >" CODE SYNTAX ARCHITECTURAL SCULPTURE ──
+    // 1. Left Chevron Shape: "<"
+    const leftShape = new THREE.Shape();
+    leftShape.moveTo(-2.55, 0.0);
+    leftShape.lineTo(-1.35, 1.42);
+    leftShape.lineTo(-0.85, 1.42);
+    leftShape.lineTo(-1.85, 0.0);
+    leftShape.lineTo(-0.85, -1.42);
+    leftShape.lineTo(-1.35, -1.42);
+    leftShape.closePath();
 
-    const rHole = new THREE.Path();
-    rHole.moveTo(-1.25, 0.38);
-    rHole.lineTo(-0.25, 0.38);
-    rHole.quadraticCurveTo(-0.02, 0.38, -0.02, 0.55);
-    rHole.quadraticCurveTo(-0.02, 0.72, -0.25, 0.72);
-    rHole.lineTo(-1.25, 0.72);
-    rHole.closePath();
-    rShape.holes.push(rHole);
+    // 2. Central Compiler Slash Shape: "/"
+    const slashShape = new THREE.Shape();
+    slashShape.moveTo(-0.16, 1.68);
+    slashShape.lineTo(0.24, 1.68);
+    slashShape.lineTo(0.16, -1.68);
+    slashShape.lineTo(-0.24, -1.68);
+    slashShape.closePath();
 
-    // Letter A Shape
-    const aShape = new THREE.Shape();
-    aShape.moveTo(0.25, -1.1);
-    aShape.lineTo(0.85, 1.1);
-    aShape.lineTo(1.15, 1.1);
-    aShape.lineTo(1.75, -1.1);
-    aShape.lineTo(1.28, -1.1);
-    aShape.lineTo(1.14, -0.42);
-    aShape.lineTo(0.86, -0.42);
-    aShape.lineTo(0.72, -1.1);
-    aShape.closePath();
+    // 3. Right Chevron Shape: ">"
+    const rightShape = new THREE.Shape();
+    rightShape.moveTo(2.55, 0.0);
+    rightShape.lineTo(1.35, -1.42);
+    rightShape.lineTo(0.85, -1.42);
+    rightShape.lineTo(1.85, 0.0);
+    rightShape.lineTo(0.85, 1.42);
+    rightShape.lineTo(1.35, 1.42);
+    rightShape.closePath();
 
-    const aHole = new THREE.Path();
-    aHole.moveTo(1.0, 0.65);
-    aHole.lineTo(0.85, -0.12);
-    aHole.lineTo(1.15, -0.12);
-    aHole.closePath();
-    aShape.holes.push(aHole);
-
-    // Extrusion Settings with Sharp Beveled Chamfers
+    // Extrusion Settings with Precision Architectural Chamfers
     const extrudeSettings = {
-      depth: 0.38,
+      depth: 0.42,
       bevelEnabled: true,
       bevelSegments: 5,
       steps: 1,
-      bevelSize: 0.045,
-      bevelThickness: 0.045,
+      bevelSize: 0.048,
+      bevelThickness: 0.048,
     };
 
-    const geoR = new THREE.ExtrudeGeometry(rShape, extrudeSettings);
-    const geoA = new THREE.ExtrudeGeometry(aShape, extrudeSettings);
+    const geoLeft = new THREE.ExtrudeGeometry(leftShape, extrudeSettings);
+    const geoSlash = new THREE.ExtrudeGeometry(slashShape, extrudeSettings);
+    const geoRight = new THREE.ExtrudeGeometry(rightShape, extrudeSettings);
 
-    geoR.center();
-    geoA.center();
+    geoLeft.center();
+    geoSlash.center();
+    geoRight.center();
 
-    // Spacing between R and A
-    geoR.translate(-0.8, 0, 0);
-    geoA.translate(0.8, 0, 0);
+    // Offset chevrons from center slash
+    geoLeft.translate(-1.62, 0, 0);
+    geoSlash.translate(0, 0, 0);
+    geoRight.translate(1.62, 0, 0);
 
     // Luxury Dual-Tone Materials:
     // Front face: Polished brushed platinum titanium
     const faceMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0xf8fafc),
+      color: new THREE.Color(0xf1f5f9),
       metalness: 0.98,
-      roughness: 0.1,
+      roughness: 0.10,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.06,
+      clearcoatRoughness: 0.05,
       reflectivity: 1.0,
     });
 
     // Sides & Bevel: Deep dark obsidian ruthenium
     const sideMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0x0f172a),
+      color: new THREE.Color(0x0a101d),
       metalness: 0.95,
-      roughness: 0.2,
+      roughness: 0.22,
       clearcoat: 0.8,
     });
 
     const materials = [faceMaterial, sideMaterial];
 
-    const meshR = new THREE.Mesh(geoR, materials);
-    const meshA = new THREE.Mesh(geoA, materials);
-    masterGroup.add(meshR);
-    masterGroup.add(meshA);
+    const meshLeft = new THREE.Mesh(geoLeft, materials);
+    const meshSlash = new THREE.Mesh(geoSlash, materials);
+    const meshRight = new THREE.Mesh(geoRight, materials);
+    masterGroup.add(meshLeft);
+    masterGroup.add(meshSlash);
+    masterGroup.add(meshRight);
 
     // Incandescent Sky Edge Highlights (Glint along beveled chamfers)
     const edgeMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.55,
     });
-    const edgesR = new THREE.LineSegments(new THREE.EdgesGeometry(geoR, 25), edgeMat);
-    const edgesA = new THREE.LineSegments(new THREE.EdgesGeometry(geoA, 25), edgeMat);
-    meshR.add(edgesR);
-    meshA.add(edgesA);
+    const edgesLeft = new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 22), edgeMat);
+    const edgesSlash = new THREE.LineSegments(new THREE.EdgesGeometry(geoSlash, 22), edgeMat);
+    const edgesRight = new THREE.LineSegments(new THREE.EdgesGeometry(geoRight, 22), edgeMat);
+    meshLeft.add(edgesLeft);
+    meshSlash.add(edgesSlash);
+    meshRight.add(edgesRight);
 
-    // Sleek Aerospace Orbit Coordinate Ring
-    const orbitGeo = new THREE.TorusGeometry(3.1, 0.016, 16, 96);
+    // Inner Pulsing Compiler Logic Crystal (The Soul of Software Architecture)
+    const coreGeo = new THREE.OctahedronGeometry(0.44, 0);
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.75,
+      metalness: 0.25,
+      roughness: 0.12,
+      transmission: 0.65,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    coreMesh.position.set(0, 0, 0);
+    masterGroup.add(coreMesh);
+
+    // Inner wireframe for the core crystal
+    const coreWireGeo = new THREE.WireframeGeometry(coreGeo);
+    const coreWireMat = new THREE.LineBasicMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.75 });
+    const coreWire = new THREE.LineSegments(coreWireGeo, coreWireMat);
+    coreMesh.add(coreWire);
+
+    // Glowing Point Light inside the crystal
+    const innerLight = new THREE.PointLight(0x38bdf8, 3.5, 9);
+    innerLight.position.set(0, 0, 0);
+    masterGroup.add(innerLight);
+
+    // Sleek Aerospace Data-Bus Orbit Coordinate Ring
+    const orbitGeo = new THREE.TorusGeometry(3.35, 0.018, 16, 120);
     const orbitMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.32,
     });
     const orbitRing = new THREE.Mesh(orbitGeo, orbitMat);
-    orbitRing.rotation.x = Math.PI / 2.8;
+    orbitRing.rotation.x = Math.PI / 2.7;
     masterGroup.add(orbitRing);
 
     // 4 Coordinate Laser Dots on Orbit
-    const dotGeo = new THREE.SphereGeometry(0.04, 12, 12);
+    const dotGeo = new THREE.SphereGeometry(0.045, 12, 12);
     const dotMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
     for (let i = 0; i < 4; i++) {
       const angle = (i * Math.PI) / 2;
       const dot = new THREE.Mesh(dotGeo, dotMat);
-      dot.position.set(Math.cos(angle) * 3.1, Math.sin(angle) * 3.1, 0);
+      dot.position.set(Math.cos(angle) * 3.35, Math.sin(angle) * 3.35, 0);
       orbitRing.add(dot);
     }
 
@@ -310,10 +330,16 @@ export default function EngineeringManifesto() {
         // Continuous rotation blended with scroll scrub and cursor drag
         const scrollRot = scrollProgress * Math.PI * 2.2;
         masterGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
-        masterGroup.rotation.x = 0.15 + mouse.currY * 0.35 + mouse.dragRotX;
+        masterGroup.rotation.x = 0.12 + mouse.currY * 0.35 + mouse.dragRotX;
 
-        // Counter-rotation of orbit ring
-        orbitRing.rotation.z += delta * 0.2;
+        // Counter-rotation of data-bus orbit ring
+        orbitRing.rotation.z += delta * 0.22;
+
+        // Dynamic pulsing and multifaceted rotation of inner compiler logic crystal
+        coreMesh.rotation.x += delta * 0.8;
+        coreMesh.rotation.y += delta * 1.2;
+        const pulse = 1.0 + Math.sin(clock.getElapsedTime() * 2.6) * 0.08;
+        coreMesh.scale.set(pulse, pulse, pulse);
       }
 
       renderer.render(scene, camera);
@@ -332,13 +358,18 @@ export default function EngineeringManifesto() {
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('resize', handleResize);
 
-      geoR.dispose();
-      geoA.dispose();
+      geoLeft.dispose();
+      geoSlash.dispose();
+      geoRight.dispose();
+      coreGeo.dispose();
+      coreWireGeo.dispose();
       orbitGeo.dispose();
       dotGeo.dispose();
       faceMaterial.dispose();
       sideMaterial.dispose();
       edgeMat.dispose();
+      coreMat.dispose();
+      coreWireMat.dispose();
       orbitMat.dispose();
       dotMat.dispose();
       renderer.dispose();
@@ -467,12 +498,12 @@ export default function EngineeringManifesto() {
       <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none">
         
         {/* ROW 1: SOFTWARE (FLUSH TO THE EXTREME LEFT) */}
-        <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.80]">
-          <div className="flex items-baseline font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-white drop-shadow-2xl whitespace-nowrap">
+        <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.74]">
+          <div className="flex items-baseline font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-white drop-shadow-2xl whitespace-nowrap">
             <span className="inline-block">SOFT</span>
             <span
               ref={wareRef}
-              className="inline-block text-zinc-300 ml-[0.02em] will-change-transform"
+              className="inline-block text-zinc-300 ml-[0.01em] will-change-transform"
             >
               WARE
             </span>
@@ -480,30 +511,30 @@ export default function EngineeringManifesto() {
         </div>
 
         {/* ROW 2: ENGINEER (INDENTED LEFT) */}
-        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.80] pl-[6vw] sm:pl-[10vw] md:pl-[14vw]">
+        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.74] pl-[6vw] sm:pl-[10vw] md:pl-[14vw]">
           <span
             ref={engineerRef}
-            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-zinc-100 drop-shadow-2xl whitespace-nowrap will-change-transform"
+            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-zinc-100 drop-shadow-2xl whitespace-nowrap will-change-transform"
           >
             ENGINEER
           </span>
         </div>
 
-        {/* ROW 3: IS (DYNAMIC DISPLAY ACCENT) */}
-        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.80] pl-[3vw] sm:pl-[6vw] md:pl-[8vw]">
+        {/* ROW 3: IS (UNIFIED MONUMENTAL FONT - NO SERIF MISMATCH - DENSE & PUNCHY) */}
+        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.74] pl-[3vw] sm:pl-[6vw] md:pl-[8vw]">
           <span
             ref={isRef}
-            className="inline-block font-display italic font-normal text-[15vw] sm:text-[14vw] md:text-[13.5vw] lg:text-[13vw] text-sky-400 drop-shadow-2xl tracking-tight whitespace-nowrap will-change-transform"
+            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-sky-400 drop-shadow-[0_0_40px_rgba(56,189,248,0.4)] whitespace-nowrap will-change-transform"
           >
             IS
           </span>
         </div>
 
         {/* ROW 4: THE FUTURE (FLUSH TO THE EXTREME RIGHT) */}
-        <div className="flex items-center justify-end w-full overflow-hidden leading-[0.80]">
+        <div className="flex items-center justify-end w-full overflow-hidden leading-[0.74]">
           <span
             ref={futureRef}
-            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-white drop-shadow-2xl text-right whitespace-nowrap will-change-transform"
+            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-white drop-shadow-2xl text-right whitespace-nowrap will-change-transform"
           >
             THE FUTURE
           </span>
