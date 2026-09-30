@@ -99,7 +99,7 @@ export default function Hero() {
         <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-zinc-700/80" />
           <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
-            COLLECTION &apos;26 &bull; INFORMATICS &apos;23 &bull; BANDUNG, ID
+            COLLECTION &apos;26 &bull; INFORMATICS ENGINEER &bull; BANDUNG, ID
           </span>
           <span className="w-8 h-px bg-zinc-700/80" />
         </div>
