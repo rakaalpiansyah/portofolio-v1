@@ -1,20 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Unified OLED 3D Singularity & Continuous Cosmic Stream
+ * Architectural OLED 3D Spatial Continuum (Anti-Slop Master Standard)
  * 
- * Single global WebGL engine powering the entire website with 100% seamless continuity.
+ * Replaces chaotic particle blizzards with a disciplined architectural perspective horizon,
+ * ultra-fine starlight motes, and continuous scroll-driven downward camera descent.
  * 
  * Aesthetic Pillars:
- * 1. antislop: No conflicting dual canvases, no abrupt cutoff seams, no muddy blue blobs.
- * 2. taste: True OLED pitch black (#000000). Pure starlight & titanium silver particles.
- * 3. impeccable: 60fps locked, single WebGL context, scroll-driven continuous vertical journey,
- *    and initial "converge & coalesce" entrance animation.
+ * 1. antislop: Zero particle clutter over typography. High-contrast typographic protection.
+ * 2. taste: Pure OLED pitch black (#000000). Architectural blueprint grid with cursor spotlight.
+ * 3. impeccable: 60fps locked, single WebGL context, continuous scroll velocity parallax.
  */
 export default function BackgroundSpatial() {
   const containerRef = useRef(null);
@@ -28,18 +24,18 @@ export default function BackgroundSpatial() {
 
     // 1. Scene & Camera Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.015);
+    scene.fog = new THREE.FogExp2(0x000000, 0.018);
 
     const camera = new THREE.PerspectiveCamera(
-      50,
+      52,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 5.2, 14.5);
-    camera.lookAt(0, -0.6, 0);
+    camera.position.set(0, 3.2, 16.0);
+    camera.lookAt(0, -1.2, -10.0);
 
-    // 2. Pure OLED Black Renderer
+    // 2. High-Performance Pure OLED Black Renderer
     const renderer = new THREE.WebGLRenderer({
       alpha: false,
       antialias: !isMobile,
@@ -47,200 +43,209 @@ export default function BackgroundSpatial() {
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
-    renderer.setClearColor(0x000000, 1.0); // True OLED pitch black
+    renderer.setClearColor(0x000000, 1.0); // True OLED Pitch Black
     container.appendChild(renderer.domElement);
 
-    // 3. Generate Starlight Circular Texture
-    const pCanvas = document.createElement('canvas');
-    pCanvas.width = 64;
-    pCanvas.height = 64;
-    const pCtx = pCanvas.getContext('2d');
-    const grad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(0.2, 'rgba(248, 250, 252, 0.9)');
-    grad.addColorStop(0.55, 'rgba(203, 213, 225, 0.35)');
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    pCtx.fillStyle = grad;
-    pCtx.fillRect(0, 0, 64, 64);
-    const particleTexture = new THREE.CanvasTexture(pCanvas);
-
-    // 4. LAYER 1: Singularity Accretion Vortex (Hero Anchor)
-    const vortexCount = isMobile ? 2200 : 3800;
-    const vortexGeo = new THREE.BufferGeometry();
-    const vPositions = new Float32Array(vortexCount * 3);
-    const vInitPositions = new Float32Array(vortexCount * 3);
-    const vColors = new Float32Array(vortexCount * 3);
-    const vRadii = new Float32Array(vortexCount);
-    const vAngles = new Float32Array(vortexCount);
-    const vSpeeds = new Float32Array(vortexCount);
-    const vFunnels = new Float32Array(vortexCount);
-
-    const minRadius = 1.95;
-    const maxRadius = isMobile ? 9.5 : 13.0;
-
-    for (let i = 0; i < vortexCount; i++) {
-      const u = Math.pow(Math.random(), 1.6);
-      const r = minRadius + u * (maxRadius - minRadius);
-      vRadii[i] = r;
-
-      const spiralArm = (i % 3) * ((Math.PI * 2) / 3);
-      const theta = Math.random() * Math.PI * 2 + spiralArm + r * 0.42;
-      vAngles[i] = theta;
-
-      vSpeeds[i] = (0.75 / Math.pow(r, 0.65)) * (0.85 + Math.random() * 0.3);
-      const funnelDepth = -2.8 / Math.pow(r, 0.6) + (Math.random() - 0.5) * 0.35;
-      vFunnels[i] = funnelDepth;
-
-      // Initial scattered position for the "masuk menyatu" convergence animation
-      const scatterDist = 25 + Math.random() * 40;
-      const scatterAngle = Math.random() * Math.PI * 2;
-      vInitPositions[i * 3] = Math.cos(scatterAngle) * scatterDist;
-      vInitPositions[i * 3 + 1] = (Math.random() - 0.5) * 22;
-      vInitPositions[i * 3 + 2] = (Math.random() - 0.5) * 35;
-
-      vPositions[i * 3] = vInitPositions[i * 3];
-      vPositions[i * 3 + 1] = vInitPositions[i * 3 + 1];
-      vPositions[i * 3 + 2] = vInitPositions[i * 3 + 2];
-
-      // Pure OLED monochrome starlight palette (pure white & titanium silver)
-      if (r < 3.8) {
-        vColors[i * 3] = 1.0;
-        vColors[i * 3 + 1] = 1.0;
-        vColors[i * 3 + 2] = 1.0;
-      } else {
-        const factor = (r - 3.8) / (maxRadius - 3.8);
-        const lum = 0.85 - factor * 0.45;
-        vColors[i * 3] = lum;
-        vColors[i * 3 + 1] = lum;
-        vColors[i * 3 + 2] = lum + 0.05; // very subtle cool tone
-      }
-    }
-
-    vortexGeo.setAttribute('position', new THREE.BufferAttribute(vPositions, 3));
-    vortexGeo.setAttribute('color', new THREE.BufferAttribute(vColors, 3));
-
-    const vortexMat = new THREE.PointsMaterial({
-      size: isMobile ? 0.36 : 0.46,
-      vertexColors: true,
-      map: particleTexture,
-      transparent: true,
-      opacity: 0.88,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-
-    const vortexMesh = new THREE.Points(vortexGeo, vortexMat);
-    scene.add(vortexMesh);
-
-    // Singularity Pure Dark Void Disc & Horizon Ring
-    const holeGeo = new THREE.CircleGeometry(minRadius * 0.94, 48);
-    const holeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    const holeDisc = new THREE.Mesh(holeGeo, holeMat);
-    holeDisc.rotation.x = -Math.PI / 2;
-    holeDisc.position.y = -1.2;
-    scene.add(holeDisc);
-
-    const ringGeo = new THREE.RingGeometry(minRadius * 0.94, minRadius * 1.05, 64);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.6,
-      blending: THREE.AdditiveBlending,
-    });
-    const horizonRing = new THREE.Mesh(ringGeo, ringMat);
-    horizonRing.rotation.x = -Math.PI / 2;
-    horizonRing.position.y = -1.18;
-    scene.add(horizonRing);
-
-    // 5. LAYER 2: Continuous Downward Cosmic Stream ("Searah Gitu")
-    // Spans the full scroll journey from Y: 5 down to Y: -65
-    const streamCount = isMobile ? 800 : 1600;
-    const streamGeo = new THREE.BufferGeometry();
-    const sPositions = new Float32Array(streamCount * 3);
-    const sColors = new Float32Array(streamCount * 3);
-    const sSpeeds = new Float32Array(streamCount);
-
-    for (let i = 0; i < streamCount; i++) {
-      sPositions[i * 3] = (Math.random() - 0.5) * 45;
-      // Spread vertically along the entire scroll journey
-      sPositions[i * 3 + 1] = 6 - Math.random() * 70;
-      sPositions[i * 3 + 2] = (Math.random() - 0.5) * 35 - 5;
-
-      sSpeeds[i] = 0.2 + Math.random() * 0.6;
-
-      const lum = 0.4 + Math.random() * 0.45;
-      sColors[i * 3] = lum;
-      sColors[i * 3 + 1] = lum;
-      sColors[i * 3 + 2] = lum + 0.04;
-    }
-
-    streamGeo.setAttribute('position', new THREE.BufferAttribute(sPositions, 3));
-    streamGeo.setAttribute('color', new THREE.BufferAttribute(sColors, 3));
-
-    const streamMat = new THREE.PointsMaterial({
-      size: isMobile ? 0.32 : 0.42,
-      vertexColors: true,
-      map: particleTexture,
-      transparent: true,
-      opacity: 0.55,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-
-    const streamMesh = new THREE.Points(streamGeo, streamMat);
-    scene.add(streamMesh);
-
-    // 6. Initial Entrance Animation (Converge & Coalesce into Vortex)
-    const animState = { introProgress: 0 };
-    gsap.to(animState, {
-      introProgress: 1,
-      duration: 2.3,
-      ease: 'power3.out',
-      delay: 0.15,
-    });
-
-    // 7. Mouse Gravitational Tracking
+    // 3. Mouse & Raycasting Setup
     const mouse = {
       x: 0,
       y: 0,
       targetX: 0,
       targetY: 0,
+      worldX: 0,
+      worldY: 0,
+      targetWorldX: 0,
+      targetWorldY: 0,
     };
 
-    const handlePointerMove = (e) => {
+    const raycaster = new THREE.Raycaster();
+    const mouseNdc = new THREE.Vector2(-999, -999);
+    const interactionPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0.15), 5);
+
+    // 4. ARCHITECTURAL 3D TOPOGRAPHIC HORIZON PLANE (Linear / Vercel Standard)
+    const planeSegments = isMobile ? 40 : 64;
+    const planeGeo = new THREE.PlaneGeometry(90, 90, planeSegments, planeSegments);
+
+    const terrainMaterial = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uColorBase: { value: new THREE.Color(0x18181b) }, // deep zinc
+        uColorGlow: { value: new THREE.Color(0x71717a) }, // refined titanium silver
+        uFogNear: { value: 10.0 },
+        uFogFar: { value: 45.0 },
+      },
+      vertexShader: `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        varying vec2 vUv;
+        varying float vElevation;
+        varying float vDistToMouse;
+        varying vec3 vWorldPos;
+
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+
+          // Gentle architectural wave
+          float wave1 = sin(pos.x * 0.08 + uTime * 0.3) * cos(pos.y * 0.08 + uTime * 0.25) * 1.2;
+          float wave2 = sin(pos.x * 0.14 - uTime * 0.2) * sin(pos.y * 0.1 + uTime * 0.18) * 0.4;
+          float elevation = wave1 + wave2;
+
+          // Smooth interactive dip near cursor
+          float distToMouse = length(pos.xy - uMouse);
+          float mouseInfluence = smoothstep(14.0, 0.0, distToMouse);
+          elevation += sin(distToMouse * 0.4 - uTime * 1.8) * mouseInfluence * 0.8;
+
+          pos.z += elevation;
+          vElevation = elevation;
+          vDistToMouse = distToMouse;
+
+          vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+          vWorldPos = worldPos.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPos;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColorBase;
+        uniform vec3 uColorGlow;
+        uniform float uFogNear;
+        uniform float uFogFar;
+        varying vec2 vUv;
+        varying float vElevation;
+        varying float vDistToMouse;
+        varying vec3 vWorldPos;
+
+        void main() {
+          // Antialiased architectural grid lines
+          vec2 gridUv = vUv * vec2(42.0, 42.0);
+          vec2 dgrid = fwidth(gridUv);
+          vec2 gridDist = abs(fract(gridUv - 0.5) - 0.5);
+          vec2 aagrid = smoothstep(vec2(0.0), dgrid * 1.4, gridDist);
+          float lineIntensity = 1.0 - min(aagrid.x, aagrid.y);
+
+          // Cursor spotlight falloff
+          float lightSpread = smoothstep(16.0, 0.0, vDistToMouse);
+
+          // Deep subtle silver-zinc blending
+          vec3 finalColor = mix(uColorBase, uColorGlow, lightSpread * 0.7 + max(0.0, vElevation * 0.1));
+
+          // Depth fog
+          float dist = length(vWorldPos - cameraPosition);
+          float fogFactor = clamp((dist - uFogNear) / (uFogFar - uFogNear), 0.0, 1.0);
+
+          // Edge boundary fadeout
+          float edgeFade = smoothstep(0.0, 0.15, vUv.x) * smoothstep(1.0, 0.85, vUv.x) *
+                           smoothstep(0.0, 0.15, vUv.y) * smoothstep(1.0, 0.85, vUv.y);
+
+          float alpha = lineIntensity * (0.12 + lightSpread * 0.45) * (1.0 - fogFactor) * edgeFade;
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+    });
+
+    const terrainMesh = new THREE.Mesh(planeGeo, terrainMaterial);
+    terrainMesh.rotation.x = -Math.PI / 2.3;
+    terrainMesh.position.set(0, -6.5, -16);
+    scene.add(terrainMesh);
+
+    // 5. ULTRA-FINE STARLIGHT PARTICLES (No clutter, pure atmospheric depth)
+    const starCount = isMobile ? 180 : 360;
+    const starPositions = new Float32Array(starCount * 3);
+    const starColors = new Float32Array(starCount * 3);
+    const starSpeeds = new Float32Array(starCount);
+
+    // Generate crisp circular particle texture
+    const pCanvas = document.createElement('canvas');
+    pCanvas.width = 32;
+    pCanvas.height = 32;
+    const pCtx = pCanvas.getContext('2d');
+    const grad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0.3, 'rgba(241, 245, 249, 0.8)');
+    grad.addColorStop(0.7, 'rgba(148, 163, 184, 0.15)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    pCtx.fillStyle = grad;
+    pCtx.fillRect(0, 0, 32, 32);
+    const starTexture = new THREE.CanvasTexture(pCanvas);
+
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3] = (Math.random() - 0.5) * 55;
+      // Distributed vertically along the entire page descent
+      starPositions[i * 3 + 1] = 8 - Math.random() * 75;
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 45 - 8;
+
+      starSpeeds[i] = 0.15 + Math.random() * 0.4;
+
+      const lum = 0.5 + Math.random() * 0.45;
+      starColors[i * 3] = lum;
+      starColors[i * 3 + 1] = lum;
+      starColors[i * 3 + 2] = lum + 0.05;
+    }
+
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+    const starMat = new THREE.PointsMaterial({
+      size: isMobile ? 0.35 : 0.48,
+      vertexColors: true,
+      map: starTexture,
+      transparent: true,
+      opacity: 0.5,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const starField = new THREE.Points(starGeo, starMat);
+    scene.add(starField);
+
+    // 6. Interaction Event Listeners
+    const onPointerMove = (e) => {
       mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('pointermove', handlePointerMove, { passive: true });
 
-    // 8. Continuous Scroll Tracking ("Searah Gitu")
+      mouseNdc.x = mouse.targetX;
+      mouseNdc.y = mouse.targetY;
+      raycaster.setFromCamera(mouseNdc, camera);
+
+      const hit = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(interactionPlane, hit)) {
+        const local = terrainMesh.worldToLocal(hit.clone());
+        mouse.targetWorldX = local.x;
+        mouse.targetWorldY = local.y;
+      }
+    };
+
     let scrollProgress = 0;
-    const handleScroll = () => {
+    const onScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight || 1;
       scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // 9. Resize Handling
-    const handleResize = () => {
-      if (!container || !renderer) return;
+    const onResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     };
-    window.addEventListener('resize', handleResize);
 
-    // 10. Animation Render Loop
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+
+    // 7. Render Loop
     let animId;
     const clock = new THREE.Clock();
     let isTabVisible = true;
 
-    const handleVisibility = () => {
+    const onVisibilityChange = () => {
       isTabVisible = !document.hidden;
     };
-    document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -249,95 +254,57 @@ export default function BackgroundSpatial() {
       const elapsed = clock.getElapsedTime();
       const time = prefersReducedMotion ? 0 : elapsed;
 
-      // Mouse lerping with gentle inertia
-      mouse.x += (mouse.targetX - mouse.x) * 0.045;
-      mouse.y += (mouse.targetY - mouse.y) * 0.045;
+      // Mouse lerping
+      mouse.x += (mouse.targetX - mouse.x) * 0.04;
+      mouse.y += (mouse.targetY - mouse.y) * 0.04;
+      mouse.worldX += (mouse.targetWorldX - mouse.worldX) * 0.06;
+      mouse.worldY += (mouse.targetWorldY - mouse.worldY) * 0.06;
 
-      // Seamless vertical camera journey moving downward in the same direction ("searah gitu")
-      const targetCamY = 5.2 - scrollProgress * 36.0;
-      const targetCamZ = 14.5 - Math.sin(scrollProgress * Math.PI) * 4.5;
+      // Downward vertical camera travel synchronized with page scroll ("searah gitu")
+      const targetCamY = 3.2 - scrollProgress * 30.0;
+      const targetCamZ = 16.0 - Math.sin(scrollProgress * Math.PI) * 4.0;
 
-      camera.position.x += (mouse.x * 2.5 - camera.position.x) * 0.05;
-      camera.position.y += (targetCamY + mouse.y * 1.5 - camera.position.y) * 0.05;
+      camera.position.x += (mouse.x * 2.2 - camera.position.x) * 0.05;
+      camera.position.y += (targetCamY + mouse.y * 1.2 - camera.position.y) * 0.05;
       camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+      camera.lookAt(mouse.x * 0.4, camera.position.y - 2.5 + mouse.y * 0.2, -10.0);
 
-      // Look slightly ahead of camera position along the downward journey
-      camera.lookAt(
-        mouse.x * 0.6,
-        camera.position.y - 4.5 + mouse.y * 0.3,
-        -5
-      );
+      // Update terrain shader uniforms
+      terrainMaterial.uniforms.uTime.value = time;
+      terrainMaterial.uniforms.uMouse.value.set(mouse.worldX, mouse.worldY);
 
-      // Rotations of singularity core
-      vortexMesh.rotation.x = Math.sin(time * 0.15) * 0.06 + mouse.y * 0.1;
-      vortexMesh.rotation.z = Math.cos(time * 0.12) * 0.05 - mouse.x * 0.1;
-      holeDisc.rotation.z = -time * 0.08;
-      horizonRing.rotation.z = time * 0.2;
-
-      // Update Layer 1 Vortex Particles
-      const vArr = vortexGeo.attributes.position.array;
-      const progress = animState.introProgress;
-
-      for (let i = 0; i < vortexCount; i++) {
-        const curAngle = vAngles[i] + time * vSpeeds[i];
-        const r = vRadii[i];
-        const targetX = Math.cos(curAngle) * r;
-        const targetY = vFunnels[i] + Math.sin(curAngle * 2.5 + time) * 0.08;
-        const targetZ = Math.sin(curAngle) * r;
-
-        if (progress < 1) {
-          const ix = vInitPositions[i * 3];
-          const iy = vInitPositions[i * 3 + 1];
-          const iz = vInitPositions[i * 3 + 2];
-          vArr[i * 3] = ix + (targetX - ix) * progress;
-          vArr[i * 3 + 1] = iy + (targetY - iy) * progress;
-          vArr[i * 3 + 2] = iz + (targetZ - iz) * progress;
-        } else {
-          vArr[i * 3] = targetX;
-          vArr[i * 3 + 1] = targetY;
-          vArr[i * 3 + 2] = targetZ;
+      // Starfield gentle downward drift
+      const sArr = starGeo.attributes.position.array;
+      for (let i = 0; i < starCount; i++) {
+        sArr[i * 3 + 1] -= starSpeeds[i] * 0.012;
+        if (sArr[i * 3 + 1] < -70) {
+          sArr[i * 3 + 1] = 8;
         }
       }
-      vortexGeo.attributes.position.needsUpdate = true;
-
-      // Update Layer 2 Cosmic Stream Particles (gentle downward flow in sync with scroll)
-      const sArr = streamGeo.attributes.position.array;
-      for (let i = 0; i < streamCount; i++) {
-        // Slow natural downward drift
-        sArr[i * 3 + 1] -= sSpeeds[i] * 0.015;
-        // Loop back up if it falls below the bottom of the world
-        if (sArr[i * 3 + 1] < -65) {
-          sArr[i * 3 + 1] = 6;
-        }
-      }
-      streamGeo.attributes.position.needsUpdate = true;
+      starGeo.attributes.position.needsUpdate = true;
 
       renderer.render(scene, camera);
     };
 
     animate();
 
-    // 11. Cleanup
+    // 8. Cleanup
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
 
       if (container && renderer.domElement) {
         container.removeChild(renderer.domElement);
       }
 
-      vortexGeo.dispose();
-      vortexMat.dispose();
-      streamGeo.dispose();
-      streamMat.dispose();
-      particleTexture.dispose();
-      holeGeo.dispose();
-      holeMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
+      planeGeo.dispose();
+      terrainMaterial.dispose();
+      starGeo.dispose();
+      starMat.dispose();
+      starTexture.dispose();
       renderer.dispose();
     };
   }, []);

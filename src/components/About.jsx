@@ -16,43 +16,60 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Left column: fade + slide up as one unit
-      gsap.from(leftColRef.current, {
-        y: 40,
-        opacity: 0,
-        duration: 1.0,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
-        },
-      });
+      // Left column: bidirectional fade + slide up on scroll in/out
+      gsap.fromTo(
+        leftColRef.current,
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 84%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
+        }
+      );
 
-      // Photo clip-path wipe reveal
-      gsap.set(photoRef.current, { clipPath: 'inset(100% 0% 0% 0%)' });
-      gsap.to(photoRef.current, {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 78%',
-        },
-        delay: 0.15,
-      });
+      // Photo clip-path wipe reveal (in and out)
+      gsap.fromTo(
+        photoRef.current,
+        { clipPath: 'inset(100% 0% 0% 0%)', opacity: 0.6 },
+        {
+          clipPath: 'inset(0% 0% 0% 0%)',
+          opacity: 1,
+          duration: 1.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 84%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
+        }
+      );
 
-      // Right column children stagger
-      gsap.from(rightColRef.current?.children || [], {
-        y: 28,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.8,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: rightColRef.current,
-          start: 'top 80%',
-        },
-      });
+      // Right column children stagger (in and out)
+      gsap.fromTo(
+        rightColRef.current?.children || [],
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.08,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: rightColRef.current,
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
+        }
+      );
 
     }, sectionRef);
 

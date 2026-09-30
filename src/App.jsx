@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import CinematicIntro from './components/CinematicIntro';
 import BackgroundSpatial from './components/BackgroundSpatial';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
@@ -18,6 +19,7 @@ import { LanguageProvider } from './context/LanguageContext';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
+  const [introComplete, setIntroComplete] = useState(false);
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -65,6 +67,7 @@ export default function App() {
   return (
     <LanguageProvider>
       <div className="relative min-h-screen bg-black text-zinc-100 overflow-x-hidden selection:bg-sky-500/25 selection:text-sky-200">
+        {!introComplete && <CinematicIntro onComplete={() => setIntroComplete(true)} />}
         <CustomCursor />
         <BackgroundSpatial />
         <Navbar />

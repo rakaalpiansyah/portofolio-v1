@@ -23,17 +23,23 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(contentRef.current?.children || [], {
-        y: 30,
-        opacity: 0,
-        stagger: 0.12,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-      });
+      gsap.fromTo(
+        contentRef.current?.children || [],
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.12,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 82%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();

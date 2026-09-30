@@ -271,30 +271,61 @@ export default function Skills() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (headerRef.current) {
-        gsap.from(headerRef.current, {
-          y: 35,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          },
-        });
+        gsap.fromTo(
+          headerRef.current,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 85%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
+      }
+
+      if (detailsPanelRef.current) {
+        gsap.fromTo(
+          detailsPanelRef.current,
+          { x: -40, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
       }
 
       if (keyboardDeckRef.current) {
-        gsap.from(keyboardDeckRef.current, {
-          y: 50,
-          opacity: 0,
-          scale: 0.94,
-          duration: 1.0,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 75%',
-          },
-        });
+        gsap.fromTo(
+          keyboardDeckRef.current,
+          { y: 50, opacity: 0, scale: 0.92 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 78%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
       }
     }, sectionRef);
 

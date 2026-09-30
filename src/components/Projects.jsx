@@ -214,16 +214,42 @@ export default function Projects() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (headerRef.current) {
-        gsap.from(headerRef.current, {
-          y: 35,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 80%',
-          },
-        });
+        gsap.fromTo(
+          headerRef.current,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.85,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 85%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
+      }
+
+      if (showcaseRef.current) {
+        gsap.fromTo(
+          showcaseRef.current,
+          { y: 50, opacity: 0, scale: 0.94 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: showcaseRef.current,
+              start: 'top 82%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
       }
     }, containerRef);
 

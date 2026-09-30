@@ -104,19 +104,25 @@ export default function Experience() {
         );
       }
 
-      // Stagger reveal of cards
+      // Stagger reveal of cards (bidirectional in and out)
       if (timelineRef.current) {
-        gsap.from(timelineRef.current.children, {
-          x: -24,
-          opacity: 0,
-          stagger: 0.12,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: 'top 82%',
-          },
-        });
+        gsap.fromTo(
+          timelineRef.current.children,
+          { x: -32, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.75,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: timelineRef.current,
+              start: 'top 82%',
+              end: 'bottom 15%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
       }
     }, sectionRef);
 

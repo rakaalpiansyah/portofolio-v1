@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const heroRef = useRef(null);
@@ -63,6 +66,20 @@ export default function Hero() {
           { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 },
           '-=0.4'
         );
+
+      // Smooth scroll out animation for hero content
+      gsap.to('.hero-content-wrap', {
+        y: -110,
+        opacity: 0,
+        scale: 0.94,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom 25%',
+          scrub: 0.6,
+        },
+      });
     }, heroRef);
 
     return () => ctx.revert();
@@ -76,9 +93,8 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden pt-28 pb-16"
     >
-
-      {/* Centered Hero Content (Framed by the swirling 3D singularity) */}
-      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+      {/* Centered Hero Content */}
+      <div className="hero-content-wrap relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         {/* Eyebrow */}
         <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-zinc-700/80" />
