@@ -3,44 +3,43 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLanguage } from '../context/LanguageContext';
-import { translations } from '../locales/translations';
-import { Move3d, Sparkles, Terminal } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * EngineeringManifesto
+ * EngineeringManifesto (V2 - 1 View Full & Edge-to-Edge)
  * 
  * Inspired by Pablo Miguez's iconic "MOTION IS THE FUTURE" editorial statement,
- * reimagined for Raka Alpiansyah as "SOFTWARE ENGINEER IS THE FUTURE".
+ * tailored for Raka Alpiansyah as "SOFTWARE ENGINEER IS THE FUTURE".
  * 
- * Pillars (Strict anti-slop, craft, taste):
- * 1. Kinetic Typography: Horizontal scrubbed opposing sliding rows using GSAP ScrollTrigger.
- * 2. Interactive Three.js WebGL Core: Interlocking titanium PBR architectural gyro core
- *    reacting simultaneously to real-time scroll scrub and mouse drag/tilt physics.
- * 3. Pure OLED pitch black (#000000) with high-contrast monochrome & sky specular glints.
- * 4. Full bilingual support (ID/EN) with screen-reader accessibility.
+ * Standards applied (4 skills: UI/UX Pro Max, Impeccable, Taste, Anti-Slop UI):
+ * 1. 1 View Full (100dvh Pinned Section): Locks deterministically into full view,
+ *    scrubbing the entrance, presentation lock, and exit motion seamlessly on scroll.
+ * 2. Edge-to-Edge (Mentok Kanan-Kiri): Fluid brutalist typography stretching from
+ *    extreme left to extreme right with zero restrictive container boxes.
+ * 3. Museum-Grade 3D Gyroscope (Three.js): Titanium & ruthenium PBR gimbal rings
+ *    with an inner glowing wireframe node lattice (symbolizing software architecture & AI pipelines),
+ *    reacting to scroll scrub and mouse drag/tilt.
+ * 4. Zero Slop: No ugly tooltips, no noisy floating badges; pure typography + 3D sculpture.
  */
 export default function EngineeringManifesto() {
   const { language } = useLanguage();
-  const t = translations[language] || translations.id;
   const isId = language === 'id';
 
   const sectionRef = useRef(null);
+  const containerRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Typography refs for GSAP scrub
-  const softRef = useRef(null);
+  // Typography refs
   const wareRef = useRef(null);
   const engineerRef = useRef(null);
   const isRef = useRef(null);
   const futureRef = useRef(null);
-  const badgeRef = useRef(null);
 
   const [isDragging, setIsDragging] = useState(false);
 
   // ═══════════════════════════════════════════════════════════════════
-  // 1. THREE.JS 3D ARCHITECTURAL KINETIC CORE
+  // 1. THREE.JS 3D ARCHITECTURAL GIMBAL SCENE
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const section = sectionRef.current;
@@ -52,14 +51,14 @@ export default function EngineeringManifesto() {
     // Scene & Camera
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      40,
+      42,
       section.clientWidth / section.clientHeight,
       0.1,
       100
     );
-    camera.position.set(0, 0, 8.8);
+    camera.position.set(0, 0, 8.2);
 
-    // Renderer
+    // High Performance WebGL Renderer
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
@@ -69,94 +68,109 @@ export default function EngineeringManifesto() {
     renderer.setSize(section.clientWidth, section.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.25;
 
-    // Lighting setup
-    const ambientLight = new THREE.AmbientLight(0x0f172a, 1.4);
+    // Studio Lighting Rig (Clean & Architectural)
+    const ambientLight = new THREE.AmbientLight(0x0a0f1d, 1.6);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
-    keyLight.position.set(5, 7, 6);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 4.0);
+    keyLight.position.set(6, 8, 7);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, 2.4);
-    rimLight.position.set(-6, -5, -4);
+    const fillLight = new THREE.DirectionalLight(0x64748b, 1.8);
+    fillLight.position.set(-6, -5, 4);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.0);
+    rimLight.position.set(0, -6, -4);
     scene.add(rimLight);
 
-    const cursorLight = new THREE.PointLight(0xffffff, 3.5, 14);
+    // Dynamic mouse spotlight
+    const cursorLight = new THREE.PointLight(0xffffff, 3.8, 16);
     cursorLight.position.set(0, 0, 4);
     scene.add(cursorLight);
 
     // Master 3D Group
-    const coreGroup = new THREE.Group();
-    scene.add(coreGroup);
+    const gyroGroup = new THREE.Group();
+    scene.add(gyroGroup);
 
-    // Materials: Titanium & Obsidian PBR
+    // Physically Based Metallic Materials
     const titaniumMat = new THREE.MeshPhysicalMaterial({
-      color: 0xf1f5f9,
-      metalness: 0.96,
-      roughness: 0.12,
+      color: new THREE.Color(0xf8fafc),
+      metalness: 0.98,
+      roughness: 0.1,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.08,
+      clearcoatRoughness: 0.06,
       reflectivity: 1.0,
     });
 
-    const darkTitaniumMat = new THREE.MeshPhysicalMaterial({
-      color: 0x1e293b,
-      metalness: 0.98,
+    const obsidianMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0x0f172a),
+      metalness: 0.96,
       roughness: 0.16,
       clearcoat: 0.9,
       clearcoatRoughness: 0.1,
     });
 
-    // Mesh 1: Titanium Primary Stadium Ring
-    const ringGeo = new THREE.TorusGeometry(1.4, 0.28, 32, 64);
-    const ring1 = new THREE.Mesh(ringGeo, titaniumMat);
-    ring1.scale.set(1.35, 0.9, 1);
-    ring1.rotation.set(0.4, 0.3, 0.5);
-    coreGroup.add(ring1);
+    // Mesh 1: Outer Aerospace Titanium Gimbal Ring
+    const outerRingGeo = new THREE.TorusGeometry(2.35, 0.1, 32, 80);
+    const outerRing = new THREE.Mesh(outerRingGeo, titaniumMat);
+    outerRing.rotation.set(0.4, 0.25, 0.5);
+    gyroGroup.add(outerRing);
 
-    // Mesh 2: Interlocking Dark Titanium Counter-Ring
-    const ring2 = new THREE.Mesh(ringGeo, darkTitaniumMat);
-    ring2.scale.set(1.35, 0.9, 1);
-    ring2.rotation.set(Math.PI / 2 + 0.3, 0.2, -0.4);
-    coreGroup.add(ring2);
+    // Mesh 2: Middle Ruthenium Counter-Gimbal Ring
+    const midRingGeo = new THREE.TorusGeometry(1.85, 0.09, 32, 72);
+    const midRing = new THREE.Mesh(midRingGeo, obsidianMat);
+    midRing.rotation.set(Math.PI / 2 + 0.2, 0.3, -0.4);
+    gyroGroup.add(midRing);
 
-    // Mesh 3: Inner Architectural Octahedron / Node Lattice (System Logic)
-    const innerGeo = new THREE.OctahedronGeometry(0.85, 1);
-    const wireframeGeo = new THREE.WireframeGeometry(innerGeo);
+    // Mesh 3: Inner Architectural Octahedron Node Lattice (System Logic)
+    const latticeGeo = new THREE.IcosahedronGeometry(1.15, 1);
+    const wireframeGeo = new THREE.WireframeGeometry(latticeGeo);
     const wireframeMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.55,
     });
-    const innerWireframe = new THREE.LineSegments(wireframeGeo, wireframeMat);
-    coreGroup.add(innerWireframe);
+    const innerLattice = new THREE.LineSegments(wireframeGeo, wireframeMat);
+    gyroGroup.add(innerLattice);
 
-    // Mesh 4: Outer Architectural Gyro Coordinate Ring
-    const gyroGeo = new THREE.TorusGeometry(2.6, 0.02, 16, 90);
-    const gyroMat = new THREE.MeshStandardMaterial({
-      color: 0x64748b,
-      metalness: 0.8,
-      roughness: 0.3,
+    // Center Quantum Specular Core
+    const coreGeo = new THREE.SphereGeometry(0.38, 24, 24);
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: 0x0284c7,
+      metalness: 0.9,
+      roughness: 0.15,
+      clearcoat: 1.0,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.25,
+    });
+    const coreSphere = new THREE.Mesh(coreGeo, coreMat);
+    gyroGroup.add(coreSphere);
+
+    // Outer Orbit Coordinate Ring
+    const orbitGeo = new THREE.TorusGeometry(3.1, 0.015, 16, 96);
+    const orbitMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.22,
     });
-    const gyroRing = new THREE.Mesh(gyroGeo, gyroMat);
-    gyroRing.rotation.x = Math.PI / 3;
-    coreGroup.add(gyroRing);
+    const orbitRing = new THREE.Mesh(orbitGeo, orbitMat);
+    orbitRing.rotation.x = Math.PI / 3.2;
+    gyroGroup.add(orbitRing);
 
-    // Cardinal coordinate dots
-    const dotGeo = new THREE.SphereGeometry(0.045, 12, 12);
+    // Coordinate nodes along orbit
+    const dotGeo = new THREE.SphereGeometry(0.04, 12, 12);
     const dotMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-    for (let i = 0; i < 4; i++) {
-      const angle = (i * Math.PI) / 2;
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3;
       const dot = new THREE.Mesh(dotGeo, dotMat);
-      dot.position.set(Math.cos(angle) * 2.6, Math.sin(angle) * 2.6, 0);
-      gyroRing.add(dot);
+      dot.position.set(Math.cos(angle) * 3.1, Math.sin(angle) * 3.1, 0);
+      orbitRing.add(dot);
     }
 
-    // Interaction variables
+    // Interactive mouse & scroll state
     const mouse = {
       targetX: 0,
       targetY: 0,
@@ -173,17 +187,6 @@ export default function EngineeringManifesto() {
 
     let scrollProgress = 0;
 
-    // ScrollTrigger to scrub 3D rotation with scroll
-    const scrollTrigger3D = ScrollTrigger.create({
-      trigger: section,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 1.2,
-      onUpdate: (self) => {
-        scrollProgress = self.progress;
-      },
-    });
-
     const handlePointerMove = (e) => {
       const rect = section.getBoundingClientRect();
       const clientX = e.clientX - rect.left;
@@ -192,15 +195,15 @@ export default function EngineeringManifesto() {
       mouse.targetX = (clientX / rect.width) * 2 - 1;
       mouse.targetY = -(clientY / rect.height) * 2 + 1;
 
-      // Move specular cursor light
-      cursorLight.position.x = mouse.targetX * 4.5;
-      cursorLight.position.y = mouse.targetY * 3.5;
+      // Update cursor light
+      cursorLight.position.x = mouse.targetX * 5;
+      cursorLight.position.y = mouse.targetY * 4;
 
       if (mouse.isDown) {
         const deltaX = e.clientX - mouse.prevX;
         const deltaY = e.clientY - mouse.prevY;
-        mouse.dragVelY = deltaX * 0.007;
-        mouse.dragVelX = deltaY * 0.007;
+        mouse.dragVelY = deltaX * 0.006;
+        mouse.dragVelX = deltaY * 0.006;
         mouse.dragRotY += mouse.dragVelY;
         mouse.dragRotX += mouse.dragVelX;
         mouse.prevX = e.clientX;
@@ -223,17 +226,16 @@ export default function EngineeringManifesto() {
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('pointerup', handlePointerUp);
 
-    // Responsive Resize
+    // Responsive camera zoom
     const handleResize = () => {
       if (!section || !renderer || !camera) return;
       const width = section.clientWidth;
       const height = section.clientHeight;
       camera.aspect = width / height;
-      // Adjust camera distance for mobile so 3D model fits
       if (width < 768) {
-        camera.position.z = 10.5;
+        camera.position.z = 10.2; // Move further back on mobile
       } else {
-        camera.position.z = 8.8;
+        camera.position.z = 8.2;
       }
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
@@ -243,7 +245,7 @@ export default function EngineeringManifesto() {
 
     // Render loop
     let animId;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -252,27 +254,27 @@ export default function EngineeringManifesto() {
 
       // Inertia drag damping
       if (!mouse.isDown) {
-        mouse.dragVelX *= 0.92;
-        mouse.dragVelY *= 0.92;
+        mouse.dragVelX *= 0.93;
+        mouse.dragVelY *= 0.93;
         mouse.dragRotX += mouse.dragVelX;
         mouse.dragRotY += mouse.dragVelY;
       }
 
       // Smooth mouse follow
-      mouse.currX += (mouse.targetX - mouse.currX) * 0.05;
-      mouse.currY += (mouse.targetY - mouse.currY) * 0.05;
+      mouse.currX += (mouse.targetX - mouse.currX) * 0.06;
+      mouse.currY += (mouse.targetY - mouse.currY) * 0.06;
 
       if (!prefersReducedMotion) {
-        // Continuous ambient rotation + scroll scrub + mouse drag
-        const scrollRot = scrollProgress * Math.PI * 2.2;
-        coreGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
-        coreGroup.rotation.x = 0.2 + mouse.currY * 0.35 + mouse.dragRotX + Math.sin(scrollProgress * Math.PI) * 0.3;
+        // Continuous rotation blended with scroll scrub and cursor drag
+        const scrollRot = scrollProgress * Math.PI * 2.4;
+        gyroGroup.rotation.y = scrollRot + mouse.currX * 0.4 + mouse.dragRotY;
+        gyroGroup.rotation.x = 0.2 + mouse.currY * 0.3 + mouse.dragRotX;
 
-        // Inner wireframe counter-rotates
-        innerWireframe.rotation.y -= delta * 0.4;
-        innerWireframe.rotation.z += delta * 0.3;
-
-        gyroRing.rotation.z += delta * 0.2;
+        // Counter-rotations
+        innerLattice.rotation.y -= delta * 0.5;
+        innerLattice.rotation.z += delta * 0.35;
+        midRing.rotation.z += delta * 0.2;
+        orbitRing.rotation.z += delta * 0.15;
       }
 
       renderer.render(scene, camera);
@@ -280,29 +282,36 @@ export default function EngineeringManifesto() {
 
     animate();
 
+    // Public method for GSAP ScrollTrigger to update 3D progress
+    section._update3DProgress = (p) => {
+      scrollProgress = p;
+    };
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('resize', handleResize);
-      scrollTrigger3D.kill();
 
-      ringGeo.dispose();
-      innerGeo.dispose();
+      outerRingGeo.dispose();
+      midRingGeo.dispose();
+      latticeGeo.dispose();
       wireframeGeo.dispose();
-      gyroGeo.dispose();
+      coreGeo.dispose();
+      orbitGeo.dispose();
       dotGeo.dispose();
       titaniumMat.dispose();
-      darkTitaniumMat.dispose();
+      obsidianMat.dispose();
       wireframeMat.dispose();
-      gyroMat.dispose();
+      coreMat.dispose();
+      orbitMat.dispose();
       dotMat.dispose();
       renderer.dispose();
     };
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════
-  // 2. GSAP SCROLLTRIGGER KINETIC TYPOGRAPHY SCRUB (PABLO MIGUEZ STYLE)
+  // 2. GSAP SCROLLTRIGGER PINNED 1-VIEW FULL ANIMATION
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const section = sectionRef.current;
@@ -312,69 +321,88 @@ export default function EngineeringManifesto() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // Elements
       const ware = wareRef.current;
       const engineer = engineerRef.current;
       const isWord = isRef.current;
       const future = futureRef.current;
-      const badge = badgeRef.current;
 
       if (!ware || !engineer || !isWord || !future) return;
 
-      // ── A. ENTRANCE TIMELINE (Scrub: top enters viewport -> center) ──
-      const tlEnter = gsap.timeline({
+      // Initial offsets: rows enter from opposing screen edges
+      gsap.set(ware, { x: '35vw' });
+      gsap.set(engineer, { x: '45vw' });
+      gsap.set(isWord, { x: '-35vw' });
+      gsap.set(future, { x: '40vw' });
+
+      // PINNED TIMELINE:
+      // The section locks into 1 full screen view as it reaches top of screen
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: 'top 95%',
-          end: 'center 45%',
-          scrub: 1.8,
+          start: 'top top',
+          end: '+=125%',
+          pin: true,
+          scrub: 1.2,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            if (section._update3DProgress) {
+              section._update3DProgress(self.progress);
+            }
+          },
         },
       });
 
-      // Set initial opposing offsets matching Pablo Miguez's logic:
-      // Row 1 'WARE': slides in from right (+45%)
-      // Row 2 'ENGINEER': slides in from right (+60%)
-      // Row 3 'IS': slides in from left (-50%)
-      // Row 4 'THE FUTURE': slides in from right (+55%)
-      gsap.set([ware, engineer, isWord, future], { autoAlpha: 1 });
-      gsap.set(ware, { xPercent: 45 });
-      gsap.set(engineer, { xPercent: 60 });
-      gsap.set(isWord, { xPercent: -50 });
-      gsap.set(future, { xPercent: 55 });
+      // ── PHASE 1: Slide In & Lock (0% -> 45%) ──
+      tl.to(
+        ware,
+        { x: '0vw', ease: 'power2.out' },
+        0
+      )
+        .to(
+          engineer,
+          { x: '0vw', ease: 'power2.out' },
+          0.02
+        )
+        .to(
+          isWord,
+          { x: '0vw', ease: 'power2.out' },
+          0.04
+        )
+        .to(
+          future,
+          { x: '0vw', ease: 'power2.out' },
+          0.06
+        );
 
-      if (badge) {
-        gsap.set(badge, { autoAlpha: 0, scale: 0.85, y: 20 });
-      }
+      // ── PHASE 2: Lock & Admire (45% -> 70%) ──
+      // Subtle scale pulse and 3D focus
+      tl.to(
+        [ware, engineer, isWord, future],
+        { opacity: 1, ease: 'none' },
+        0.45
+      );
 
-      tlEnter
-        .to(ware, { xPercent: 0, ease: 'none' }, 0)
-        .to(engineer, { xPercent: 0, ease: 'none' }, 0.02)
-        .to(isWord, { xPercent: 0, ease: 'none' }, 0.04)
-        .to(future, { xPercent: 0, ease: 'none' }, 0.06);
-
-      if (badge) {
-        tlEnter.to(badge, { autoAlpha: 1, scale: 1, y: 0, ease: 'power2.out' }, 0.08);
-      }
-
-      // ── B. EXIT TIMELINE (Scrub: center -> exits viewport top) ──
-      const tlExit = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'center 45%',
-          end: 'bottom top',
-          scrub: 1.8,
-        },
-      });
-
-      tlExit
-        .to(ware, { xPercent: 25, opacity: 0.25, ease: 'none' }, 0)
-        .to(engineer, { xPercent: -35, opacity: 0.25, ease: 'none' }, 0)
-        .to(isWord, { xPercent: 35, opacity: 0.25, ease: 'none' }, 0)
-        .to(future, { xPercent: -45, opacity: 0.25, ease: 'none' }, 0);
-
-      if (badge) {
-        tlExit.to(badge, { opacity: 0.2, scale: 0.9, ease: 'none' }, 0);
-      }
+      // ── PHASE 3: Exit Depth Dissolve (70% -> 100%) ──
+      tl.to(
+        ware,
+        { x: '18vw', opacity: 0.25, ease: 'power1.in' },
+        0.72
+      )
+        .to(
+          engineer,
+          { x: '-22vw', opacity: 0.25, ease: 'power1.in' },
+          0.72
+        )
+        .to(
+          isWord,
+          { x: '22vw', opacity: 0.25, ease: 'power1.in' },
+          0.72
+        )
+        .to(
+          future,
+          { x: '-28vw', opacity: 0.25, ease: 'power1.in' },
+          0.72
+        );
     }, section);
 
     return () => ctx.revert();
@@ -384,122 +412,100 @@ export default function EngineeringManifesto() {
     <section
       id="manifesto"
       ref={sectionRef}
-      className="relative min-h-[100dvh] w-full bg-black text-white flex flex-col justify-between py-20 sm:py-28 overflow-hidden select-none"
+      className="relative w-full h-[100dvh] bg-black text-white flex flex-col justify-between overflow-hidden select-none"
       aria-label="Software Engineer Manifesto"
     >
-      {/* Screen-reader accessible title */}
+      {/* Screen-reader accessible landmark */}
       <h2 className="sr-only">Software Engineer is the Future</h2>
 
-      {/* 3D WebGL Canvas Layer */}
+      {/* 3D WebGL Canvas Layer (Zero ugly browser tooltips) */}
       <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center pointer-events-auto">
         <canvas
           ref={canvasRef}
           className={`w-full h-full cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
-          title={isId ? 'Klik dan seret untuk memutar arsitektur 3D' : 'Click and drag to rotate 3D architecture'}
         />
       </div>
 
-      {/* Subtle top subtle border divider */}
+      {/* Top Architectural Border */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent z-10" />
 
-      {/* Top Header Eyebrow Bar */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between pointer-events-none">
+      {/* ── TOP EDITORIAL BAR (EDGE-TO-EDGE) ── */}
+      <header className="relative z-10 w-full px-4 sm:px-8 pt-6 sm:pt-8 flex items-center justify-between pointer-events-none font-mono text-[10px] sm:text-xs text-zinc-500 uppercase tracking-[0.25em]">
         <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-          <span className="font-mono text-[11px] sm:text-xs text-zinc-400 uppercase tracking-[0.25em]">
-            MANIFESTO // '26
-          </span>
+          <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+          <span className="text-zinc-400">MANIFESTO // '26</span>
         </div>
-
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md">
-          <Move3d className="w-3.5 h-3.5 text-sky-400" />
-          <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider">
-            {isId ? '3D Interactive • GSAP Scrub' : '3D Interactive • GSAP Scrub'}
-          </span>
+        <div className="text-zinc-500 tracking-widest hidden sm:block">
+          BANDUNG, ID &bull; 6&deg;54&apos;S 107&deg;36&apos;E
         </div>
-      </div>
+      </header>
 
       {/* ═══════════════════════════════════════════════════════════════
-          MAIN KINETIC BRUTALIST TYPOGRAPHY GRID (PABLO MIGUEZ ADAPTATION)
+          MAIN KINETIC BRUTALIST TYPOGRAPHY GRID
+          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI)
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center my-auto pointer-events-none">
-        
-        {/* ROW 1: SOFTWARE (Top Left) */}
-        <div className="manifesto-row flex items-baseline justify-between w-full overflow-hidden leading-[0.82] select-none">
-          <div className="flex items-baseline font-heading font-extrabold text-[12.5vw] sm:text-[12vw] md:text-[11vw] lg:text-[9.5vw] tracking-tighter uppercase text-white drop-shadow-2xl whitespace-nowrap">
-            <span ref={softRef} className="inline-block">SOFT</span>
-            <span ref={wareRef} className="inline-block text-zinc-300 ml-[0.04em]">WARE</span>
-          </div>
-          <div className="hidden lg:flex flex-col items-end text-right font-mono text-[11px] text-zinc-400 tracking-wider">
-            <span>[ SYSTEM ARCHITECTURE ]</span>
-            <span className="text-zinc-500">LAT 6°54&apos;S / LONG 107°36&apos;E</span>
+      <div
+        ref={containerRef}
+        className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none"
+      >
+        {/* ROW 1: SOFTWARE (FLUSH TO THE EXTREME LEFT) */}
+        <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.80]">
+          <div className="flex items-baseline font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-white drop-shadow-2xl whitespace-nowrap">
+            <span className="inline-block">SOFT</span>
+            <span
+              ref={wareRef}
+              className="inline-block text-zinc-300 ml-[0.02em] will-change-transform"
+            >
+              WARE
+            </span>
           </div>
         </div>
 
-        {/* ROW 2: ENGINEER (Indented Left) */}
-        <div className="manifesto-row flex items-center justify-start w-full overflow-hidden leading-[0.82] pl-[4vw] sm:pl-[10vw] md:pl-[14vw] select-none">
+        {/* ROW 2: ENGINEER (INDENTED LEFT) */}
+        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.80] pl-[6vw] sm:pl-[10vw] md:pl-[14vw]">
           <span
             ref={engineerRef}
-            className="inline-block font-heading font-extrabold text-[12.5vw] sm:text-[12vw] md:text-[11vw] lg:text-[9.5vw] tracking-tighter uppercase text-zinc-100 drop-shadow-2xl whitespace-nowrap"
+            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-zinc-100 drop-shadow-2xl whitespace-nowrap will-change-transform"
           >
             ENGINEER
           </span>
         </div>
 
-        {/* ROW 3: IS + ARCHITECTURAL BADGE (Center / Dynamic) */}
-        <div className="manifesto-row flex flex-row items-center justify-between w-full overflow-hidden leading-[0.82] py-2 sm:py-3 select-none">
-          <div className="flex items-baseline pl-[1vw] sm:pl-[4vw]">
-            <span
-              ref={isRef}
-              className="inline-block font-display italic font-normal text-[14vw] sm:text-[13vw] md:text-[11vw] lg:text-[9.5vw] text-sky-400 drop-shadow-2xl tracking-tight whitespace-nowrap"
-            >
-              IS
-            </span>
-          </div>
-
-          {/* Precision Engineering Badge */}
-          <div
-            ref={badgeRef}
-            className="manifesto-badge pointer-events-auto flex items-center gap-2 sm:gap-3 px-3.5 sm:px-6 py-2 sm:py-3 rounded-full bg-zinc-950/80 border border-zinc-800/90 backdrop-blur-xl shadow-2xl hover:border-sky-500/50 transition-colors duration-300"
+        {/* ROW 3: IS (DYNAMIC DISPLAY ACCENT) */}
+        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.80] pl-[3vw] sm:pl-[6vw] md:pl-[8vw]">
+          <span
+            ref={isRef}
+            className="inline-block font-display italic font-normal text-[15vw] sm:text-[14vw] md:text-[13.5vw] lg:text-[13vw] text-sky-400 drop-shadow-2xl tracking-tight whitespace-nowrap will-change-transform"
           >
-            <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400 shrink-0" />
-            <span className="font-mono text-[10px] sm:text-xs text-zinc-300 uppercase tracking-[0.16em] whitespace-nowrap">
-              <span className="hidden sm:inline">
-                {isId ? 'LOGIKA TINGKAT TINGGI • SKALABILITAS • AI PIPELINE' : 'HIGH-THROUGHPUT LOGIC • SCALABILITY • AI'}
-              </span>
-              <span className="sm:hidden">
-                {isId ? 'ARSITEKTUR & AI' : 'ARCHITECTURE & AI'}
-              </span>
-            </span>
-          </div>
+            IS
+          </span>
         </div>
 
-        {/* ROW 4: THE FUTURE (Bottom Right) */}
-        <div className="manifesto-row flex items-center justify-end w-full overflow-hidden leading-[0.82] select-none">
+        {/* ROW 4: THE FUTURE (FLUSH TO THE EXTREME RIGHT) */}
+        <div className="flex items-center justify-end w-full overflow-hidden leading-[0.80]">
           <span
             ref={futureRef}
-            className="inline-block font-heading font-extrabold text-[12.5vw] sm:text-[12vw] md:text-[11vw] lg:text-[9.5vw] tracking-tighter uppercase text-white drop-shadow-2xl text-right whitespace-nowrap"
+            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.055em] uppercase text-white drop-shadow-2xl text-right whitespace-nowrap will-change-transform"
           >
             THE FUTURE
           </span>
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          BOTTOM PHILOSOPHY SUBTEXT & 3D INTERACTION HINT
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pt-8 border-t border-zinc-900 pointer-events-none">
-        <p className="text-xs sm:text-sm text-zinc-400 max-w-xl leading-relaxed font-light">
+      {/* ── BOTTOM EDITORIAL FOOTER (EDGE-TO-EDGE) ── */}
+      <footer className="relative z-10 w-full px-4 sm:px-8 pb-6 sm:pb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 pointer-events-none">
+        <p className="text-xs sm:text-sm text-zinc-400 max-w-lg font-light leading-snug">
           {isId
-            ? 'Rekayasa perangkat lunak bukan sekadar merangkai sintaks — melainkan disiplin arsitektur dalam membentuk masa depan komputasi, ketahanan sistem terdistribusi, dan ekosistem AI berkinerja tinggi.'
-            : 'Software engineering is not merely assembling syntax — it is the architectural discipline of shaping computational futures, distributed system resilience, and high-performance AI ecosystems.'}
+            ? 'Rekayasa perangkat lunak adalah arsitektur masa depan komputasi, keandalan sistem terdistribusi, dan ekosistem AI berkinerja tinggi.'
+            : 'Software engineering is the architecture of computational futures, distributed system resilience, and high-performance AI ecosystems.'}
         </p>
 
-        <div className="flex items-center gap-3 text-zinc-400 font-mono text-[11px] uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-          <span>Raka Alpiansyah &bull; Bandung, ID</span>
+        <div className="flex items-center gap-3 font-mono text-[10px] sm:text-[11px] text-zinc-500 uppercase tracking-widest">
+          <span>RAKA ALPIANSYAH</span>
+          <span className="text-zinc-700">&bull;</span>
+          <span className="text-sky-400">INFORMATICS</span>
         </div>
-      </div>
+      </footer>
     </section>
   );
 }
