@@ -1,13 +1,90 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Menu, X } from 'lucide-react';
+import { Globe, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ isRevealed = true }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const headerRef = useRef(null);
+  const drawerRef = useRef(null);
+  const overlayRef = useRef(null);
   const { lang, setLang, t } = useLanguage();
+
+  const closeMobileMenu = () => {
+    if (!drawerRef.current) {
+      setMobileMenuOpen(false);
+      return;
+    }
+    gsap.to(drawerRef.current, {
+      opacity: 0,
+      y: -14,
+      scale: 0.96,
+      duration: 0.2,
+      ease: 'power2.in',
+    });
+    if (overlayRef.current) {
+      gsap.to(overlayRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+        onComplete: () => setMobileMenuOpen(false),
+      });
+    } else {
+      setTimeout(() => setMobileMenuOpen(false), 200);
+    }
+  };
+
+  const toggleMobileMenu = () => {
+    if (mobileMenuOpen) {
+      closeMobileMenu();
+    } else {
+      setMobileMenuOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    if (mobileMenuOpen && drawerRef.current) {
+      if (overlayRef.current) {
+        gsap.fromTo(
+          overlayRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.25, ease: 'power2.out' }
+        );
+      }
+      gsap.fromTo(
+        drawerRef.current,
+        { opacity: 0, y: -20, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: 'back.out(1.2)' }
+      );
+      const items = drawerRef.current.querySelectorAll('.mobile-nav-item');
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, x: -16 },
+          { opacity: 1, x: 0, duration: 0.3, stagger: 0.045, ease: 'power2.out', delay: 0.08 }
+        );
+      }
+      const footer = drawerRef.current.querySelector('.mobile-nav-footer');
+      if (footer) {
+        gsap.fromTo(
+          footer,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', delay: 0.22 }
+        );
+      }
+    }
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        closeMobileMenu();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -158,44 +235,128 @@ export default function Navbar({ isRevealed = true }) {
           </div>
 
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors"
+            onClick={toggleMobileMenu}
+            className="relative w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl text-zinc-300 hover:text-white bg-zinc-900/80 border border-white/10 hover:border-sky-400/40 active:scale-90 transition-all duration-200"
             aria-label={t.nav.menuAria}
+            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <span
+              className={`w-4 h-[1.5px] bg-current rounded-full transform transition-all duration-300 origin-center ${
+                mobileMenuOpen ? 'rotate-45 translate-y-[6.5px]' : ''
+              }`}
+            />
+            <span
+              className={`w-4 h-[1.5px] bg-current rounded-full transition-all duration-200 ${
+                mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100'
+              }`}
+            />
+            <span
+              className={`w-4 h-[1.5px] bg-current rounded-full transform transition-all duration-300 origin-center ${
+                mobileMenuOpen ? '-rotate-45 -translate-y-[6.5px]' : ''
+              }`}
+            />
           </button>
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Backdrop & Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-4 top-20 p-5 rounded-2xl glass-surface flex flex-col gap-3 z-50">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80 text-xs font-medium text-zinc-400">
-            <span>{t.nav.mobileNavTitle}</span>
-            <span className="font-mono text-[11px] text-zinc-500">Raka Alpiansyah</span>
-          </div>
+        <>
+          {/* Backdrop Blur */}
+          <div
+            ref={overlayRef}
+            onClick={closeMobileMenu}
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
+            aria-hidden="true"
+          />
 
-          <div className="flex flex-col gap-1 py-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900 transition-all"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-
-          <a
-            href="#contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 transition-colors mt-2"
+          {/* Floating Glass Drawer */}
+          <div
+            ref={drawerRef}
+            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950/95 border border-white/10 backdrop-blur-2xl shadow-[0_24px_64px_rgba(0,0,0,0.85),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden"
           >
-            <span>{t.nav.contactCta}</span>
-          </a>
-        </div>
+            {/* Top specular hairline */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
+
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] text-xs font-medium text-zinc-400">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+                <span className="font-mono text-[11px] tracking-wider uppercase text-zinc-400">
+                  {t.nav.mobileNavTitle || 'Navigasi'}
+                </span>
+              </div>
+              <span className="font-mono text-[11px] text-zinc-500">Raka Alpiansyah</span>
+            </div>
+
+            {/* Staggered Nav Items */}
+            <div className="flex flex-col gap-1 py-1">
+              {navLinks.map((link, idx) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMobileMenu}
+                  className="mobile-nav-item group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] active:bg-white/[0.1] transition-all duration-150"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-[11px] font-mono text-zinc-500 group-hover:text-sky-400 transition-colors">
+                      0{idx + 1}
+                    </span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      {link.label}
+                    </span>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-zinc-600 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                </a>
+              ))}
+            </div>
+
+            {/* Drawer Footer: Language Switcher & Contact CTA */}
+            <div className="mobile-nav-footer flex flex-col gap-3 pt-3 border-t border-white/[0.08]">
+              {/* Language Switcher Row Inside Menu */}
+              <div className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-zinc-900/80 border border-white/[0.08]">
+                <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
+                  <Globe className="w-4 h-4 text-sky-400" />
+                  <span>{lang === 'id' ? 'Bahasa / Language' : 'Language / Bahasa'}</span>
+                </div>
+                <div className="inline-flex items-center p-0.5 rounded-full bg-zinc-950 border border-white/10 text-xs font-mono select-none">
+                  <button
+                    onClick={() => setLang('id')}
+                    className={`px-3 py-1 rounded-full transition-all duration-200 ${
+                      lang === 'id'
+                        ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
+                    aria-label="Bahasa Indonesia"
+                  >
+                    ID
+                  </button>
+                  <button
+                    onClick={() => setLang('en')}
+                    className={`px-3 py-1 rounded-full transition-all duration-200 ${
+                      lang === 'en'
+                        ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
+                    aria-label="English"
+                  >
+                    EN
+                  </button>
+                </div>
+              </div>
+
+              {/* Contact CTA */}
+              <a
+                href="#contact"
+                onClick={closeMobileMenu}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-[0.98] transition-all duration-150 shadow-sm"
+              >
+                <span>{t.nav.contactCta}</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </>
       )}
     </header>
   );
