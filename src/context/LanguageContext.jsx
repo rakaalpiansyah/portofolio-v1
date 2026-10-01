@@ -12,9 +12,14 @@ export function LanguageProvider({ children }) {
     }
 
     // 2. Default to device / browser language setting
-    if (typeof window !== 'undefined' && navigator) {
-      const browserLang = (navigator.language || navigator.userLanguage || 'id').toLowerCase();
-      return browserLang.startsWith('id') ? 'id' : 'en';
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
+      const primaryLang = (
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        navigator.userLanguage ||
+        'id'
+      ).toLowerCase();
+      return primaryLang.startsWith('id') ? 'id' : 'en';
     }
 
     return 'id';
@@ -41,7 +46,7 @@ export function LanguageProvider({ children }) {
   const t = translations[lang] || translations.id;
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, toggleLang, t }}>
+    <LanguageContext.Provider value={{ lang, language: lang, setLang, toggleLang, t }}>
       {children}
     </LanguageContext.Provider>
   );

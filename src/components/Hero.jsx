@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Hero({ isRevealed = true }) {
   const heroRef = useRef(null);
   const [roleIndex, setRoleIndex] = useState(0);
-  const { t, language } = useLanguage();
+  const { t, lang, language } = useLanguage();
 
   const roles = [
     'Software Engineer',
@@ -94,7 +94,7 @@ export default function Hero({ isRevealed = true }) {
     return () => ctx.revert();
   }, [isRevealed]);
 
-  const isId = language === 'id';
+  const isId = (lang || language) === 'id';
 
   return (
     <section
@@ -108,7 +108,7 @@ export default function Hero({ isRevealed = true }) {
         <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-zinc-700/80" />
           <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
-            INFORMATICS ENGINEER
+            INFORMATICS ENGINEERING
           </span>
           <span className="w-8 h-px bg-zinc-700/80" />
         </div>
@@ -133,7 +133,7 @@ export default function Hero({ isRevealed = true }) {
         {/* Description */}
         <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-8 sm:mb-10 font-light">
           {isId
-            ? 'Teknik Informatika & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
+            ? 'Informatics Engineering & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
             : 'Informatics Engineering & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
         </p>
 
