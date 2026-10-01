@@ -137,24 +137,24 @@ export default function Hero({ isRevealed = true }) {
             : 'Informatics Engineering & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
         </p>
 
-        {/* CTA Buttons */}
-        <div className="hero-cta inline-flex flex-wrap items-center justify-center gap-4">
+        {/* CTA Buttons - Guaranteed Side-by-Side (Berdampingan) on All Devices */}
+        <div className="hero-cta inline-flex flex-nowrap items-center justify-center gap-2.5 sm:gap-4 w-full max-w-md mx-auto">
           {/* Primary "Explore Projects" button */}
           <a
             href="#projects"
-            className="group relative rounded-full p-[2px] transition-transform duration-200 hover:scale-105"
+            className="group relative rounded-full p-[2px] transition-transform duration-200 hover:scale-105 active:scale-95 shrink-0"
           >
             <span className="absolute -inset-[1px] rounded-full accent-gradient opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-            <span className="relative flex items-center gap-2 rounded-full text-xs sm:text-sm font-medium px-7 py-3.5 bg-zinc-950 text-white group-hover:bg-zinc-900 transition-colors duration-200">
+            <span className="relative flex items-center justify-center gap-1.5 sm:gap-2 rounded-full text-xs sm:text-sm font-medium px-4 sm:px-7 py-2.5 sm:py-3.5 bg-zinc-950 text-white group-hover:bg-zinc-900 transition-colors duration-200 whitespace-nowrap">
               <span>{isId ? 'Lihat Proyek Unggulan' : 'Explore Projects'}</span>
-              <ArrowUpRight className="w-4 h-4 text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
             </span>
           </a>
 
           {/* Secondary "Reach Out" button */}
           <a
             href="#contact"
-            className="group relative rounded-full text-xs sm:text-sm font-medium px-7 py-3.5 bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-all duration-200 hover:scale-105 backdrop-blur-md"
+            className="group relative rounded-full text-xs sm:text-sm font-medium px-4 sm:px-7 py-2.5 sm:py-3.5 bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-md whitespace-nowrap shrink-0 flex items-center justify-center"
           >
             <span>{isId ? 'Hubungi Saya' : 'Initiate Contact'}</span>
           </a>
