@@ -240,11 +240,6 @@ export default function Experience() {
 
               {/* Card Surface */}
               <div className="card-surface p-5 sm:p-8 rounded-2xl border border-white/[0.08] hover:border-white/[0.18] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)] relative overflow-hidden group">
-                {/* Subtle top ambient glow for the latest role */}
-                {exp.isLatest && (
-                  <div className="absolute top-0 right-0 w-72 h-36 bg-sky-500/[0.07] rounded-full blur-3xl pointer-events-none" />
-                )}
-
                 {/* Card Top Meta Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-4">
                   <div className="flex flex-wrap items-center gap-2">
