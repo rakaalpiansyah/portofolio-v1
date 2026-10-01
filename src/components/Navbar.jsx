@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Menu, X, Code2 } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ isRevealed = true }) {
@@ -55,10 +55,16 @@ export default function Navbar({ isRevealed = true }) {
           href="#"
           className="flex items-center gap-3 text-zinc-100 group transition-all"
         >
-          {/* Engineering Brand Emblem */}
-          <div className="relative w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-zinc-900/90 border border-white/10 flex items-center justify-center text-sky-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] group-hover:border-sky-400/40 group-hover:bg-zinc-800/90 group-hover:shadow-[0_0_16px_rgba(56,189,248,0.25)] transition-all duration-300 shrink-0 overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
-            <Code2 className="w-4 h-4 text-sky-400 group-hover:text-sky-300 group-hover:scale-110 transition-all duration-300" strokeWidth={2.2} />
+          {/* 3D Character Avatar (Transparent WebP) */}
+          <div className="relative w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-zinc-900 border border-white/15 p-0.5 group-hover:border-sky-400/60 group-hover:shadow-[0_0_14px_rgba(56,189,248,0.3)] transition-all duration-300 shrink-0 overflow-hidden">
+            <img
+              src="/avatar.webp"
+              alt="Raka Alpiansyah"
+              width="36"
+              height="36"
+              className="w-full h-full object-cover object-top rounded-full group-hover:scale-105 transition-transform duration-300"
+              loading="eager"
+            />
           </div>
 
           {/* Name & Title */}
