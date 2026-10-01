@@ -108,7 +108,7 @@ export default function Hero({ isRevealed = true }) {
         <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-zinc-700/80" />
           <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
-            INFORMATICS ENGINEER &bull; BANDUNG, ID
+            INFORMATICS ENGINEER
           </span>
           <span className="w-8 h-px bg-zinc-700/80" />
         </div>
