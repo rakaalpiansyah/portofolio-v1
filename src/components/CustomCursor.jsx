@@ -93,24 +93,22 @@ export default function CustomCursor() {
       {/* Precision inner cyan dot */}
       <div
         ref={dotRef}
-        className={`custom-cursor w-2 h-2 bg-sky-400 pointer-events-none transition-transform duration-100 ${
+        className={`custom-cursor w-2 h-2 rounded-full bg-sky-400 pointer-events-none transition-transform duration-100 ${
           isVisible ? 'opacity-100' : 'opacity-0'
-        } ${isHovered ? 'scale-0' : isClicking ? 'scale-125 bg-white' : 'scale-100'}`}
+        } ${isClicking ? 'scale-75 bg-white' : 'scale-100'}`}
         aria-hidden="true"
       />
-      {/* Lagging outer glowing ring */}
+      {/* Outer ring: Normal size, transparent background, and zero blur on hover */}
       <div
         ref={ringRef}
-        className={`custom-cursor pointer-events-none transition-all duration-150 ease-out border ${
+        className={`custom-cursor pointer-events-none rounded-full transition-all duration-150 ease-out border ${
           isVisible ? 'opacity-100' : 'opacity-0'
         } ${
-          isHovered
-            ? isClicking
-              ? 'w-10 h-10 border-sky-300 bg-sky-400/30 scale-90 shadow-[0_0_25px_rgba(56,189,248,0.6)]'
-              : 'w-12 h-12 border-sky-400 bg-sky-400/20 backdrop-blur-[2px] shadow-[0_0_20px_rgba(56,189,248,0.4)]'
-            : isClicking
-              ? 'w-6 h-6 border-sky-300 bg-sky-400/25 scale-75 shadow-[0_0_15px_rgba(56,189,248,0.5)]'
-              : 'w-8 h-8 border-sky-400/50 bg-transparent'
+          isClicking
+            ? 'w-6 h-6 border-sky-300/80 bg-transparent scale-90'
+            : isHovered
+              ? 'w-8 h-8 border-sky-400/80 bg-transparent'
+              : 'w-8 h-8 border-sky-400/40 bg-transparent'
         }`}
         aria-hidden="true"
       />
