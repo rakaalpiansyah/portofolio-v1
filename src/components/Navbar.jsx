@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Code2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ isRevealed = true }) {
@@ -53,19 +53,20 @@ export default function Navbar({ isRevealed = true }) {
         {/* Brand / Nameplate */}
         <a
           href="#"
-          className="flex items-center gap-2.5 text-zinc-100 group transition-opacity hover:opacity-90"
+          className="flex items-center gap-3 text-zinc-100 group transition-all"
         >
-          <div className="relative w-8 h-8 rounded-full p-[1.5px] transition-transform duration-300 group-hover:scale-110">
-            <span className="absolute inset-0 rounded-full accent-gradient opacity-90 animate-spin" style={{ animationDuration: '6s' }} />
-            <div className="relative w-full h-full rounded-full bg-zinc-950 flex items-center justify-center font-display italic text-xs text-white">
-              RA
-            </div>
+          {/* Engineering Brand Emblem */}
+          <div className="relative w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-zinc-900/90 border border-white/10 flex items-center justify-center text-sky-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] group-hover:border-sky-400/40 group-hover:bg-zinc-800/90 group-hover:shadow-[0_0_16px_rgba(56,189,248,0.25)] transition-all duration-300 shrink-0 overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
+            <Code2 className="w-4 h-4 text-sky-400 group-hover:text-sky-300 group-hover:scale-110 transition-all duration-300" strokeWidth={2.2} />
           </div>
-          <div className="flex flex-col">
-            <span className="font-display italic text-base text-white tracking-tight group-hover:text-sky-300 transition-colors">
+
+          {/* Name & Title */}
+          <div className="flex flex-col text-left">
+            <span className="font-heading font-bold text-sm sm:text-[15px] text-white tracking-tight group-hover:text-sky-300 transition-colors leading-tight">
               Raka Alpiansyah
             </span>
-            <span className="text-[10px] text-zinc-400 font-mono -mt-0.5">
+            <span className="text-[10px] font-mono text-zinc-400 tracking-wider uppercase leading-tight">
               {t.nav.softwareEngineer}
             </span>
           </div>
