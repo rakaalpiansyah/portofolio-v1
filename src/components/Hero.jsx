@@ -57,16 +57,10 @@ export default function Hero({ isRevealed = true }) {
             '-=0.5'
           )
           .fromTo(
-            '.hero-status',
-            { opacity: 0, scale: 0.85 },
-            { opacity: 1, scale: 1, duration: 0.75, ease: 'back.out(1.4)' },
-            '-=0.4'
-          )
-          .fromTo(
             '.hero-cta a',
             { opacity: 0, y: 22 },
             { opacity: 1, y: 0, duration: 0.8, stagger: 0.12 },
-            '-=0.4'
+            '-=0.45'
           )
           .fromTo(
             '.hero-scroll-indicator',
@@ -76,7 +70,7 @@ export default function Hero({ isRevealed = true }) {
           );
       } else {
         gsap.set(
-          ['.hero-eyebrow', '.hero-name', '.hero-role', '.hero-subtext', '.hero-status', '.hero-cta a', '.hero-scroll-indicator'],
+          ['.hero-eyebrow', '.hero-name', '.hero-role', '.hero-subtext', '.hero-cta a', '.hero-scroll-indicator'],
           { opacity: 0 }
         );
       }
@@ -114,7 +108,7 @@ export default function Hero({ isRevealed = true }) {
         <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-zinc-700/80" />
           <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
-            COLLECTION &apos;26 &bull; INFORMATICS ENGINEER &bull; BANDUNG, ID
+            INFORMATICS ENGINEER &bull; BANDUNG, ID
           </span>
           <span className="w-8 h-px bg-zinc-700/80" />
         </div>
@@ -137,21 +131,11 @@ export default function Hero({ isRevealed = true }) {
         </p>
 
         {/* Description */}
-        <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-6 font-light">
+        <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-8 sm:mb-10 font-light">
           {isId
             ? 'Teknik Informatika & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
             : 'Informatics Engineering & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
         </p>
-
-        {/* Engineering Status Pill */}
-        <div className="hero-status inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] font-mono text-zinc-300 mb-10 backdrop-blur-md shadow-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>
-            {isId
-              ? 'Teknik Informatika • Bandung, ID • Available for Projects'
-              : 'Informatics Engineering • Bandung, ID • Available for Projects'}
-          </span>
-        </div>
 
         {/* CTA Buttons */}
         <div className="hero-cta inline-flex flex-wrap items-center justify-center gap-4">
