@@ -184,33 +184,6 @@ export default function EngineeringManifesto() {
     meshSlash.add(edgesSlash);
     meshRight.add(edgesRight);
 
-    // Inner Pulsing Compiler Logic Crystal (The Soul of Software Architecture)
-    const coreGeo = new THREE.OctahedronGeometry(0.44, 0);
-    const coreMat = new THREE.MeshPhysicalMaterial({
-      color: 0x38bdf8,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.75,
-      metalness: 0.25,
-      roughness: 0.12,
-      transmission: 0.65,
-      transparent: true,
-      opacity: 0.9,
-    });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-    coreMesh.position.set(0, 0, 0);
-    masterGroup.add(coreMesh);
-
-    // Inner wireframe for the core crystal
-    const coreWireGeo = new THREE.WireframeGeometry(coreGeo);
-    const coreWireMat = new THREE.LineBasicMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.75 });
-    const coreWire = new THREE.LineSegments(coreWireGeo, coreWireMat);
-    coreMesh.add(coreWire);
-
-    // Glowing Point Light inside the crystal
-    const innerLight = new THREE.PointLight(0x38bdf8, 3.5, 9);
-    innerLight.position.set(0, 0, 0);
-    masterGroup.add(innerLight);
-
     // Sleek Aerospace Data-Bus Orbit Coordinate Ring
     const orbitGeo = new THREE.TorusGeometry(3.35, 0.018, 16, 120);
     const orbitMat = new THREE.MeshBasicMaterial({
@@ -334,12 +307,6 @@ export default function EngineeringManifesto() {
 
         // Counter-rotation of data-bus orbit ring
         orbitRing.rotation.z += delta * 0.22;
-
-        // Dynamic pulsing and multifaceted rotation of inner compiler logic crystal
-        coreMesh.rotation.x += delta * 0.8;
-        coreMesh.rotation.y += delta * 1.2;
-        const pulse = 1.0 + Math.sin(clock.getElapsedTime() * 2.6) * 0.08;
-        coreMesh.scale.set(pulse, pulse, pulse);
       }
 
       renderer.render(scene, camera);
@@ -361,15 +328,11 @@ export default function EngineeringManifesto() {
       geoLeft.dispose();
       geoSlash.dispose();
       geoRight.dispose();
-      coreGeo.dispose();
-      coreWireGeo.dispose();
       orbitGeo.dispose();
       dotGeo.dispose();
       faceMaterial.dispose();
       sideMaterial.dispose();
       edgeMat.dispose();
-      coreMat.dispose();
-      coreWireMat.dispose();
       orbitMat.dispose();
       dotMat.dispose();
       renderer.dispose();
