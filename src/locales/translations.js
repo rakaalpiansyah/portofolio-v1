@@ -11,6 +11,8 @@ export const translations = {
       softwareEngineer: 'Software Engineer',
       menuAria: 'Buka menu navigasi',
       mobileNavTitle: 'Navigasi',
+      closeMenu: 'Tutup Navigasi',
+      swipeToClose: 'Geser ke atas untuk menutup',
     },
     hero: {
       headlinePrefix: 'Raka Alpiansyah.',
@@ -406,6 +408,8 @@ export const translations = {
       softwareEngineer: 'Software Engineer',
       menuAria: 'Open navigation menu',
       mobileNavTitle: 'Navigation',
+      closeMenu: 'Close Navigation',
+      swipeToClose: 'Swipe up to close',
     },
     hero: {
       headlinePrefix: 'Raka Alpiansyah.',

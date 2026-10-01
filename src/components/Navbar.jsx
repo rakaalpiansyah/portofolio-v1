@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Globe, ArrowUpRight } from 'lucide-react';
+import { Globe, ArrowUpRight, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ isRevealed = true }) {
@@ -9,40 +9,120 @@ export default function Navbar({ isRevealed = true }) {
   const headerRef = useRef(null);
   const drawerRef = useRef(null);
   const overlayRef = useRef(null);
+  const isClosingRef = useRef(false);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+  const currentDragY = useRef(0);
   const { lang, setLang, t } = useLanguage();
 
-  const closeMobileMenu = () => {
-    if (!drawerRef.current) {
-      setMobileMenuOpen(false);
-      return;
+  // Micro-haptic vibration for Android / mobile touch feedback
+  const triggerHaptic = (ms = 8) => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        navigator.vibrate(ms);
+      } catch (err) {
+        // Gracefully ignore if unsupported or restricted
+      }
     }
-    gsap.to(drawerRef.current, {
-      opacity: 0,
-      y: -14,
-      scale: 0.96,
-      duration: 0.2,
-      ease: 'power2.in',
+  };
+
+  const executeCloseAnimation = (onDone) => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    triggerHaptic(6);
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setMobileMenuOpen(false);
+        isClosingRef.current = false;
+        if (onDone) onDone();
+      },
     });
-    if (overlayRef.current) {
-      gsap.to(overlayRef.current, {
-        opacity: 0,
-        duration: 0.2,
-        ease: 'power2.in',
-        onComplete: () => setMobileMenuOpen(false),
-      });
-    } else {
-      setTimeout(() => setMobileMenuOpen(false), 200);
+
+    if (drawerRef.current) {
+      tl.to(
+        drawerRef.current,
+        {
+          opacity: 0,
+          y: -24,
+          scale: 0.95,
+          duration: 0.22,
+          ease: 'power2.in',
+        },
+        0
+      );
     }
+
+    if (overlayRef.current) {
+      tl.to(
+        overlayRef.current,
+        {
+          opacity: 0,
+          duration: 0.2,
+          ease: 'power2.in',
+        },
+        0
+      );
+    }
+  };
+
+  const closeMobileMenu = (shouldPopState = true) => {
+    if (isClosingRef.current || !mobileMenuOpen) return;
+
+    if (shouldPopState && window.history.state?.mobileMenuOpen) {
+      window.history.back();
+    }
+    executeCloseAnimation();
+  };
+
+  const openMobileMenu = () => {
+    if (mobileMenuOpen || isClosingRef.current) return;
+    triggerHaptic(10);
+    try {
+      window.history.pushState({ mobileMenuOpen: true }, '');
+    } catch (e) {
+      // Fallback
+    }
+    setMobileMenuOpen(true);
   };
 
   const toggleMobileMenu = () => {
     if (mobileMenuOpen) {
-      closeMobileMenu();
+      closeMobileMenu(true);
     } else {
-      setMobileMenuOpen(true);
+      openMobileMenu();
     }
   };
 
+  // Android hardware/gesture Back button integration (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      if (mobileMenuOpen && !isClosingRef.current) {
+        // Back gesture was triggered by user: close drawer without calling history.back()
+        executeCloseAnimation();
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [mobileMenuOpen]);
+
+  // Lock body scroll while mobile menu is open to prevent screen jitter on Android
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const prevOverflow = document.body.style.overflow;
+      const prevTouchAction = document.body.style.touchAction;
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        document.body.style.touchAction = prevTouchAction;
+      };
+    }
+  }, [mobileMenuOpen]);
+
+  // Animate mobile drawer elements entrance
   useEffect(() => {
     if (mobileMenuOpen && drawerRef.current) {
       if (overlayRef.current) {
@@ -76,15 +156,72 @@ export default function Navbar({ isRevealed = true }) {
     }
   }, [mobileMenuOpen]);
 
+  // Handle ESC key dismiss
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && mobileMenuOpen) {
-        closeMobileMenu();
+        closeMobileMenu(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
+
+  // Touch gesture handling: Swipe up to dismiss
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+    touchStartX.current = e.touches[0].clientX;
+    currentDragY.current = 0;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!drawerRef.current || isClosingRef.current) return;
+    const deltaY = e.touches[0].clientY - touchStartY.current;
+    const deltaX = e.touches[0].clientX - touchStartX.current;
+
+    // Detect upward swipe with vertical dominance
+    if (deltaY < 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      currentDragY.current = deltaY;
+      const dampedY = deltaY * 0.72;
+      const alpha = Math.max(0.15, 1 + deltaY / 220);
+      gsap.set(drawerRef.current, { y: dampedY, opacity: alpha });
+      if (overlayRef.current) {
+        gsap.set(overlayRef.current, { opacity: Math.max(0.1, 1 + deltaY / 300) });
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (isClosingRef.current) return;
+    if (currentDragY.current < -45) {
+      // Swiped up sufficiently: trigger dismiss
+      closeMobileMenu(true);
+    } else if (drawerRef.current && currentDragY.current < 0) {
+      // Rebound with spring
+      gsap.to(drawerRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 0.25,
+        ease: 'back.out(1.5)',
+      });
+      if (overlayRef.current) {
+        gsap.to(overlayRef.current, { opacity: 1, duration: 0.2 });
+      }
+    }
+    currentDragY.current = 0;
+  };
+
+  // Smooth link navigation with drawer close
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    closeMobileMenu(true);
+    setTimeout(() => {
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 220);
+  };
 
   useEffect(() => {
     if (!headerRef.current) return;
@@ -239,22 +376,30 @@ export default function Navbar({ isRevealed = true }) {
       {/* Mobile Backdrop & Drawer */}
       {mobileMenuOpen && (
         <>
-          {/* Backdrop Click Outside Scrim */}
+          {/* Backdrop Click Outside Scrim with subtle blur */}
           <div
             ref={overlayRef}
-            onClick={closeMobileMenu}
-            className="md:hidden fixed inset-0 bg-black/75 z-40 transition-opacity"
+            onClick={() => closeMobileMenu(true)}
+            className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40 touch-none cursor-pointer transition-opacity"
             aria-hidden="true"
           />
 
           {/* Floating Solid Dark Drawer (100% Opaque OLED Dark Background) */}
           <div
             ref={drawerRef}
-            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950 border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.95),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden"
-            style={{ backgroundColor: '#09090b' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950 border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.95),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden select-none"
+            style={{ backgroundColor: '#09090b', touchAction: 'pan-y' }}
           >
             {/* Top specular hairline */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
+
+            {/* Gesture Grab / Drag Handle */}
+            <div className="flex justify-center -mt-1 mb-0.5">
+              <div className="w-10 h-1 rounded-full bg-zinc-700/60" />
+            </div>
 
             {/* Drawer Header */}
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] text-xs font-medium text-zinc-400">
@@ -273,8 +418,8 @@ export default function Navbar({ isRevealed = true }) {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={closeMobileMenu}
-                  className="mobile-nav-item group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] active:bg-white/[0.1] transition-all duration-150"
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="mobile-nav-item group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] active:bg-white/[0.1] active:scale-[0.99] transition-all duration-150"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-[11px] font-mono text-zinc-500 group-hover:text-sky-400 transition-colors">
@@ -289,17 +434,20 @@ export default function Navbar({ isRevealed = true }) {
               ))}
             </div>
 
-            {/* Drawer Footer: Language Switcher & Contact CTA */}
-            <div className="mobile-nav-footer flex flex-col gap-3 pt-3 border-t border-white/[0.08]">
+            {/* Drawer Footer: Language Switcher, Contact CTA, & Thumb Dismiss */}
+            <div className="mobile-nav-footer flex flex-col gap-2.5 pt-3 border-t border-white/[0.08]">
               {/* Language Switcher Row Inside Menu */}
-              <div className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-zinc-900/80 border border-white/[0.08]">
+              <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-900/80 border border-white/[0.08]">
                 <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
                   <Globe className="w-4 h-4 text-sky-400" />
                   <span>{lang === 'id' ? 'Bahasa / Language' : 'Language / Bahasa'}</span>
                 </div>
                 <div className="inline-flex items-center p-0.5 rounded-full bg-zinc-950 border border-white/10 text-xs font-mono select-none">
                   <button
-                    onClick={() => setLang('id')}
+                    onClick={() => {
+                      triggerHaptic(6);
+                      setLang('id');
+                    }}
                     className={`px-3 py-1 rounded-full transition-all duration-200 ${
                       lang === 'id'
                         ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
@@ -310,7 +458,10 @@ export default function Navbar({ isRevealed = true }) {
                     ID
                   </button>
                   <button
-                    onClick={() => setLang('en')}
+                    onClick={() => {
+                      triggerHaptic(6);
+                      setLang('en');
+                    }}
                     className={`px-3 py-1 rounded-full transition-all duration-200 ${
                       lang === 'en'
                         ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
@@ -326,12 +477,23 @@ export default function Navbar({ isRevealed = true }) {
               {/* Contact CTA */}
               <a
                 href="#contact"
-                onClick={closeMobileMenu}
+                onClick={(e) => handleNavClick(e, '#contact')}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-[0.98] transition-all duration-150 shadow-sm"
               >
                 <span>{t.nav.contactCta}</span>
                 <ArrowUpRight className="w-4 h-4" />
               </a>
+
+              {/* Thumb-Zone Quick Dismiss Button */}
+              <button
+                type="button"
+                onClick={() => closeMobileMenu(true)}
+                className="w-full py-2 flex items-center justify-center gap-1.5 rounded-xl text-xs font-mono text-zinc-400 hover:text-white active:text-sky-300 transition-colors hover:bg-white/[0.04] active:bg-white/[0.08]"
+                aria-label={t.nav.closeMenu}
+              >
+                <ChevronUp className="w-3.5 h-3.5 text-zinc-500 animate-pulse" />
+                <span>{t.nav.closeMenu || (lang === 'id' ? 'Tutup Navigasi' : 'Close Navigation')}</span>
+              </button>
             </div>
           </div>
         </>
