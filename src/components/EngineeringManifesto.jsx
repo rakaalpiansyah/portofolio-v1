@@ -82,6 +82,11 @@ export default function EngineeringManifesto() {
     rimLight.position.set(0, -6, -4);
     scene.add(rimLight);
 
+    // Direct camera headlight (illuminates front face directly for crisp front visibility)
+    const headLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    headLight.position.set(0, 0, 8);
+    scene.add(headLight);
+
     // Mouse-controlled specular point light
     const cursorLight = new THREE.PointLight(0xffffff, 4.0, 15);
     cursorLight.position.set(0, 0, 4);
@@ -143,23 +148,25 @@ export default function EngineeringManifesto() {
     geoSlash.translate(0, 0, 0);
     geoRight.translate(1.62, 0, 0);
 
-    // Luxury Dual-Tone Materials:
-    // Front face: Polished brushed platinum titanium
+    // Luxury High-Contrast Dual-Tone Materials:
+    // Front face: Architectural brushed platinum titanium with distinct diffuse readability
     const faceMaterial = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color(0xf1f5f9),
-      metalness: 0.98,
-      roughness: 0.10,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.05,
+      metalness: 0.68, // Diffuse reflectivity ensures front face is always solid and visible
+      roughness: 0.28,
+      clearcoat: 0.85,
+      clearcoatRoughness: 0.08,
       reflectivity: 1.0,
+      emissive: new THREE.Color(0x1e293b),
+      emissiveIntensity: 0.42, // Internal architectural luminance to clearly delineate front face
     });
 
-    // Sides & Bevel: Deep dark obsidian ruthenium
+    // Sides & Bevel: Deep dark obsidian ruthenium (creates striking contrast against front face)
     const sideMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0x0a101d),
+      color: new THREE.Color(0x060a12),
       metalness: 0.95,
-      roughness: 0.22,
-      clearcoat: 0.8,
+      roughness: 0.35,
+      clearcoat: 0.6,
     });
 
     const materials = [faceMaterial, sideMaterial];
@@ -171,39 +178,77 @@ export default function EngineeringManifesto() {
     masterGroup.add(meshSlash);
     masterGroup.add(meshRight);
 
-    // Incandescent Sky Edge Highlights (Glint along beveled chamfers)
+    // Incandescent Sky Edge Highlights (Glint along beveled chamfers and front perimeter)
     const edgeMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.92, // High-visibility sharp boundary
     });
-    const edgesLeft = new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 22), edgeMat);
-    const edgesSlash = new THREE.LineSegments(new THREE.EdgesGeometry(geoSlash, 22), edgeMat);
-    const edgesRight = new THREE.LineSegments(new THREE.EdgesGeometry(geoRight, 22), edgeMat);
+    // Threshold 14 deg captures all front perimeter borders and 3D chamfers
+    const edgesLeft = new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 14), edgeMat);
+    const edgesSlash = new THREE.LineSegments(new THREE.EdgesGeometry(geoSlash, 14), edgeMat);
+    const edgesRight = new THREE.LineSegments(new THREE.EdgesGeometry(geoRight, 14), edgeMat);
     meshLeft.add(edgesLeft);
     meshSlash.add(edgesSlash);
     meshRight.add(edgesRight);
 
-    // Sleek Aerospace Data-Bus Orbit Coordinate Ring
-    const orbitGeo = new THREE.TorusGeometry(3.35, 0.018, 16, 120);
-    const orbitMat = new THREE.MeshBasicMaterial({
-      color: 0x38bdf8,
-      transparent: true,
-      opacity: 0.32,
-    });
-    const orbitRing = new THREE.Mesh(orbitGeo, orbitMat);
-    orbitRing.rotation.x = Math.PI / 2.7;
-    masterGroup.add(orbitRing);
+    // ── PROCEDURAL 3D MENACING INDUSTRIAL CURB CHAINS ──
+    // Replaces simple orbit ring with heavy dark-steel interlocking micro-chains
+    const createIndustrialChain = (radius, numLinks, scaleX, scaleY, scaleZ, tiltX, tiltY, colorHex) => {
+      // Octagonal cross-section for chiseled, dangerous metallic specular glints
+      const linkGeo = new THREE.TorusGeometry(0.12, 0.034, 8, 24);
+      linkGeo.scale(scaleX, scaleY, scaleZ);
 
-    // 4 Coordinate Laser Dots on Orbit
-    const dotGeo = new THREE.SphereGeometry(0.045, 12, 12);
-    const dotMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-    for (let i = 0; i < 4; i++) {
-      const angle = (i * Math.PI) / 2;
-      const dot = new THREE.Mesh(dotGeo, dotMat);
-      dot.position.set(Math.cos(angle) * 3.35, Math.sin(angle) * 3.35, 0);
-      orbitRing.add(dot);
-    }
+      const chainMat = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(colorHex),
+        metalness: 0.96,
+        roughness: 0.20,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.12,
+        reflectivity: 1.0,
+        emissive: new THREE.Color(0x0284c7),
+        emissiveIntensity: 0.08,
+      });
+
+      const instanced = new THREE.InstancedMesh(linkGeo, chainMat, numLinks);
+      const dTheta = (2 * Math.PI) / numLinks;
+
+      for (let i = 0; i < numLinks; i++) {
+        const theta = i * dTheta;
+        const x = radius * Math.cos(theta);
+        const y = radius * Math.sin(theta);
+        const z = 0;
+
+        const T = new THREE.Vector3(-Math.sin(theta), Math.cos(theta), 0).normalize();
+        const N = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0).normalize();
+        const B = new THREE.Vector3(0, 0, 1);
+
+        // Alternating ±45° rotation for realistic curb-chain mechanical interlocking
+        const angle = (i % 2 === 0) ? Math.PI / 4 : -Math.PI / 4;
+        const Y = new THREE.Vector3().copy(N).multiplyScalar(Math.cos(angle)).addScaledVector(B, Math.sin(angle)).normalize();
+        const Z = new THREE.Vector3().crossVectors(T, Y).normalize();
+
+        const rotMatrix = new THREE.Matrix4().makeBasis(T, Y, Z);
+        rotMatrix.setPosition(x, y, z);
+        instanced.setMatrixAt(i, rotMatrix);
+      }
+
+      instanced.instanceMatrix.needsUpdate = true;
+      const group = new THREE.Group();
+      group.add(instanced);
+      group.rotation.x = tiltX;
+      group.rotation.y = tiltY;
+
+      return { group, instanced, linkGeo, chainMat };
+    };
+
+    // Primary Heavy Industrial Chain (outer orbit)
+    const outerChain = createIndustrialChain(3.38, 114, 1.45, 0.82, 1.0, Math.PI / 2.65, 0.22, 0x1e293b);
+    masterGroup.add(outerChain.group);
+
+    // Secondary Menacing Tactical Chain (inner counter-rotating orbit)
+    const innerChain = createIndustrialChain(2.88, 88, 1.30, 0.75, 0.9, -Math.PI / 3.1, -0.18, 0x0f172a);
+    masterGroup.add(innerChain.group);
 
     // Interaction & Animation variables
     const mouse = {
@@ -305,8 +350,9 @@ export default function EngineeringManifesto() {
         masterGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
         masterGroup.rotation.x = 0.12 + mouse.currY * 0.35 + mouse.dragRotX;
 
-        // Counter-rotation of data-bus orbit ring
-        orbitRing.rotation.z += delta * 0.22;
+        // Continuous hypnotic rotation of menacing industrial curb chains
+        outerChain.group.rotation.z += delta * 0.18;
+        innerChain.group.rotation.z -= delta * 0.14;
       }
 
       renderer.render(scene, camera);
@@ -328,13 +374,15 @@ export default function EngineeringManifesto() {
       geoLeft.dispose();
       geoSlash.dispose();
       geoRight.dispose();
-      orbitGeo.dispose();
-      dotGeo.dispose();
+      outerChain.linkGeo.dispose();
+      outerChain.chainMat.dispose();
+      outerChain.instanced.dispose();
+      innerChain.linkGeo.dispose();
+      innerChain.chainMat.dispose();
+      innerChain.instanced.dispose();
       faceMaterial.dispose();
       sideMaterial.dispose();
       edgeMat.dispose();
-      orbitMat.dispose();
-      dotMat.dispose();
       renderer.dispose();
     };
   }, []);
