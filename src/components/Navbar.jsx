@@ -122,8 +122,8 @@ export default function Navbar({ isRevealed = true }) {
     >
       <nav
         className={`w-full max-w-5xl flex items-center justify-between px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 ${
-          scrolled
-            ? 'nav-glass shadow-[0_8px_30px_rgba(0,0,0,0.6)]'
+          scrolled || mobileMenuOpen
+            ? 'nav-glass bg-zinc-950/95 border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.8)]'
             : 'bg-zinc-900/40 backdrop-blur-md border border-white/[0.06]'
         }`}
       >
@@ -206,34 +206,8 @@ export default function Navbar({ isRevealed = true }) {
           </a>
         </div>
 
-        {/* Mobile: Lang Switcher & Menu Button */}
-        <div className="sm:hidden flex items-center gap-1.5 shrink-0">
-          {/* Quick Mobile Language Switcher */}
-          <div className="inline-flex items-center p-0.5 rounded-full glass-pill text-[10px] font-mono select-none">
-            <button
-              onClick={() => setLang('id')}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                lang === 'id'
-                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                  : 'text-zinc-400'
-              }`}
-              aria-label="ID"
-            >
-              ID
-            </button>
-            <button
-              onClick={() => setLang('en')}
-              className={`px-2 py-0.5 rounded-full transition-all ${
-                lang === 'en'
-                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                  : 'text-zinc-400'
-              }`}
-              aria-label="EN"
-            >
-              EN
-            </button>
-          </div>
-
+        {/* Mobile Menu Button */}
+        <div className="sm:hidden flex items-center shrink-0">
           <button
             onClick={toggleMobileMenu}
             className="relative w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl text-zinc-300 hover:text-white bg-zinc-900/80 border border-white/10 hover:border-sky-400/40 active:scale-90 transition-all duration-200"
@@ -262,18 +236,18 @@ export default function Navbar({ isRevealed = true }) {
       {/* Mobile Backdrop & Drawer */}
       {mobileMenuOpen && (
         <>
-          {/* Backdrop Blur */}
+          {/* Backdrop Click Outside Scrim (Clean dark tint, no blur distortion over navbar or content) */}
           <div
             ref={overlayRef}
             onClick={closeMobileMenu}
-            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity"
+            className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
             aria-hidden="true"
           />
 
-          {/* Floating Glass Drawer */}
+          {/* Floating Dark Glass Drawer */}
           <div
             ref={drawerRef}
-            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950/95 border border-white/10 backdrop-blur-2xl shadow-[0_24px_64px_rgba(0,0,0,0.85),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden"
+            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950/98 border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.9),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden"
           >
             {/* Top specular hairline */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
