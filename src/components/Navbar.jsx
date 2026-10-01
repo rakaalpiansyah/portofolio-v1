@@ -44,7 +44,7 @@ export default function Navbar({ isRevealed = true }) {
       className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4 sm:pt-5 transition-all duration-300"
     >
       <nav
-        className={`w-full max-w-5xl flex items-center justify-between px-5 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${
+        className={`w-full max-w-5xl flex items-center justify-between px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 ${
           scrolled
             ? 'nav-glass shadow-[0_8px_30px_rgba(0,0,0,0.6)]'
             : 'bg-zinc-900/40 backdrop-blur-md border border-white/[0.06]'
@@ -53,26 +53,26 @@ export default function Navbar({ isRevealed = true }) {
         {/* Brand / Nameplate */}
         <a
           href="#"
-          className="flex items-center gap-3 text-zinc-100 group transition-all"
+          className="flex items-center gap-2.5 sm:gap-3 text-zinc-100 group transition-all shrink-0"
         >
           {/* 3D Character Avatar (Transparent WebP) */}
-          <div className="relative w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-zinc-900 border border-white/15 p-0.5 group-hover:border-sky-400/60 group-hover:shadow-[0_0_14px_rgba(56,189,248,0.3)] transition-all duration-300 shrink-0 overflow-hidden">
+          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-900 border border-white/15 p-0.5 group-hover:border-sky-400/60 group-hover:shadow-[0_0_14px_rgba(56,189,248,0.3)] transition-all duration-300 shrink-0 overflow-hidden">
             <img
               src="/avatar.webp"
               alt="Raka Alpiansyah"
               width="36"
               height="36"
-              className="w-full h-full object-cover object-top rounded-full group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover object-top rounded-full block group-hover:scale-105 transition-transform duration-300"
               loading="eager"
             />
           </div>
 
           {/* Name & Title */}
           <div className="flex flex-col text-left">
-            <span className="font-heading font-bold text-sm sm:text-[15px] text-white tracking-tight group-hover:text-sky-300 transition-colors leading-tight">
+            <span className="font-heading font-bold text-xs sm:text-[15px] text-white tracking-tight group-hover:text-sky-300 transition-colors leading-tight whitespace-nowrap">
               Raka Alpiansyah
             </span>
-            <span className="text-[10px] font-mono text-zinc-400 tracking-wider uppercase leading-tight">
+            <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400 tracking-wider uppercase leading-tight whitespace-nowrap">
               {t.nav.softwareEngineer}
             </span>
           </div>
@@ -130,7 +130,7 @@ export default function Navbar({ isRevealed = true }) {
         </div>
 
         {/* Mobile: Lang Switcher & Menu Button */}
-        <div className="sm:hidden flex items-center gap-2">
+        <div className="sm:hidden flex items-center gap-1.5 shrink-0">
           {/* Quick Mobile Language Switcher */}
           <div className="inline-flex items-center p-0.5 rounded-full glass-pill text-[10px] font-mono select-none">
             <button
