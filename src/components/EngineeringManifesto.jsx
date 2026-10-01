@@ -82,13 +82,8 @@ export default function EngineeringManifesto() {
     rimLight.position.set(0, -6, -4);
     scene.add(rimLight);
 
-    // Direct camera headlight (illuminates front face directly for crisp front visibility)
-    const headLight = new THREE.DirectionalLight(0xffffff, 3.2);
-    headLight.position.set(0, 0, 8);
-    scene.add(headLight);
-
-    // Mouse-controlled specular point light
-    const cursorLight = new THREE.PointLight(0xffffff, 4.0, 15);
+    // Mouse-controlled specular point light (follows horizontal movement)
+    const cursorLight = new THREE.PointLight(0xffffff, 3.5, 15);
     cursorLight.position.set(0, 0, 4);
     scene.add(cursorLight);
 
@@ -148,23 +143,23 @@ export default function EngineeringManifesto() {
     geoSlash.translate(0, 0, 0);
     geoRight.translate(1.62, 0, 0);
 
-    // Luxury High-Contrast Dual-Tone Materials:
-    // Front face: Architectural brushed platinum titanium with distinct diffuse readability
+    // Luxury Stealth Dual-Tone Materials:
+    // Front face: Dark obsidian titanium (dark tone ensures white foreground typography remains crisp & dominant)
     const faceMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0xf1f5f9),
-      metalness: 0.68, // Diffuse reflectivity ensures front face is always solid and visible
-      roughness: 0.28,
+      color: new THREE.Color(0x0e1422),
+      metalness: 0.94,
+      roughness: 0.22,
       clearcoat: 0.85,
       clearcoatRoughness: 0.08,
       reflectivity: 1.0,
-      emissive: new THREE.Color(0x1e293b),
-      emissiveIntensity: 0.42, // Internal architectural luminance to clearly delineate front face
+      emissive: new THREE.Color(0x0369a1),
+      emissiveIntensity: 0.04, // Subtle cybernetic undertone without washing out white text
     });
 
-    // Sides & Bevel: Deep dark obsidian ruthenium (creates striking contrast against front face)
+    // Sides & Bevel: Deep dark obsidian ruthenium
     const sideMaterial = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0x060a12),
-      metalness: 0.95,
+      color: new THREE.Color(0x05080f),
+      metalness: 0.96,
       roughness: 0.35,
       clearcoat: 0.6,
     });
@@ -182,7 +177,7 @@ export default function EngineeringManifesto() {
     const edgeMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.92, // High-visibility sharp boundary
+      opacity: 0.85, // Sharp, defined boundaries for < / >
     });
     // Threshold 14 deg captures all front perimeter borders and 3D chamfers
     const edgesLeft = new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 14), edgeMat);
@@ -273,19 +268,17 @@ export default function EngineeringManifesto() {
       const clientY = e.clientY - rect.top;
 
       mouse.targetX = (clientX / rect.width) * 2 - 1;
-      mouse.targetY = -(clientY / rect.height) * 2 + 1;
+      mouse.targetY = 0; // Constrained strictly to horizontal axis
 
-      // Update specular point light
+      // Update specular point light along horizontal axis
       cursorLight.position.x = mouse.targetX * 5.5;
-      cursorLight.position.y = mouse.targetY * 4.5;
+      cursorLight.position.y = 0;
 
+      // Horizontal-only drag interaction
       if (mouse.isDown) {
         const deltaX = e.clientX - mouse.prevX;
-        const deltaY = e.clientY - mouse.prevY;
         mouse.dragVelY = deltaX * 0.006;
-        mouse.dragVelX = deltaY * 0.006;
         mouse.dragRotY += mouse.dragVelY;
-        mouse.dragRotX += mouse.dragVelX;
         mouse.prevX = e.clientX;
         mouse.prevY = e.clientY;
       }
@@ -332,23 +325,20 @@ export default function EngineeringManifesto() {
 
       const delta = clock.getDelta();
 
-      // Inertia drag damping
+      // Inertia drag damping (horizontal only)
       if (!mouse.isDown) {
-        mouse.dragVelX *= 0.93;
         mouse.dragVelY *= 0.93;
-        mouse.dragRotX += mouse.dragVelX;
         mouse.dragRotY += mouse.dragVelY;
       }
 
-      // Smooth mouse follow
+      // Smooth mouse follow (horizontal only)
       mouse.currX += (mouse.targetX - mouse.currX) * 0.06;
-      mouse.currY += (mouse.targetY - mouse.currY) * 0.06;
 
       if (!prefersReducedMotion) {
-        // Continuous rotation blended with scroll scrub and cursor drag
+        // Continuous rotation blended with scroll scrub and HORIZONTAL cursor interaction only (left/right)
         const scrollRot = scrollProgress * Math.PI * 2.2;
         masterGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
-        masterGroup.rotation.x = 0.12 + mouse.currY * 0.35 + mouse.dragRotX;
+        masterGroup.rotation.x = 0.08; // Locked vertical axis - rotates only horizontally (kanan/kiri)
 
         // Continuous hypnotic rotation of menacing industrial curb chains
         outerChain.group.rotation.z += delta * 0.18;
