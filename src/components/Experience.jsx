@@ -246,12 +246,6 @@ export default function Experience() {
                     <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-zinc-900/90 border border-white/10 font-mono text-xs text-zinc-200">
                       {exp.period}
                     </span>
-                    {exp.isLatest && (
-                      <span className="px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        {t.experience.currentBadge || 'Terkini'}
-                      </span>
-                    )}
                     <span className="text-[11px] font-mono text-zinc-500 hidden sm:inline">
                       {exp.tag}
                     </span>
