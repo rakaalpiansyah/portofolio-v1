@@ -1,132 +1,104 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { gsap } from '../lib/gsap';
 
+/**
+ * CustomCursor: Smooth follower circle with magnetic scale and "View" gallery mode.
+ * Automatically disabled on touch screens / coarse pointers.
+ */
 export default function CustomCursor() {
+  const cursorRef = useRef(null);
   const dotRef = useRef(null);
-  const ringRef = useRef(null);
+  const labelRef = useRef(null);
+
+  const [cursorText, setCursorText] = useState('');
   const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [ripples, setRipples] = useState([]);
+  const [isGalleryView, setIsGalleryView] = useState(false);
 
   useEffect(() => {
-    // Only active on devices with precise pointer (mouse)
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    // Only run on non-touch devices with fine pointers
+    const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!isFinePointer) return;
 
-    let mouseX = -100;
-    let mouseY = -100;
-    let ringX = -100;
-    let ringY = -100;
-    let animId;
+    document.documentElement.classList.add('has-cursor');
 
-    const onMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!isVisible) setIsVisible(true);
+    const cursor = cursorRef.current;
+    const dot = dotRef.current;
+    if (!cursor || !dot) return;
 
+    // Fast quickTo setters for 60fps buttery tracking without React state lag
+    const setCursorX = gsap.quickTo(cursor, 'x', { duration: 0.35, ease: 'power3.out' });
+    const setCursorY = gsap.quickTo(cursor, 'y', { duration: 0.35, ease: 'power3.out' });
+
+    const setDotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power2.out' });
+    const setDotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power2.out' });
+
+    const handleMouseMove = (e) => {
+      setCursorX(e.clientX);
+      setCursorY(e.clientY);
+      setDotX(e.clientX);
+      setDotY(e.clientY);
+    };
+
+    const handleMouseOver = (e) => {
       const target = e.target;
-      if (target) {
-        const interactiveEl = target.closest('a, button, [role="button"], input, textarea, select, .interactive');
-        setIsHovered(!!interactiveEl);
+      const galleryItem = target.closest('[data-cursor="view"]') || target.closest('.g-tile');
+      const interactive = target.closest('a, button, [role="button"], input, textarea, .btn');
+
+      if (galleryItem) {
+        setIsGalleryView(true);
+        setIsHovered(true);
+        setCursorText('VIEW');
+      } else if (interactive) {
+        setIsGalleryView(false);
+        setIsHovered(true);
+        setCursorText('');
+      } else {
+        setIsGalleryView(false);
+        setIsHovered(false);
+        setCursorText('');
       }
-
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
-      }
     };
 
-    const onMouseDown = (e) => {
-      setIsClicking(true);
-      const newRipple = { id: Date.now() + Math.random(), x: e.clientX, y: e.clientY };
-      setRipples((prev) => [...prev.slice(-4), newRipple]);
-      setTimeout(() => {
-        setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
-      }, 500);
-    };
-
-    const onMouseUp = () => {
-      setIsClicking(false);
-    };
-
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
-
-    const checkHover = (e) => {
-      const target = e.target;
-      if (!target) return;
-      const interactiveEl = target.closest('a, button, [role="button"], input, textarea, select, .interactive');
-      setIsHovered(!!interactiveEl);
-    };
-
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('mousedown', onMouseDown, { passive: true });
-    window.addEventListener('mouseup', onMouseUp, { passive: true });
-    window.addEventListener('mouseover', checkHover, { passive: true });
-    document.addEventListener('mouseleave', onMouseLeave);
-    document.addEventListener('mouseenter', onMouseEnter);
-
-    // Smooth lag loop for outer ring
-    const renderLoop = () => {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-      }
-      animId = requestAnimationFrame(renderLoop);
-    };
-
-    animId = requestAnimationFrame(renderLoop);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mouseover', handleMouseOver, { passive: true });
 
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mouseup', onMouseUp);
-      window.removeEventListener('mouseover', checkHover);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('mouseenter', onMouseEnter);
+      document.documentElement.classList.remove('has-cursor');
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [isVisible]);
+  }, []);
 
   return (
-    <>
-      {/* Precision inner cyan dot */}
+    <div className="hidden lg:block pointer-events-none fixed inset-0 z-[90] overflow-hidden">
+      {/* Central Tiny Dot */}
       <div
         ref={dotRef}
-        className={`custom-cursor w-2 h-2 rounded-full bg-sky-400 pointer-events-none transition-transform duration-100 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        } ${isClicking ? 'scale-75 bg-white' : 'scale-100'}`}
-        aria-hidden="true"
-      />
-      {/* Outer ring: Normal size, transparent background, and zero blur on hover */}
-      <div
-        ref={ringRef}
-        className={`custom-cursor pointer-events-none rounded-full transition-all duration-150 ease-out border ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        } ${
-          isClicking
-            ? 'w-6 h-6 border-sky-300/80 bg-transparent scale-90'
-            : isHovered
-              ? 'w-8 h-8 border-sky-400/80 bg-transparent'
-              : 'w-8 h-8 border-sky-400/40 bg-transparent'
+        className={`fixed top-0 left-0 w-1.5 h-1.5 rounded-full bg-signal -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${
+          isHovered ? 'opacity-0' : 'opacity-100'
         }`}
-        aria-hidden="true"
       />
-      {/* Click ripple pulses */}
-      {ripples.map((rip) => (
-        <span
-          key={rip.id}
-          className="fixed pointer-events-none z-[9998] rounded-full border border-sky-400/60 animate-ping"
-          style={{
-            left: rip.x - 12,
-            top: rip.y - 12,
-            width: 24,
-            height: 24,
-            animationDuration: '450ms',
-          }}
-          aria-hidden="true"
-        />
-      ))}
-    </>
+
+      {/* Outer Follower Ring / View Disk */}
+      <div
+        ref={cursorRef}
+        className={`fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center transition-all duration-300 ease-out ${
+          isGalleryView
+            ? 'w-20 h-20 bg-signal text-ink shadow-[0_0_30px_rgba(198,255,61,0.5)] scale-100'
+            : isHovered
+            ? 'w-14 h-14 border border-signal bg-signal/15 backdrop-blur-[2px] scale-100'
+            : 'w-8 h-8 border border-bone/35 scale-100'
+        }`}
+      >
+        {isGalleryView && (
+          <span
+            ref={labelRef}
+            className="font-display font-semibold text-xs tracking-wider text-ink select-none uppercase"
+          >
+            {cursorText || 'VIEW'}
+          </span>
+        )}
+      </div>
+    </div>
   );
 }

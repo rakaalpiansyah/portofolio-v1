@@ -1,732 +1,183 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import {
-  Github,
-  ChevronLeft,
-  ChevronRight,
-  Smartphone,
-  ShoppingBag,
-  Recycle,
-  Bot,
-  ExternalLink,
-  Sparkles,
-  Activity,
-  Cpu,
-  ShieldCheck,
-  Layers,
-} from 'lucide-react';
+import React, { useRef } from 'react';
+import { useGSAP, gsap, ScrollTrigger, MQ } from '../lib/gsap';
+import { revealChars } from '../lib/reveal';
+import { projectsData } from '../data/projects';
 import { useLanguage } from '../context/LanguageContext';
+import { Github, ExternalLink, ArrowUpRight } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * Projects: Horizontal Scroll Pin + Scrub Showcase
+ * - Pinned desktop track that moves horizontally as the user scrolls vertically.
+ * - Displays 6 verified real-world engineering systems with repositories & live links.
+ * - Mobile fallback: clean vertical stack (gsap.matchMedia responsive).
+ */
 export default function Projects() {
-  const { t } = useLanguage();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef(null);
-  const headerRef = useRef(null);
-  const showcaseRef = useRef(null);
-  const card3dRef = useRef(null);
-  const detailsColRef = useRef(null);
-  const isAnimating = useRef(false);
-  const touchStartX = useRef(0);
+  const { lang, t } = useLanguage();
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const headingRef = useRef(null);
 
-  // Static configs for real verified projects — unified to signature Sky Blue accent (Anti-slop / Taste)
-  const staticProjectConfigs = [
-    {
-      icon: Smartphone,
-      techStack: ['Flutter', 'Dart', 'Android Studio', 'SQLite', 'Play Console'],
-      githubUrl: 'https://github.com/rakaalpiansyah/rehat-app',
-      liveUrl: 'https://play.google.com',
-      liveLabel: 'Google Play Store',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      image: '/projects/rehat.webp',
-      type: 'mobile_app',
-    },
-    {
-      icon: Bot,
-      techStack: ['Python 3.11', 'FastAPI', 'Whisper AI', 'PyTorch', 'Railway', 'Docker'],
-      githubUrl: 'https://github.com/rakaalpiansyah/Meeting-AI-Backend',
-      liveUrl: 'https://meeting-ai-backend-production-b61e.up.railway.app/docs',
-      liveLabel: 'Railway Swagger Docs',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      type: 'speech_ai',
-    },
-    {
-      icon: Layers,
-      techStack: ['Hyperledger Fabric', 'Go / Node Chaincode', 'Docker', 'Hyperledger Caliper', 'Cryptography', 'Consortium Network'],
-      githubUrl: 'https://github.com/rakaalpiansyah/agritraceChain',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      type: 'blockchain',
-    },
-    {
-      icon: Cpu,
-      techStack: ['Python', 'TensorFlow', 'Keras', 'TensorFlow Lite', 'OpenCV', 'NumPy'],
-      githubUrl: 'https://github.com/rakaalpiansyah/plantvillage-disease-detection',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      type: 'vision_ai',
-    },
-    {
-      icon: Recycle,
-      techStack: ['Laravel', 'PHP', 'MySQL', 'Blade', 'REST API', 'Tailwind CSS'],
-      githubUrl: 'https://github.com/rakaalpiansyah/web-GreenV',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      type: 'waste_platform',
-    },
-    {
-      icon: ShoppingBag,
-      techStack: ['Laravel 11', 'PHP', 'MySQL', 'KiriminAja API', 'Payment Gateway', 'Watzap API'],
-      githubUrl: 'https://github.com/rakaalpiansyah',
-      color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
-      accentColor: '#38bdf8',
-      type: 'logistics_backend',
-    },
-  ];
-
-  const projects = staticProjectConfigs.map((cfg, idx) => {
-    const data = t.projects.items[idx] || {};
-    return {
-      ...cfg,
-      title: data.title || '',
-      shortTitle: data.shortTitle || '',
-      category: data.category || '',
-      tag: data.tag || '',
-      routeBadge: data.routeBadge || '',
-      subtitle: data.subtitle || '',
-      description: data.description || '',
-      challenge: data.challenge || '',
-      solution: data.solution || '',
-      metrics: data.metrics || '',
-      liveLabel: data.liveLabel || cfg.liveLabel,
-    };
-  });
-
-  const currentProject = projects[activeIndex];
-
-  const animateSlide = (newIndex, direction = 1) => {
-    if (newIndex === activeIndex) return;
-    const card = card3dRef.current;
-    const details = detailsColRef.current;
-
-    if (!card || !details) {
-      setActiveIndex(newIndex);
-      return;
-    }
-
-    // Kill any active tweens on card and details to prevent conflict / snapping
-    gsap.killTweensOf(card);
-    gsap.killTweensOf(details);
-    if (details.children) {
-      gsap.killTweensOf(details.children);
-    }
-
-    isAnimating.current = true;
-    const dir = direction >= 0 ? 1 : -1;
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isAnimating.current = false;
-      },
+  useGSAP(() => {
+    // 1. Heading masked character reveal
+    revealChars(headingRef.current, {
+      trigger: headingRef.current,
+      start: 'top 85%',
     });
 
-    // Step 1: Fluid 3D Exit Animation
-    tl.to(card, {
-      x: -45 * dir,
-      rotationY: -14 - 15 * dir,
-      rotationX: 2,
-      opacity: 0,
-      scale: 0.93,
-      duration: 0.22,
-      ease: 'power2.in',
-    })
-      .to(
-        details,
-        {
-          opacity: 0,
-          y: -8 * dir,
-          duration: 0.16,
-          ease: 'power2.in',
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return;
+
+    // 2. Responsive matchMedia: Horizontal Pin on Desktop, Vertical on Mobile
+    const mm = gsap.matchMedia();
+
+    mm.add(MQ.desktop, () => {
+      const scrollDistance = track.scrollWidth - window.innerWidth;
+
+      gsap.to(track, {
+        x: -scrollDistance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${scrollDistance}`,
+          pin: true,
+          scrub: 1.2,
+          invalidateOnRefresh: true,
         },
-        '<0.02'
-      )
-      // Step 2: Swap content via React state while elements are invisible
-      .call(() => {
-        setActiveIndex(newIndex);
-      })
-      // Step 3: Stage incoming state
-      .call(() => {
-        gsap.set(card, {
-          x: 55 * dir,
-          rotationY: -14 + 16 * dir,
-          rotationX: 10,
-          opacity: 0,
-          scale: 0.94,
-        });
-        gsap.set(details, {
-          opacity: 1,
-          y: 0,
-        });
-        if (details.children) {
-          gsap.set(details.children, {
-            opacity: 0,
-            y: 14,
-          });
-        }
-      })
-      // Step 4: Fluid swooping entrance
-      .to(card, {
-        x: 0,
-        rotationY: -14,
-        rotationX: 6,
-        opacity: 1,
-        scale: 1,
-        duration: 0.42,
-        ease: 'power3.out',
-      })
-      .to(
-        details.children,
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.035,
-          duration: 0.35,
-          ease: 'power2.out',
-        },
-        '-=0.28'
-      );
-  };
-
-  const nextProject = () => {
-    const nextIdx = (activeIndex + 1) % projects.length;
-    animateSlide(nextIdx, 1);
-  };
-
-  const prevProject = () => {
-    const prevIdx = (activeIndex - 1 + projects.length) % projects.length;
-    animateSlide(prevIdx, -1);
-  };
-
-  // Section Entrance
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: 'top 85%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
-
-      if (showcaseRef.current) {
-        gsap.fromTo(
-          showcaseRef.current,
-          { y: 50, opacity: 0, scale: 0.94 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.0,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: showcaseRef.current,
-              start: 'top 82%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Smooth mouse tilt tracking & initial 3D pose for card
-  useEffect(() => {
-    const card = card3dRef.current;
-    if (!card) return;
-
-    // Set initial 3D pose via GSAP to avoid React VDOM clobbering
-    gsap.set(card, {
-      rotationY: -14,
-      rotationX: 6,
-      z: 40,
-      transformPerspective: 1600,
-      transformStyle: 'preserve-3d',
+      });
     });
 
-    const showcase = card.parentElement;
-    if (!showcase) return;
-
-    const handlePointerMove = (e) => {
-      if (isAnimating.current) return;
-      const rect = card.getBoundingClientRect();
-      const rawX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-      const rawY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-
-      const clampedX = Math.max(-1, Math.min(1, rawX));
-      const clampedY = Math.max(-1, Math.min(1, rawY));
-
-      gsap.to(card, {
-        rotationY: -14 + clampedX * 10,
-        rotationX: 6 - clampedY * 8,
-        duration: 0.35,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    };
-
-    const handlePointerLeave = () => {
-      if (isAnimating.current) return;
-      gsap.to(card, {
-        rotationY: -14,
-        rotationX: 6,
-        duration: 0.6,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    };
-
-    showcase.addEventListener('pointermove', handlePointerMove);
-    showcase.addEventListener('pointerleave', handlePointerLeave);
-
-    return () => {
-      showcase.removeEventListener('pointermove', handlePointerMove);
-      showcase.removeEventListener('pointerleave', handlePointerLeave);
-    };
-  }, []);
-
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e) => {
-    const delta = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(delta) > 40) {
-      if (delta > 0) nextProject();
-      else prevProject();
-    }
-  };
-
-  const CurrentIcon = currentProject.icon;
+    return () => mm.revert();
+  }, { scope: sectionRef, dependencies: [lang] });
 
   return (
     <section
       id="projects"
-      ref={containerRef}
-      className="relative py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
+      ref={sectionRef}
+      className="relative overflow-hidden border-t border-line bg-ink"
     >
-      {/* Header */}
-      <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
-        <div>
-          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
-            {t.projects.heading}
+      {/* Top Section Header */}
+      <div className="pt-24 pb-8 wrap">
+        <span className="text-xs font-mono text-bone-3 tracking-widest uppercase block mb-3">
+          05 / Production Systems
+        </span>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <h2 ref={headingRef} className="h-section text-bone uppercase">
+            {t.projects?.heading || 'Projects.'}
           </h2>
-          <p className="text-zinc-400 text-sm sm:text-base max-w-xl">
-            {t.projects.subtitle}
+          <p className="text-bone-2 text-xs sm:text-sm font-mono max-w-md">
+            {lang === 'id'
+              ? 'Arsitektur sistem nyata, kecerdasan buatan, dan aplikasi live di Google Play Store.'
+              : 'Real-world production systems, artificial intelligence, and live app on Google Play Store.'}
           </p>
         </div>
-
-        {/* 3D Slide Navigation Controls */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-zinc-400">
-            0{activeIndex + 1} / 0{projects.length}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={prevProject}
-              className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-400 active:scale-90 active:bg-zinc-800 transition-all duration-100"
-              aria-label="Previous Project"
-              title="Proyek Sebelumnya"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={nextProject}
-              className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-400 active:scale-90 active:bg-zinc-800 transition-all duration-100"
-              aria-label="Next Project"
-              title="Proyek Selanjutnya"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
       </div>
 
-      {/* Main 3D Perspective Showcase */}
+      {/* Horizontal Slider Track (Pinned on Desktop) */}
       <div
-        ref={showcaseRef}
-        className="perspective-[1600px] w-full"
-        style={{ perspective: '1600px' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        ref={trackRef}
+        className="flex flex-col lg:flex-row lg:h-[85vh] lg:items-center px-4 sm:px-12 gap-8 lg:gap-12 pb-24 lg:pb-0"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left: 3D Tilted Perspective Preview Window */}
-          <div className="lg:col-span-6 flex justify-center py-6">
+        {projectsData.map((project) => {
+          const desc = lang === 'en' ? project.descriptionEn : project.description;
+          const challenge = lang === 'en' ? project.challengeEn : project.challenge;
+          const solution = lang === 'en' ? project.solutionEn : project.solution;
+
+          return (
             <div
-              ref={card3dRef}
-              className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-zinc-900/70 via-zinc-950 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
-              style={{
-                transformStyle: 'preserve-3d',
-              }}
+              key={project.id}
+              className="w-full lg:w-[72vw] xl:w-[62vw] flex-shrink-0 bg-ink-900 border border-line p-6 sm:p-10 flex flex-col justify-between hover:border-signal/40 transition-colors"
             >
-              {/* App / Window Header */}
-              <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4 select-none">
-                {/* Sleek Hardware Minimal Window Control Dots (Linear / Dark IDE standard) */}
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+              <div>
+                {/* Header Row: Number + Category Badge */}
+                <div className="flex items-center justify-between pb-4 border-b border-line mb-6">
+                  <span className="font-display font-semibold text-2xl text-signal">
+                    {project.num}
+                  </span>
+                  <span className="text-xs font-mono text-bone-3 tracking-wider uppercase">
+                    {project.category}
+                  </span>
+                  <span className="text-xs font-mono text-bone px-2.5 py-0.5 border border-line bg-ink">
+                    {project.badge}
+                  </span>
                 </div>
 
-                {/* Route / URL Badge */}
-                <span className="px-2.5 py-0.5 rounded-md bg-white/[0.06] border border-white/10 font-mono text-[10px] text-zinc-300 max-w-[200px] truncate">
-                  {currentProject.routeBadge}
-                </span>
+                {/* Title & Tagline */}
+                <h3 className="font-display font-semibold text-2xl sm:text-4xl text-bone mb-2">
+                  {project.title}
+                </h3>
+                <p className="font-mono text-xs sm:text-sm text-signal mb-6">
+                  {project.tagline}
+                </p>
 
-                {/* Unified Status Dot */}
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full animate-pulse bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
+                {/* Description */}
+                <p className="text-xs sm:text-sm text-bone-2 leading-relaxed mb-6">
+                  {desc}
+                </p>
+
+                {/* Engineering Challenge & Architecture Solution */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-ink border border-line mb-6">
+                  <div>
+                    <span className="text-[11px] font-mono text-bone-3 uppercase block mb-1">
+                      {lang === 'id' ? 'Tantangan Rekayasa' : 'Engineering Challenge'}
+                    </span>
+                    <p className="text-xs text-bone-2 leading-relaxed">
+                      {challenge}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-mono text-signal uppercase block mb-1">
+                      {lang === 'id' ? 'Solusi Arsitektur' : 'Architectural Solution'}
+                    </span>
+                    <p className="text-xs text-bone-2 leading-relaxed">
+                      {solution}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tech Stack Pills */}
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {project.techStack.map((tech, i) => (
+                    <span
+                      key={i}
+                      className="px-2.5 py-1 text-xs font-mono text-bone-3 bg-ink-800 border border-line"
+                    >
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Visual Mockup & Viewport Area */}
-              <div className="relative rounded-2xl glass-surface p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
-                {/* Ambient backglow — Unified Brand Glow */}
-                <div
-                  className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)',
-                  }}
-                />
-
-                {/* Case 1: Real Mobile App Screenshot (Rehat) */}
-                {currentProject.image ? (
-                  <div className="relative z-10 w-full flex items-center justify-center py-2">
-                    <img
-                      src={currentProject.image}
-                      alt={currentProject.title}
-                      width="220"
-                      height="220"
-                      loading="lazy"
-                      decoding="async"
-                      className="max-h-[200px] sm:max-h-[220px] w-auto object-contain rounded-xl shadow-2xl border border-white/10 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                ) : null}
-
-                {/* Case 2: Meeting AI — Speech Audio Waveform & Diarization Mockup */}
-                {currentProject.type === 'speech_ai' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Activity className="w-3.5 h-3.5 animate-pulse" /> WHISPER STREAMING
-                      </span>
-                      <span>00:14 / LIVE</span>
-                    </div>
-
-                    {/* Audio Waveform Bars */}
-                    <div className="flex items-end justify-center gap-1 h-10 py-1">
-                      {[35, 60, 90, 45, 80, 100, 70, 50, 85, 95, 40, 65, 80, 30, 75, 90, 60, 40].map((h, i) => (
-                        <span
-                          key={i}
-                          className="w-1.5 rounded-full bg-sky-400/80 transition-all duration-150"
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Speaker Diarization Preview Box */}
-                    <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-sky-500/30 text-[11px] leading-relaxed">
-                      <span className="text-sky-400 font-bold">[Speaker 01 - 00:08]:</span>{' '}
-                      <span className="text-zinc-200">
-                        &quot;Model diarization membagi audio rapat secara presisi dengan latensi rendah.&quot;
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span className="text-emerald-400">HTTP 200 OK • JSON</span>
-                      <span className="text-sky-400">Railway Deployed</span>
-                    </div>
-                  </div>
+              {/* Bottom Actions: GitHub Repo & Live Production Link */}
+              <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-line">
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-ghost text-xs"
+                  >
+                    <Github className="w-4 h-4" />
+                    <span>{t.projects?.sourceCode || 'GitHub Repository'}</span>
+                  </a>
                 )}
 
-                {/* Case 3: PlantVillage AI — Deep Learning Computer Vision Scanner */}
-                {currentProject.type === 'vision_ai' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Sparkles className="w-3.5 h-3.5" /> CNN 4-BLOCK INFERENCE
-                      </span>
-                      <span className="text-emerald-400 font-bold">ACC: 97.12%</span>
-                    </div>
-
-                    {/* Vision Detection Scanning Reticle */}
-                    <div className="relative h-20 rounded-xl bg-zinc-900/80 border border-dashed border-sky-500/40 p-2.5 flex items-center justify-between">
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-sky-400 uppercase block tracking-wider">
-                          Target Diagnosa
-                        </span>
-                        <span className="font-heading text-sm font-bold text-white block">
-                          PlantVillage Leaf Dataset
-                        </span>
-                        <span className="text-[10px] text-emerald-400 block">
-                          Inferensi CPU ~6ms (TFLite)
-                        </span>
-                      </div>
-                      <div className="w-12 h-12 rounded-lg border-2 border-sky-400/70 bg-sky-400/10 flex items-center justify-center text-sky-300 font-bold text-xs">
-                        97%
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>TensorFlow Lite Quantized</span>
-                      <span className="text-sky-400">Edge Device Ready</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 4: GreenV — Environmental Sustainability Platform */}
-                {currentProject.type === 'waste_platform' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Recycle className="w-3.5 h-3.5" /> UNIVERSITAS JAMBI SDGs
-                      </span>
-                      <span className="text-zinc-200 font-bold">JUARA 1</span>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-zinc-400 block mb-0.5">Sirkulasi Sampah Terverifikasi</span>
-                        <span className="font-heading text-base font-extrabold text-white">
-                          Waste-to-Reward Calculator
-                        </span>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold">
-                        Eco Point
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Smart Pickup Routing</span>
-                      <span className="text-sky-400">SDGs Action 2024</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 5: PT. Royale Essence Indonesia E-Commerce Backend */}
-                {currentProject.type === 'logistics_backend' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <ShieldCheck className="w-3.5 h-3.5" /> LOGISTICS AUTOMATION
-                      </span>
-                      <span className="text-emerald-400">AUTO-AWB</span>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-white font-bold">KiriminAja Logistics API</span>
-                        <span className="text-emerald-400 text-[10px] font-bold">Connected</span>
-                      </div>
-                      <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                        <span>Payment Gateway: Midtrans</span>
-                        <span className="text-sky-400">Watzap Bot: Active</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Automated Shipping Rates</span>
-                      <span className="text-sky-400">Production Ready</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 6: AgriTraceChain — Hyperledger Fabric Blockchain Visualizer */}
-                {currentProject.type === 'blockchain' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Layers className="w-3.5 h-3.5" /> FABRIC CHANNEL: AGRI
-                      </span>
-                      <span className="text-emerald-400 font-bold">5 ORGS CONSENSUS</span>
-                    </div>
-
-                    {/* Cryptographic Block Nodes Flow */}
-                    <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #142</span>
-                        <span className="text-sky-300 font-bold block truncate">Farmer Reg</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #143</span>
-                        <span className="text-sky-300 font-bold block truncate">Certify Batch</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #144</span>
-                        <span className="text-sky-300 font-bold block truncate">LoC Settle</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-white/10 flex items-center justify-between text-[10px]">
-                      <span className="text-zinc-300">4 Chaincodes Deployed</span>
-                      <span className="text-sky-400 font-bold">Caliper Benchmarked</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Immutable Ledger Record</span>
-                      <span className="text-sky-400">Zero-Tamper Audit</span>
-                    </div>
-                  </div>
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-solid text-xs"
+                  >
+                    <span>{project.liveLabel || 'Live Production'}</span>
+                    <ArrowUpRight className="w-4 h-4 text-ink" />
+                  </a>
                 )}
               </div>
-
-              {/* Bottom Card Bar: Category & Spec */}
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-300 font-semibold">{currentProject.metrics}</span>
-                <span className="text-zinc-400">{currentProject.category.split('&')[0]}</span>
-              </div>
             </div>
-          </div>
-
-          {/* Right: Detailed Engineering Specifications */}
-          <div ref={detailsColRef} className="lg:col-span-6 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-sky-400 mb-2">
-              <CurrentIcon className="w-4 h-4" />
-              <span>{currentProject.category}</span>
-            </div>
-
-            <h3 className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
-              {currentProject.title}
-            </h3>
-
-            <p className="text-zinc-300 font-mono text-xs sm:text-sm mb-5">
-              {currentProject.subtitle}
-            </p>
-
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              {currentProject.description}
-            </p>
-
-            {/* Challenge & Solution Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.challengeLabel || 'Tantangan Rekayasa'}</div>
-                <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.challenge}</p>
-              </div>
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.solutionLabel || 'Solusi Arsitektur'}</div>
-                <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.solution}</p>
-              </div>
-            </div>
-
-            {/* Tech Stack Chips */}
-            <div className="flex flex-wrap gap-1.5 mb-6">
-              {currentProject.techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-800/60 text-zinc-300 border border-zinc-700/60"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            {/* Action CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-zinc-800">
-              {/* Live Demo or Live Docs if available */}
-              {currentProject.liveUrl && (
-                <a
-                  href={currentProject.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm whitespace-nowrap"
-                >
-                  <span>{currentProject.liveLabel || 'Live Demo'}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
-
-              {/* GitHub Repository */}
-              <a
-                href={currentProject.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap"
-              >
-                <Github className="w-4 h-4" />
-                <span>{t.projects.sourceCode || 'GitHub Repository'}</span>
-                <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Project Selector (Bottom Segmented Control Navigation) */}
-      <div className="mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
-        {/* Segmented control bar */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-2xl glass-pill max-w-full">
-          {projects.map((p, idx) => {
-            const isActive = activeIndex === idx;
-            return (
-              <button
-                key={p.title}
-                onClick={() => {
-                  if (idx !== activeIndex) {
-                    const dir = idx > activeIndex ? 1 : -1;
-                    animateSlide(idx, dir);
-                  }
-                }}
-                className={`relative px-3 sm:px-4 py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 select-none ${
-                  isActive
-                    ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
-                }`}
-                aria-label={`Pilih proyek ${idx + 1}`}
-                title={p.title.replace(/"/g, '')}
-              >
-                {/* Mobile: compact '01', Desktop/Tablet: '01. Rehat App' */}
-                <span className="sm:hidden font-bold">0{idx + 1}</span>
-                <span className="hidden sm:inline">
-                  0{idx + 1}. {p.shortTitle}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Mobile active project title indicator */}
-        <div className="sm:hidden flex items-center gap-2 text-xs font-mono text-zinc-400 pt-0.5">
-          <span
-            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-            style={{ backgroundColor: currentProject.accentColor }}
-          />
-          <span className="font-medium text-zinc-200 truncate max-w-[260px]">
-            {currentProject.title.replace(/"/g, '')}
-          </span>
-        </div>
+          );
+        })}
       </div>
     </section>
   );

@@ -1,173 +1,197 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
+import React, { useRef } from 'react';
+import { useGSAP, gsap, CustomEase } from '../lib/gsap';
+import { revealChars, revealLines } from '../lib/reveal';
 import { useLanguage } from '../context/LanguageContext';
+import { ArrowUpRight } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * Hero:
+ * - Monumental typography in Clash Display with masked SplitText character reveals.
+ * - Magnetic CTA buttons with subtle physical pull on pointer hover.
+ * - Production credentials strip (Google Play Store, Juara 1 MIPA SDGs, Cisco/Oracle).
+ */
 export default function Hero({ isRevealed = true }) {
-  const heroRef = useRef(null);
-  const [roleIndex, setRoleIndex] = useState(0);
-  const { t, lang, language } = useLanguage();
+  const { t } = useLanguage();
+  const containerRef = useRef(null);
+  const title1Ref = useRef(null);
+  const title2Ref = useRef(null);
+  const subtextRef = useRef(null);
+  const ctaGroupRef = useRef(null);
+  const credentialsRef = useRef(null);
+  const magneticBtnRef = useRef(null);
 
-  const roles = [
-    'Software Engineer',
-    'AI Practitioner',
-    'Backend Crafter',
-    'Fullstack Builder',
-  ];
+  // 1. Entry Animations with SplitText
+  useGSAP(() => {
+    if (!isRevealed) return;
 
-  // Role cycler every 2.4s
-  useEffect(() => {
-    const roleInterval = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % roles.length);
-    }, 2400);
-    return () => clearInterval(roleInterval);
-  }, [roles.length]);
+    // Heading chars reveal
+    revealChars(title1Ref.current, { scroll: false, delay: 0.1, stagger: 0.02, duration: 1.1 });
+    revealChars(title2Ref.current, { scroll: false, delay: 0.25, stagger: 0.02, duration: 1.1 });
 
-  // GSAP Entrance Timeline for text elements
-  useEffect(() => {
-    if (!heroRef.current) return;
-    const ctx = gsap.context(() => {
-      if (isRevealed) {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    // Subtext line-by-line masked rise
+    revealLines(subtextRef.current, { scroll: false, delay: 0.55, stagger: 0.06 });
 
-        tl.fromTo(
-          '.hero-eyebrow',
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.85, delay: 0.1 }
-        )
-          .fromTo(
-            '.hero-name',
-            { opacity: 0, y: 55, scale: 0.95, filter: 'blur(16px)' },
-            { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.3, ease: 'power4.out' },
-            '-=0.45'
-          )
-          .fromTo(
-            '.hero-role',
-            { opacity: 0, y: 25 },
-            { opacity: 1, y: 0, duration: 0.85 },
-            '-=0.6'
-          )
-          .fromTo(
-            '.hero-subtext',
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.85 },
-            '-=0.5'
-          )
-          .fromTo(
-            '.hero-cta a',
-            { opacity: 0, y: 22 },
-            { opacity: 1, y: 0, duration: 0.8, stagger: 0.12 },
-            '-=0.45'
-          )
-          .fromTo(
-            '.hero-scroll-indicator',
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.7 },
-            '-=0.3'
-          );
-      } else {
-        gsap.set(
-          ['.hero-eyebrow', '.hero-name', '.hero-role', '.hero-subtext', '.hero-cta a', '.hero-scroll-indicator'],
-          { opacity: 0 }
-        );
-      }
+    // CTAs & Credential badges rise
+    gsap.from(ctaGroupRef.current?.children || [], {
+      y: 30,
+      opacity: 0,
+      stagger: 0.08,
+      duration: 0.9,
+      delay: 0.75,
+      ease: 'expoSoft',
+    });
 
-      // Smooth scroll out animation for hero content (Bidirectional scrub)
-      gsap.to('.hero-content-wrap', {
-        y: -120,
-        opacity: 0,
-        scale: 0.93,
-        filter: 'blur(6px)',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom 20%',
-          scrub: 0.7,
-        },
-      });
-    }, heroRef);
+    gsap.from(credentialsRef.current?.children || [], {
+      y: 20,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.8,
+      delay: 0.9,
+      ease: 'expoSoft',
+    });
 
-    return () => ctx.revert();
-  }, [isRevealed]);
+    // 2. Magnetic Button Micro-interaction
+    const btn = magneticBtnRef.current;
+    if (btn) {
+      const handleMouseMove = (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        gsap.to(btn, {
+          x: x * 0.35,
+          y: y * 0.35,
+          duration: 0.3,
+          ease: 'power2.out',
+        });
+      };
 
-  const isId = (lang || language) === 'id';
+      const handleMouseLeave = () => {
+        gsap.to(btn, {
+          x: 0,
+          y: 0,
+          duration: 0.6,
+          ease: CustomEase.get('snapBack'),
+        });
+      };
+
+      btn.addEventListener('mousemove', handleMouseMove);
+      btn.addEventListener('mouseleave', handleMouseLeave);
+
+      return () => {
+        btn.removeEventListener('mousemove', handleMouseMove);
+        btn.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
+  }, { scope: containerRef, dependencies: [isRevealed, t] });
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (window.__lenis) {
+      window.__lenis.scrollTo(el, { offset: -60, duration: 1.2 });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section
       id="hero"
-      ref={heroRef}
-      className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden pt-28 pb-16"
+      ref={containerRef}
+      className="relative min-h-[100dvh] flex flex-col justify-between pt-[calc(var(--nav-h)+2.5rem)] pb-12 wrap overflow-hidden"
     >
-      {/* Centered Hero Content */}
-      <div className="hero-content-wrap relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        {/* Eyebrow */}
-        <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
-          <span className="w-8 h-px bg-zinc-700/80" />
-          <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
-            INFORMATICS ENGINEERING
-          </span>
-          <span className="w-8 h-px bg-zinc-700/80" />
+      {/* Top Meta Line: Location, Status, Engineering Specialty */}
+      <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-bone-3 tracking-wider uppercase border-b border-line pb-4">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-signal shadow-[0_0_8px_rgba(198,255,61,0.8)]" />
+          <span className="text-bone">Available for Engineering Projects</span>
         </div>
-
-        {/* Massive Editorial Name */}
-        <h1 className="hero-name text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display italic leading-[0.88] tracking-tight text-white mb-6 select-none">
-          Raka Alpiansyah
-        </h1>
-
-        {/* Dynamic Role Cycler */}
-        <p className="hero-role text-lg sm:text-xl md:text-2xl text-zinc-200 font-light mb-4 flex items-center justify-center gap-2 flex-wrap">
-          <span>{isId ? 'Seorang' : 'A'}</span>
-          <span
-            key={roleIndex}
-            className="font-display italic text-sky-400 text-2xl sm:text-3xl md:text-4xl animate-role-fade-in inline-block font-semibold"
-          >
-            {roles[roleIndex]}
-          </span>
-          <span>{isId ? 'berdomisili di Bandung, Indonesia.' : 'lives in Bandung, Indonesia.'}</span>
-        </p>
-
-        {/* Description */}
-        <p className="hero-subtext text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed mb-8 sm:mb-10 font-light">
-          {isId
-            ? 'Informatics Engineering & software engineer. Berfokus pada rekayasa backend tangguh ber-throughput tinggi, modern web apps, dan pipeline AI cerdas dengan prinsip clean code.'
-            : 'Informatics Engineering & software engineer. Crafting high-throughput backend services, modern web apps, and intelligent AI pipelines with clean code principles.'}
-        </p>
-
-        {/* CTA Buttons - Guaranteed Side-by-Side (Berdampingan) on All Devices */}
-        <div className="hero-cta inline-flex flex-nowrap items-center justify-center gap-2.5 sm:gap-4 w-full max-w-md mx-auto">
-          {/* Primary "Explore Projects" button */}
-          <a
-            href="#projects"
-            className="group relative rounded-full p-[2px] transition-transform duration-200 hover:scale-105 active:scale-95 shrink-0"
-          >
-            <span className="absolute -inset-[1px] rounded-full accent-gradient opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-            <span className="relative flex items-center justify-center gap-1.5 sm:gap-2 rounded-full text-xs sm:text-sm font-medium px-4 sm:px-7 py-2.5 sm:py-3.5 bg-zinc-950 text-white group-hover:bg-zinc-900 transition-colors duration-200 whitespace-nowrap">
-              <span>{isId ? 'Lihat Proyek Unggulan' : 'Explore Projects'}</span>
-              <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
-            </span>
-          </a>
-
-          {/* Secondary "Reach Out" button */}
-          <a
-            href="#contact"
-            className="group relative rounded-full text-xs sm:text-sm font-medium px-4 sm:px-7 py-2.5 sm:py-3.5 bg-zinc-900/80 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition-all duration-200 hover:scale-105 active:scale-95 backdrop-blur-md whitespace-nowrap shrink-0 flex items-center justify-center"
-          >
-            <span>{isId ? 'Hubungi Saya' : 'Initiate Contact'}</span>
-          </a>
+        <div className="flex items-center gap-6">
+          <span>Bandung, ID</span>
+          <span className="hidden sm:inline">Teknik Informatika</span>
         </div>
       </div>
 
-      {/* Scroll Down Indicator */}
-      <div className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10">
-        <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-mono">
-          SCROLL
-        </span>
-        <div className="w-px h-10 bg-zinc-800 overflow-hidden relative">
-          <div className="w-full h-1/2 accent-gradient animate-scroll-down" />
+      {/* Main Monumental Stage */}
+      <div className="my-auto py-8 max-w-5xl">
+        {/* Giant Monolithic Display Headline */}
+        <div className="overflow-hidden">
+          <h1 className="h-section text-bone uppercase tracking-tightest leading-[0.88]">
+            <span ref={title1Ref} className="block">
+              {t.hero.headlinePrefix || 'Raka Alpiansyah.'}
+            </span>
+            <span
+              ref={title2Ref}
+              className="block text-bone-2 hover:text-signal transition-colors duration-500"
+            >
+              {t.hero.headlineHighlight || 'Software & AI.'}
+            </span>
+          </h1>
+        </div>
+
+        {/* Narrative Subtext (Max 20 words per craft standard) */}
+        <div className="mt-8 max-w-2xl">
+          <p
+            ref={subtextRef}
+            className="text-base sm:text-lg text-bone-2 leading-relaxed"
+          >
+            {t.hero.subtext}
+          </p>
+        </div>
+
+        {/* Primary Action Row with Magnetic Button */}
+        <div ref={ctaGroupRef} className="mt-10 flex flex-wrap items-center gap-5">
+          <div ref={magneticBtnRef} className="inline-block">
+            <button
+              type="button"
+              onClick={() => scrollToSection('projects')}
+              className="btn btn-solid"
+            >
+              <span>{t.hero.viewProjects || 'Lihat Proyek Unggulan'}</span>
+              <ArrowUpRight className="w-4 h-4 text-ink" />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollToSection('contact')}
+            className="btn btn-ghost"
+          >
+            <span>{t.hero.contactMe || 'Hubungi Saya'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Bottom Production Credentials Strip (Real Evidence Over Claims) */}
+      <div
+        ref={credentialsRef}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-line"
+      >
+        <div className="flex flex-col">
+          <span className="text-xs font-mono text-bone-3 tracking-wider uppercase mb-1">
+            {t.hero.m1Label || 'Google Play Store'}
+          </span>
+          <span className="font-display font-semibold text-lg text-bone">
+            {t.hero.m1Val || 'Live App (Rehat)'}
+          </span>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-xs font-mono text-bone-3 tracking-wider uppercase mb-1">
+            {t.hero.m2Label || 'Juara 1 MIPA'}
+          </span>
+          <span className="font-display font-semibold text-lg text-signal">
+            {t.hero.m2Val || 'SDGs Nasional 2024'}
+          </span>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-xs font-mono text-bone-3 tracking-wider uppercase mb-1">
+            {t.hero.m3Label || 'Sertifikasi Resmi'}
+          </span>
+          <span className="font-display font-semibold text-lg text-bone">
+            {t.hero.m3Val || 'Cloud, Cisco, Oracle'}
+          </span>
         </div>
       </div>
     </section>

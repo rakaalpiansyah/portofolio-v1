@@ -1,73 +1,84 @@
 import React from 'react';
-import { ArrowUp, Github, Linkedin, Instagram, Mail } from 'lucide-react';
+import { gsap, CustomEase } from '../lib/gsap';
 import { useLanguage } from '../context/LanguageContext';
+import { ArrowUp } from 'lucide-react';
 
+/**
+ * Footer:
+ * - Monumental closing typography in Clash Display.
+ * - Smooth Back to Top action with custom 'silk' ease.
+ * - Social links & copyright.
+ */
 export default function Footer() {
   const { t } = useLanguage();
+
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { duration: 1.4 });
+    } else {
+      gsap.to(window, {
+        duration: 1.4,
+        scrollTo: { y: 0, autoKill: true },
+        ease: CustomEase.get('silk'),
+      });
+    }
   };
 
   return (
-    <footer className="relative border-t border-zinc-800/80 py-10 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
-          <span className="font-heading font-semibold text-sm text-white">
+    <footer className="relative border-t border-line bg-ink py-16 wrap overflow-hidden">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+        <div>
+          <span className="text-xs font-mono text-signal tracking-widest uppercase block mb-2">
             Raka Alpiansyah
           </span>
-          <span className="text-zinc-500 text-xs font-mono">
-            &copy; {new Date().getFullYear()} {t.footer.role || 'Software Engineer.'}
-          </span>
+          <h2 className="font-display font-semibold text-3xl sm:text-5xl text-bone tracking-tight">
+            Software &amp; AI Engineer.
+          </h2>
         </div>
 
-        {/* Links & Back to top */}
-        <div className="flex items-center gap-4 text-zinc-400">
+        {/* Back to top magnetic button */}
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="btn btn-ghost text-xs group"
+          aria-label="Back to top"
+        >
+          <span>{t.footer?.backToTop || 'Kembali ke atas'}</span>
+          <ArrowUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
+        </button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-line text-xs font-mono text-bone-3">
+        <div className="flex items-center gap-6">
           <a
             href="https://github.com/rakaalpiansyah"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-            aria-label="GitHub Raka Alpiansyah"
+            className="hover:text-signal transition-colors"
           >
-            <Github className="w-4 h-4" />
+            GitHub
           </a>
-
           <a
             href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-            aria-label="LinkedIn Raka Alpiansyah"
+            className="hover:text-signal transition-colors"
           >
-            <Linkedin className="w-4 h-4" />
+            LinkedIn
           </a>
-
           <a
             href="https://instagram.com/vcols_"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-            aria-label="Instagram @vcols_"
+            className="hover:text-signal transition-colors"
           >
-            <Instagram className="w-4 h-4" />
+            Instagram
           </a>
+        </div>
 
-          <a
-            href="mailto:rakaalpiansyah@gmail.com"
-            className="hover:text-white transition-colors"
-            aria-label="Email Raka Alpiansyah"
-          >
-            <Mail className="w-4 h-4" />
-          </a>
-
-          <button
-            onClick={scrollToTop}
-            className="p-2 ml-2 rounded-xl border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white transition-colors"
-            aria-label={t.footer.backToTop || 'Kembali ke atas'}
-            title={t.footer.backToTop || 'Kembali ke atas'}
-          >
-            <ArrowUp className="w-4 h-4" />
-          </button>
+        <div className="flex items-center gap-2">
+          <span>&copy; {new Date().getFullYear()} Raka Alpiansyah.</span>
+          <span>Bandung, ID.</span>
         </div>
       </div>
     </footer>

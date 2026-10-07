@@ -1,250 +1,180 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, Server, MapPin, GraduationCap, Briefcase, Cloud, Database } from 'lucide-react';
+import React, { useRef } from 'react';
+import { useGSAP, gsap, ScrollTrigger } from '../lib/gsap';
+import { revealChars, revealLines } from '../lib/reveal';
 import { useLanguage } from '../context/LanguageContext';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * About:
+ * - Pinned text-scrub reveal on desktop: statement words illuminate as the user scrolls.
+ * - Image parallax scrub (yPercent: -15 -> 15).
+ * - Verified engineering milestones & certifications cards with subtle borders.
+ */
 export default function About() {
-  const sectionRef  = useRef(null);
-  const photoWrapRef = useRef(null);
-  const photoRef    = useRef(null);
-  const leftColRef  = useRef(null);
-  const rightColRef = useRef(null);
   const { t } = useLanguage();
+  const containerRef = useRef(null);
+  const headingRef = useRef(null);
+  const photoWrapperRef = useRef(null);
+  const photoImgRef = useRef(null);
+  const scrubStatementRef = useRef(null);
+  const milestonesRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Left column: bidirectional fade + slide up on scroll in/out
+  useGSAP(() => {
+    // 1. Heading masked character reveal
+    revealChars(headingRef.current, {
+      trigger: headingRef.current,
+      start: 'top 85%',
+    });
+
+    // 2. Image Parallax Scrub (yPercent scrub on inner image)
+    if (photoImgRef.current && photoWrapperRef.current) {
       gsap.fromTo(
-        leftColRef.current,
-        { y: 50, opacity: 0 },
+        photoImgRef.current,
+        { yPercent: -12, scale: 1.15 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
+          yPercent: 12,
+          scale: 1.05,
+          ease: 'none',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 84%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            trigger: photoWrapperRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
           },
         }
       );
+    }
 
-      // Photo clip-path wipe reveal (in and out)
+    // 3. Pinned text illumination scrub
+    const words = scrubStatementRef.current?.querySelectorAll('.scrub-word');
+    if (words && words.length > 0) {
       gsap.fromTo(
-        photoRef.current,
-        { clipPath: 'inset(100% 0% 0% 0%)', opacity: 0.6 },
+        words,
+        { opacity: 0.2, color: '#8a8a85' },
         {
-          clipPath: 'inset(0% 0% 0% 0%)',
           opacity: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 84%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
-          },
-        }
-      );
-
-      // Right column children stagger (in and out)
-      gsap.fromTo(
-        rightColRef.current?.children || [],
-        { y: 35, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
+          color: '#f5f5f0',
           stagger: 0.08,
-          duration: 0.8,
-          ease: 'power3.out',
+          ease: 'none',
           scrollTrigger: {
-            trigger: rightColRef.current,
-            start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            trigger: scrubStatementRef.current,
+            start: 'top 75%',
+            end: 'bottom 45%',
+            scrub: 0.8,
           },
         }
       );
+    }
 
-    }, sectionRef);
+    // 4. Milestones Staggered Enter
+    gsap.from(milestonesRef.current?.children || [], {
+      y: 40,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 0.9,
+      ease: 'expoSoft',
+      scrollTrigger: {
+        trigger: milestonesRef.current,
+        start: 'top 82%',
+      },
+    });
+  }, { scope: containerRef, dependencies: [t] });
 
-    return () => ctx.revert();
-  }, []);
-
-  const milestoneIcons = [Award, Cloud, Server, Database];
-
-  const quickStats = [
-    {
-      icon: MapPin,
-      label: t.about.statLocation,
-      value: t.about.statLocationVal,
-    },
-    {
-      icon: GraduationCap,
-      label: t.about.statEducation,
-      value: t.about.statEducationVal,
-    },
-    {
-      icon: Briefcase,
-      label: t.about.statFocus,
-      value: t.about.statFocusVal,
-      sub: t.about.statFocusSub,
-    },
-  ];
+  // Tokenize the statement for the pinned scroll illumination
+  const statementText = t.about.p1 || '';
+  const statementWords = statementText.split(' ');
 
   return (
     <section
       id="about"
-      ref={sectionRef}
-      className="relative py-28 px-4 sm:px-6"
+      ref={containerRef}
+      className="relative py-28 sm:py-36 wrap border-t border-line overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto">
+      {/* Section Header */}
+      <div className="max-w-4xl mb-16 sm:mb-24">
+        <span className="text-xs font-mono text-bone-3 tracking-widest uppercase block mb-3">
+          01 / Architectural Foundation
+        </span>
+        <h2 ref={headingRef} className="h-section text-bone uppercase">
+          {t.about.heading || 'About Me.'}
+        </h2>
+      </div>
 
-        {/* Main grid: 5 col photo | 7 col content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-
-          {/* LEFT COLUMN */}
+      {/* Main Grid: Portrait with Parallax + Pinned Statement */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24">
+        {/* Left Column: Authentic Portrait with Parallax */}
+        <div className="lg:col-span-5">
           <div
-            ref={leftColRef}
-            className="lg:col-span-5 flex flex-col gap-4"
+            ref={photoWrapperRef}
+            className="relative overflow-hidden aspect-[4/5] bg-ink-800 border border-line"
           >
-            {/* Photo frame */}
-            <div ref={photoWrapRef} className="relative select-none">
-              {/* Photo */}
-              <div
-                ref={photoRef}
-                className="relative overflow-hidden rounded-2xl w-full"
-              >
-                <img
-                  src="/foto1.webp"
-                  alt="Raka Alpiansyah - Software Engineer"
-                  width="480"
-                  height="480"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto block object-cover"
-                  draggable="false"
-                />
-
-                {/* Bottom gradient fade */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(to bottom, rgba(10,10,10,0) 50%, rgba(10,10,10,0.78) 100%)',
-                  }}
-                />
-
-                {/* Name badge */}
-                <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10 pointer-events-none">
-                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-sky-300/80 mb-1">
-                    {t.about.nameBadgeRole}
-                  </p>
-                  <p className="font-heading font-bold text-white text-base leading-tight">
-                    Raka Alpiansyah
-                  </p>
-                </div>
-
-                {/* Border overlay */}
-                <div className="absolute inset-0 rounded-2xl border border-white/10 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Status pill */}
-            <div className="flex items-center gap-2 px-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span className="font-mono text-[11px] text-zinc-400">{t.about.available}</span>
-            </div>
-
-            {/* Quick-stat cards */}
-            <div className="flex flex-col gap-2.5">
-              {quickStats.map((stat) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} className="card-surface rounded-xl px-4 py-3 flex items-center gap-3">
-                    <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">{stat.label}</p>
-                      <p className="font-heading text-xs font-semibold text-white leading-snug">{stat.value}</p>
-                      {stat.sub && (
-                        <p className="font-mono text-[10px] text-zinc-500 mt-0.5">{stat.sub}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Stack tags */}
-              <div className="card-surface rounded-xl px-4 py-3">
-                <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-2">{t.about.stackTitle}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <img
+              ref={photoImgRef}
+              src="/foto1.webp"
+              alt="Raka Alpiansyah - Software & AI Engineer"
+              loading="lazy"
+              className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-[filter] duration-700"
+            />
+            {/* Subtle caption bar */}
+            <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-ink via-ink/80 to-transparent flex justify-between items-end text-xs font-mono">
+              <span className="text-bone">Raka Alpiansyah</span>
+              <span className="text-signal">Bandung, ID</span>
             </div>
           </div>
+        </div>
 
-          {/* RIGHT COLUMN */}
-          <div
-            ref={rightColRef}
-            className="lg:col-span-7 flex flex-col justify-between pt-1"
-          >
-            {/* Heading + narrative */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="w-6 h-px bg-zinc-700" />
-                <span className="text-[11px] text-zinc-400 uppercase tracking-[0.25em] font-mono">
-                  PROFILE &amp; FOUNDATION
+        {/* Right Column: Progressive Pinned Text Scrub + System Deep Dive */}
+        <div className="lg:col-span-7 flex flex-col justify-between">
+          <div ref={scrubStatementRef} className="text-2xl sm:text-3xl lg:text-4xl font-display font-medium leading-snug tracking-tight mb-10">
+            {statementWords.map((word, i) => (
+              <span key={i} className="scrub-word inline-block mr-2 transition-colors">
+                {word}
+              </span>
+            ))}
+          </div>
+
+          <div className="space-y-6 text-bone-2 text-base sm:text-lg leading-relaxed border-t border-line pt-8">
+            <p>{t.about.p2}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Verified Milestones & Industry Certifications */}
+      <div className="border-t border-line pt-16">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+          <div>
+            <span className="text-xs font-mono text-bone-3 tracking-widest uppercase block mb-1">
+              Verified Credentials
+            </span>
+            <h3 className="font-display font-semibold text-2xl sm:text-3xl text-bone">
+              Pencapaian &amp; Sertifikasi Resmi
+            </h3>
+          </div>
+          <span className="text-xs font-mono text-signal mt-2 sm:mt-0">
+            Cisco · Oracle · Cloud Technical Series
+          </span>
+        </div>
+
+        <div
+          ref={milestonesRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {t.about.milestones.map((m, idx) => (
+            <div
+              key={idx}
+              className="p-6 bg-ink-900 border border-line hover:border-signal/50 transition-colors group flex flex-col justify-between"
+            >
+              <div>
+                <span className="font-mono text-xs text-bone-3 block mb-4">
+                  0{idx + 1}
                 </span>
+                <h4 className="font-display font-semibold text-lg text-bone group-hover:text-signal transition-colors mb-2">
+                  {m.title}
+                </h4>
+                <p className="text-xs font-mono text-signal/90 mb-4">{m.org}</p>
+                <p className="text-xs text-bone-2 leading-relaxed">{m.desc}</p>
               </div>
-              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-5">
-                {t.about.heading}
-              </h2>
-
-              <p className="text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
-                {t.about.p1}
-              </p>
-              <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
-                {t.about.p2}
-              </p>
             </div>
-
-            {/* Milestones grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-5 border-t border-zinc-800/80">
-              {t.about.milestones.map((item, idx) => {
-                const Icon = milestoneIcons[idx] || Award;
-                return (
-                  <div
-                    key={idx}
-                    className="card-surface p-4 sm:p-4.5 rounded-xl flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-300"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                        <span className="font-mono text-[11px] text-zinc-400 truncate">{item.org}</span>
-                      </div>
-                      <h3 className="font-heading font-semibold text-white text-xs sm:text-sm mb-1.5 leading-snug">
-                        {item.title}
-                      </h3>
-                      <p className="text-zinc-400 text-xs leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
+          ))}
         </div>
       </div>
     </section>

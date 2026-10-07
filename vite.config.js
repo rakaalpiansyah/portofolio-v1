@@ -8,12 +8,13 @@ export default defineConfig({
   build: {
     cssCodeSplit: true,
     minify: 'esbuild',
+    chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
-          'vendor-motion': ['gsap', 'lenis'],
-          'vendor-three': ['three'],
+          'vendor-motion': ['gsap', '@gsap/react', 'lenis'],
+          'vendor-three': ['three', '@react-three/fiber'],
         },
       },
     },

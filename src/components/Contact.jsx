@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, Github, Linkedin, Instagram, Send, Copy, Check } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { useGSAP } from '../lib/gsap';
+import { revealChars } from '../lib/reveal';
 import { useLanguage } from '../context/LanguageContext';
+import { Mail, Github, Linkedin, Instagram, Copy, Check, ArrowUpRight } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
+/**
+ * Contact:
+ * - Direct email clipboard copy with real-time feedback.
+ * - FormSubmit AJAX integration with prefilled mailto fallback.
+ * - Oversized Clash Display typography + direct communication channels.
+ */
 export default function Contact() {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
@@ -17,33 +21,17 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'fallback' | null
-  const sectionRef = useRef(null);
-  const contentRef = useRef(null);
+  const containerRef = useRef(null);
+  const headingRef = useRef(null);
+
   const emailAddress = 'rakaalpiansyah@gmail.com';
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        contentRef.current?.children || [],
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 82%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  useGSAP(() => {
+    revealChars(headingRef.current, {
+      trigger: headingRef.current,
+      start: 'top 85%',
+    });
+  }, { scope: containerRef, dependencies: [t] });
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(emailAddress);
@@ -78,8 +66,8 @@ export default function Contact() {
       } else {
         throw new Error('FormSubmit network response not ok');
       }
-    } catch (err) {
-      // Graceful fallback: Open mailto client with prefilled draft
+    } catch {
+      // Graceful fallback to mailto draft
       const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(
         formData.subject || 'Pesan dari Portofolio'
       )}&body=${encodeURIComponent(
@@ -95,220 +83,228 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={sectionRef}
-      className="relative py-28 px-4 sm:px-6 max-w-5xl mx-auto"
+      ref={containerRef}
+      className="relative py-28 sm:py-36 wrap border-t border-line overflow-hidden"
     >
-      <div ref={contentRef}>
-        <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
-          {t.contact.heading}
+      {/* Section Header */}
+      <div className="max-w-4xl mb-16 sm:mb-20">
+        <span className="text-xs font-mono text-bone-3 tracking-widest uppercase block mb-3">
+          06 / Connection
+        </span>
+        <h2 ref={headingRef} className="h-section text-bone uppercase">
+          {t.contact?.heading || "Let's Connect."}
         </h2>
-        <p className="text-zinc-400 text-sm sm:text-base max-w-lg mb-14">
-          {t.contact.subtitle}
+        <p className="text-bone-2 text-sm sm:text-base max-w-xl mt-4">
+          {t.contact?.subtitle}
         </p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Contact Info Card */}
-        <div className="md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        {/* Left Column: Direct Channels & Giant Email */}
+        <div className="lg:col-span-5 flex flex-col justify-between space-y-10">
           <div>
-            <h3 className="font-heading font-semibold text-lg text-white mb-5">
-              {t.contact.channelsTitle}
-            </h3>
-
-            {/* Email Box */}
-            <div className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 mb-5">
-              <div className="text-[11px] font-mono text-zinc-500 mb-1.5 flex items-center justify-between">
-                <span>{t.contact.emailLabel}</span>
-                {copied && (
-                  <span className="text-emerald-400 text-[10px] font-mono flex items-center gap-1">
-                    <Check className="w-3 h-3" /> {t.contact.copied}
-                  </span>
+            <span className="text-xs font-mono text-bone-3 uppercase tracking-wider block mb-4">
+              Direct Inquiries
+            </span>
+            <div className="p-6 bg-ink-900 border border-line mb-6">
+              <span className="text-xs font-mono text-signal block mb-2">
+                {t.contact?.emailLabel || 'Email Address'}
+              </span>
+              <a
+                href={`mailto:${emailAddress}`}
+                className="font-display font-semibold text-xl sm:text-2xl text-bone hover:text-signal transition-colors block break-all mb-4"
+              >
+                {emailAddress}
+              </a>
+              <button
+                type="button"
+                onClick={copyToClipboard}
+                className="btn btn-ghost text-xs w-full py-2"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-signal" />
+                    <span className="text-signal">{t.contact?.copied || 'Tersalin'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Salin Alamat Email</span>
+                  </>
                 )}
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-sm text-zinc-200 truncate font-mono">{emailAddress}</span>
-                <button
-                  onClick={copyToClipboard}
-                  className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-400 hover:text-white active:scale-90 transition-all duration-100 flex-shrink-0"
-                  title="Salin Email"
-                  aria-label="Salin alamat email"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
+              </button>
             </div>
 
-            {/* Social channels */}
-            <div className="space-y-2">
+            {/* Location & Availability */}
+            <div className="space-y-2 text-xs font-mono text-bone-3">
+              <div className="flex justify-between py-2 border-b border-line">
+                <span>Location</span>
+                <span className="text-bone">Bandung, Indonesia</span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-line">
+                <span>Working Mode</span>
+                <span className="text-bone">Remote / On-site</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Network Channels */}
+          <div>
+            <span className="text-xs font-mono text-bone-3 uppercase tracking-wider block mb-4">
+              Professional Networks
+            </span>
+            <div className="flex flex-col gap-2">
               <a
                 href="https://github.com/rakaalpiansyah"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="flex items-center justify-between p-3 border border-line bg-ink-900 hover:border-signal/50 hover:text-signal text-bone transition-colors"
               >
-                <Github className="w-4 h-4 text-zinc-400" />
-                <div>
-                  <span className="text-sm text-zinc-200 block">GitHub</span>
-                  <span className="text-[11px] text-zinc-500 font-mono">github.com/rakaalpiansyah</span>
+                <div className="flex items-center gap-3">
+                  <Github className="w-4 h-4" />
+                  <span className="font-mono text-xs">github.com/rakaalpiansyah</span>
                 </div>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
 
               <a
                 href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="flex items-center justify-between p-3 border border-line bg-ink-900 hover:border-signal/50 hover:text-signal text-bone transition-colors"
               >
-                <Linkedin className="w-4 h-4 text-zinc-400" />
-                <div>
-                  <span className="text-sm text-zinc-200 block">LinkedIn</span>
-                  <span className="text-[11px] text-zinc-500 font-mono">linkedin.com/in/raka-alpiansyah</span>
+                <div className="flex items-center gap-3">
+                  <Linkedin className="w-4 h-4" />
+                  <span className="font-mono text-xs">linkedin.com/in/raka-alpiansyah</span>
                 </div>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
 
               <a
                 href="https://instagram.com/vcols_"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="flex items-center justify-between p-3 border border-line bg-ink-900 hover:border-signal/50 hover:text-signal text-bone transition-colors"
               >
-                <Instagram className="w-4 h-4 text-zinc-400" />
-                <div>
-                  <span className="text-sm text-zinc-200 block">Instagram</span>
-                  <span className="text-[11px] text-zinc-500 font-mono">@vcols_</span>
+                <div className="flex items-center gap-3">
+                  <Instagram className="w-4 h-4" />
+                  <span className="font-mono text-xs">@vcols_</span>
                 </div>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
-
-          <div className="mt-6 pt-4 border-t border-zinc-800/60 text-xs text-zinc-500 flex items-center justify-between">
-            <span>{t.contact.location}</span>
-            <span>{t.contact.mode}</span>
-          </div>
         </div>
 
-        {/* Message Form */}
-        <div className="md:col-span-7 card-surface p-7 rounded-2xl">
-          <h3 className="font-heading font-semibold text-lg text-white mb-5">
-            {t.contact.formTitle}
+        {/* Right Column: Direct Message Form */}
+        <div className="lg:col-span-7 bg-ink-900 border border-line p-8 sm:p-10">
+          <h3 className="font-display font-semibold text-2xl text-bone mb-2">
+            {t.contact?.formTitle || 'Kirimkan Pesan Langsung'}
           </h3>
+          <p className="text-xs font-mono text-bone-3 mb-8">
+            Pesan akan diteruskan langsung ke kotak masuk rakaalpiansyah@gmail.com
+          </p>
 
           {submitStatus === 'success' ? (
-            <div className="p-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                <Check className="w-6 h-6" />
-              </div>
-              <h4 className="font-heading font-semibold text-white text-base">{t.contact.successTitle}</h4>
-              <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
-                {t.contact.successDesc} <span className="text-emerald-400 font-mono text-xs">{emailAddress}</span>.
+            <div className="p-8 border border-signal bg-signal/10 text-center space-y-4">
+              <span className="w-10 h-10 rounded-full bg-signal text-ink flex items-center justify-center mx-auto">
+                <Check className="w-5 h-5 font-bold" />
+              </span>
+              <h4 className="font-display font-semibold text-xl text-bone">
+                {t.contact?.successTitle || 'Pesan Berhasil Terkirim'}
+              </h4>
+              <p className="text-xs text-bone-2 font-mono">
+                Terima kasih atas pesan Anda. Saya akan segera merespons.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitStatus(null)}
-                className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+                className="btn btn-ghost text-xs mt-4"
               >
-                {t.contact.sendAnother}
-              </button>
-            </div>
-          ) : submitStatus === 'fallback' ? (
-            <div className="p-8 rounded-xl bg-sky-500/10 border border-sky-500/20 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
-                <Mail className="w-6 h-6" />
-              </div>
-              <h4 className="font-heading font-semibold text-white text-base">{t.contact.fallbackTitle}</h4>
-              <p className="text-zinc-300 text-sm max-w-md mx-auto leading-relaxed">
-                {t.contact.fallbackDesc} <span className="text-sky-400 font-mono text-xs">{emailAddress}</span>.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSubmitStatus(null)}
-                className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
-              >
-                {t.contact.backToForm}
+                {t.contact?.sendAnother || 'Kirim Pesan Lainnya'}
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.nameLabel}</label>
+                  <label htmlFor="name" className="text-xs font-mono text-bone-3 block mb-2">
+                    {t.contact?.nameLabel || 'Nama Lengkap'}
+                  </label>
                   <input
+                    id="name"
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder={t.contact.namePlaceholder}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
+                    placeholder={t.contact?.namePlaceholder || 'Nama Anda'}
+                    className="field"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.emailInputLabel}</label>
+                  <label htmlFor="email" className="text-xs font-mono text-bone-3 block mb-2">
+                    {t.contact?.emailInputLabel || 'Alamat Email'}
+                  </label>
                   <input
+                    id="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="email@contoh.com"
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
+                    placeholder="nama@email.com"
+                    className="field"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.topicLabel}</label>
+                <label htmlFor="subject" className="text-xs font-mono text-bone-3 block mb-2">
+                  {t.contact?.topicLabel || 'Topik / Keperluan'}
+                </label>
                 <input
+                  id="subject"
                   type="text"
                   required
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  placeholder={t.contact.topicPlaceholder}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors"
+                  placeholder={t.contact?.topicPlaceholder || 'Topik pembicaraan atau peluang'}
+                  className="field"
                 />
               </div>
 
               <div>
-                <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.messageLabel}</label>
+                <label htmlFor="message" className="text-xs font-mono text-bone-3 block mb-2">
+                  {t.contact?.messageLabel || 'Pesan Anda'}
+                </label>
                 <textarea
-                  rows="4"
+                  id="message"
                   required
+                  rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder={t.contact.messagePlaceholder}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800 focus:border-zinc-600 focus:outline-none text-white placeholder:text-zinc-600 text-sm transition-colors resize-none"
+                  placeholder={t.contact?.messagePlaceholder || 'Tulis pesan Anda di sini...'}
+                  className="field resize-none"
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="w-4 h-4 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin" />
-                    <span>{t.contact.sending}</span>
-                  </>
-                ) : (
-                  <>
-                    <span>{t.contact.sendBtn}</span>
-                    <Send className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-
-              <div className="text-center pt-2">
-                <a
-                  href={`mailto:${emailAddress}?subject=${encodeURIComponent(
-                    formData.subject || (t.contact.topicPlaceholder)
-                  )}`}
-                  className="text-xs font-mono text-zinc-400 hover:text-white transition-colors underline-offset-4 hover:underline"
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full btn btn-solid disabled:opacity-50"
                 >
-                  {t.contact.orMailto}
-                </a>
+                  <span>
+                    {isSubmitting
+                      ? t.contact?.sending || 'Mengirim...'
+                      : t.contact?.sendBtn || 'Kirimkan Pesan'}
+                  </span>
+                  <ArrowUpRight className="w-4 h-4 text-ink" />
+                </button>
               </div>
             </form>
           )}
         </div>
-      </div>
       </div>
     </section>
   );
