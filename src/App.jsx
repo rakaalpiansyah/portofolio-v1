@@ -15,6 +15,7 @@ import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import InteractiveBottomNet from './components/InteractiveBottomNet';
 import { LanguageProvider } from './context/LanguageContext';
 import useParallaxLag from './hooks/useParallaxLag';
 
@@ -102,9 +103,12 @@ export default function App() {
           <Skills />
           <Projects />
           <Experience />
-          <Contact />
+          <div className="relative overflow-hidden w-full">
+            <InteractiveBottomNet />
+            <Contact />
+            <Footer />
+          </div>
         </main>
-        <Footer />
       </div>
     </LanguageProvider>
   );

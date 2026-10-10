@@ -275,7 +275,7 @@ export default function Skills() {
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 85%',
           once: true,
         },
         defaults: { ease: 'power3.out' },
@@ -324,16 +324,16 @@ export default function Skills() {
       // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -100,
+          y: -40,
           opacity: 0,
-          scale: 0.93,
+          scale: 0.95,
           filter: 'blur(6px)',
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'bottom 75%',
-            end: 'bottom 20%',
-            scrub: 0.7,
+            start: 'bottom 45%',
+            end: 'bottom top',
+            scrub: 0.6,
           },
         });
       }
@@ -390,11 +390,11 @@ export default function Skills() {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
+      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
       <div ref={contentWrapRef} className="skills-content-wrap section-exit-wrap w-full">
         {/* Section Header */}
-      <div ref={headerRef} className="flex flex-col items-center text-center mb-16">
+      <div ref={headerRef} className="flex flex-col items-center text-center mb-10 sm:mb-16">
         <h2 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
           {t.skills.heading}
         </h2>

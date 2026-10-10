@@ -308,7 +308,7 @@ export default function EngineeringManifesto() {
       const height = section.clientHeight;
       camera.aspect = width / height;
       if (width < 768) {
-        camera.position.z = 9.8; // Further on mobile so "RA" fits seamlessly
+        camera.position.z = 8.6; // Perfectly frames monogram & chains within compact mobile height
       } else {
         camera.position.z = 7.8;
       }
@@ -380,34 +380,108 @@ export default function EngineeringManifesto() {
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════
-  // 2. GSAP SCROLL PROGRESS FOR 3D CANVAS (NO IN/OUT TRANSITIONS)
+  // 2. GSAP SCROLLTRIGGER PINNED KINETIC TYPOGRAPHY TIMELINE
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        onUpdate: (self) => {
-          if (section._update3DProgress) {
-            section._update3DProgress(self.progress);
-          }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ware = wareRef.current;
+    const engineer = engineerRef.current;
+    const isWord = isRef.current;
+    const future = futureRef.current;
+
+    if (!ware || !engineer || !isWord || !future) return;
+
+    const mm = gsap.matchMedia();
+
+    // ── DESKTOP & TABLET LANDSCAPE (>= 768px) ──
+    // Pinned 1-view full monumental brutalist kinetic experience
+    mm.add('(min-width: 768px)', () => {
+      // Set initial entry offsets from opposing screen edges
+      gsap.set(ware, { x: '35vw', opacity: 0.9 });
+      gsap.set(engineer, { x: '45vw', opacity: 0.9 });
+      gsap.set(isWord, { x: '-35vw', opacity: 0.9 });
+      gsap.set(future, { x: '40vw', opacity: 0.9 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=125%',
+          pin: true,
+          scrub: 1.2,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            if (section._update3DProgress) {
+              section._update3DProgress(self.progress);
+            }
+          },
         },
       });
-    }, section);
 
-    return () => ctx.revert();
+      // PHASE 1: Slide In & Lock Into Place (0% -> 45%)
+      tl.to(ware, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0)
+        .to(engineer, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.02)
+        .to(isWord, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.04)
+        .to(future, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.06);
+
+      // PHASE 2: Lock & Admire (45% -> 70%)
+      tl.to([ware, engineer, isWord, future], { opacity: 1, ease: 'none' }, 0.45);
+
+      // PHASE 3: Exit Depth Dissolve (70% -> 100%)
+      tl.to(ware, { x: '18vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
+        .to(engineer, { x: '-22vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
+        .to(isWord, { x: '22vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
+        .to(future, { x: '-28vw', opacity: 0.25, ease: 'power1.in' }, 0.72);
+
+      return () => {
+        gsap.set([ware, engineer, isWord, future], { clearProps: 'all' });
+      };
+    });
+
+    // ── MOBILE (< 768px) ──
+    // Seamless natural scroll: compact & legible with smooth subtle parallax scrub
+    mm.add('(max-width: 767px)', () => {
+      gsap.set([ware, engineer, isWord, future], { x: 0, opacity: 1 });
+
+      const mobileTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 85%',
+          end: 'bottom 15%',
+          scrub: 0.8,
+          onUpdate: (self) => {
+            if (section._update3DProgress) {
+              section._update3DProgress(self.progress);
+            }
+          },
+        },
+      });
+
+      // Subtle dynamic float during natural mobile scroll
+      mobileTl
+        .fromTo(ware, { x: '8vw' }, { x: '-4vw', ease: 'none' }, 0)
+        .fromTo(engineer, { x: '12vw' }, { x: '-6vw', ease: 'none' }, 0)
+        .fromTo(isWord, { x: '-10vw' }, { x: '5vw', ease: 'none' }, 0)
+        .fromTo(future, { x: '10vw' }, { x: '-5vw', ease: 'none' }, 0);
+
+      return () => {
+        gsap.set([ware, engineer, isWord, future], { clearProps: 'all' });
+      };
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
     <section
       id="manifesto"
       ref={sectionRef}
-      className="relative w-full h-[100dvh] bg-black text-white flex flex-col justify-center overflow-hidden select-none"
+      className="relative w-full min-h-[420px] sm:min-h-[500px] md:h-[100dvh] py-8 sm:py-12 md:py-0 bg-black text-white flex flex-col justify-center overflow-hidden select-none"
       aria-label="Software Engineer Manifesto"
     >
       {/* Screen-reader accessible landmark */}
@@ -422,10 +496,10 @@ export default function EngineeringManifesto() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          MAIN MONUMENTAL BRUTALIST TYPOGRAPHY GRID (STATIC & CRISP)
-          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI) - ZERO TRANSITION
+          MAIN KINETIC BRUTALIST TYPOGRAPHY GRID
+          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI) - ZERO SLOP CLUTTER
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none">
+      <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center md:my-auto pointer-events-none">
         
         {/* ROW 1: SOFTWARE (FLUSH TO THE EXTREME LEFT) */}
         <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.74]">

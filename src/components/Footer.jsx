@@ -9,7 +9,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative border-t border-zinc-800/80 py-10 px-4 sm:px-6">
+    <footer className="relative z-10 border-t border-zinc-800/80 py-10 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-center sm:text-left">
           <span className="font-heading font-semibold text-sm text-white">

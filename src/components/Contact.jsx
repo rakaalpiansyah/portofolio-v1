@@ -27,7 +27,7 @@ export default function Contact() {
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 85%',
           once: true,
         },
         defaults: { ease: 'power3.out' },
@@ -73,16 +73,16 @@ export default function Contact() {
       // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentRef.current) {
         gsap.to(contentRef.current, {
-          y: -100,
+          y: -40,
           opacity: 0,
-          scale: 0.93,
+          scale: 0.95,
           filter: 'blur(6px)',
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'bottom 75%',
-            end: 'bottom 20%',
-            scrub: 0.7,
+            start: 'bottom 45%',
+            end: 'bottom top',
+            scrub: 0.6,
           },
         });
       }
@@ -142,10 +142,10 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-28 px-4 sm:px-6 max-w-5xl mx-auto"
+      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-5xl mx-auto"
     >
-      <div ref={contentRef} className="contact-content-wrap section-exit-wrap w-full">
-        <div className="contact-header-block mb-14">
+      <div ref={contentRef} className="contact-content-wrap section-exit-wrap w-full relative z-10">
+        <div className="contact-header-block mb-10 sm:mb-14">
           <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
             {t.contact.heading}
           </h2>

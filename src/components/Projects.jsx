@@ -219,7 +219,7 @@ export default function Projects() {
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: 'top 80%',
+          start: 'top 85%',
           once: true,
         },
         defaults: { ease: 'power3.out' },
@@ -272,16 +272,16 @@ export default function Projects() {
       // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -100,
+          y: -40,
           opacity: 0,
-          scale: 0.93,
+          scale: 0.95,
           filter: 'blur(6px)',
           ease: 'none',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'bottom 75%',
-            end: 'bottom 20%',
-            scrub: 0.7,
+            start: 'bottom 45%',
+            end: 'bottom top',
+            scrub: 0.6,
           },
         });
       }
@@ -363,11 +363,11 @@ export default function Projects() {
     <section
       id="projects"
       ref={containerRef}
-      className="relative py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
+      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
       <div ref={contentWrapRef} className="projects-content-wrap section-exit-wrap w-full">
         {/* Header */}
-      <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+      <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
         <div>
           <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
             {t.projects.heading}

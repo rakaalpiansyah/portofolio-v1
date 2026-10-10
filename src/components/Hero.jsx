@@ -77,15 +77,15 @@ export default function Hero({ isRevealed = true }) {
 
       // Smooth scroll out animation for hero content (Bidirectional scrub)
       gsap.to('.hero-content-wrap', {
-        y: -120,
+        y: -60,
         opacity: 0,
-        scale: 0.93,
+        scale: 0.95,
         filter: 'blur(6px)',
         ease: 'none',
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
-          end: 'bottom 20%',
+          end: 'bottom 10%',
           scrub: 0.7,
         },
       });

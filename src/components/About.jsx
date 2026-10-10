@@ -74,16 +74,16 @@ export default function About() {
       // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -100,
+          y: -40,
           opacity: 0,
-          scale: 0.93,
+          scale: 0.95,
           filter: 'blur(6px)',
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'bottom 75%',
-            end: 'bottom 20%',
-            scrub: 0.7,
+            start: 'bottom 45%',
+            end: 'bottom top',
+            scrub: 0.6,
           },
         });
       }
@@ -117,7 +117,7 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-28 px-4 sm:px-6"
+      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6"
     >
       <div ref={contentWrapRef} className="about-content-wrap section-exit-wrap max-w-6xl mx-auto">
 
