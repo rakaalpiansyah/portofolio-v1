@@ -3,74 +3,90 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Award, Server, MapPin, GraduationCap, Briefcase, Cloud, Database } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import PixelPhoto from './PixelPhoto';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef  = useRef(null);
+  const contentWrapRef = useRef(null);
   const photoWrapRef = useRef(null);
-  const photoRef    = useRef(null);
+  const headingRef  = useRef(null);
   const leftColRef  = useRef(null);
   const rightColRef = useRef(null);
   const { t } = useLanguage();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Left column: bidirectional fade + slide up on scroll in/out
-      gsap.fromTo(
-        leftColRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
+      // Master choreographed entrance timeline for all parts inside About
+      const enterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+        defaults: { ease: 'power3.out' },
+      });
+
+      enterTl
+        .fromTo(
+          '.about-eyebrow',
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.65 }
+        )
+        .fromTo(
+          '.about-heading',
+          { opacity: 0, y: 40, scale: 0.96, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.95, ease: 'power4.out' },
+          '-=0.4'
+        )
+        .fromTo(
+          '.about-photo',
+          { opacity: 0, y: 50, scale: 0.93, filter: 'blur(12px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.05, ease: 'power4.out' },
+          '-=0.75'
+        )
+        .fromTo(
+          '.about-status',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          '-=0.65'
+        )
+        .fromTo(
+          ['.about-p1', '.about-p2'],
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 },
+          '-=0.55'
+        )
+        .fromTo(
+          '.about-stat-item',
+          { opacity: 0, y: 24, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.65, stagger: 0.08 },
+          '-=0.6'
+        )
+        .fromTo(
+          '.about-milestone-item',
+          { opacity: 0, y: 28, scale: 0.96, filter: 'blur(6px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.75, stagger: 0.09 },
+          '-=0.55'
+        );
+
+      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
+      if (contentWrapRef.current) {
+        gsap.to(contentWrapRef.current, {
+          y: -100,
+          opacity: 0,
+          scale: 0.93,
+          filter: 'blur(6px)',
+          ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 84%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            start: 'bottom 75%',
+            end: 'bottom 20%',
+            scrub: 0.7,
           },
-        }
-      );
-
-      // Photo clip-path wipe reveal (in and out)
-      gsap.fromTo(
-        photoRef.current,
-        { clipPath: 'inset(100% 0% 0% 0%)', opacity: 0.6 },
-        {
-          clipPath: 'inset(0% 0% 0% 0%)',
-          opacity: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 84%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
-          },
-        }
-      );
-
-      // Right column children stagger (in and out)
-      gsap.fromTo(
-        rightColRef.current?.children || [],
-        { y: 35, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.08,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: rightColRef.current,
-            start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
-          },
-        }
-      );
-
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -103,7 +119,7 @@ export default function About() {
       ref={sectionRef}
       className="relative py-28 px-4 sm:px-6"
     >
-      <div className="max-w-6xl mx-auto">
+      <div ref={contentWrapRef} className="about-content-wrap section-exit-wrap max-w-6xl mx-auto">
 
         {/* Main grid: 5 col photo | 7 col content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
@@ -113,59 +129,36 @@ export default function About() {
             ref={leftColRef}
             className="lg:col-span-5 flex flex-col gap-4"
           >
-            {/* Photo frame */}
-            <div ref={photoWrapRef} className="relative select-none">
-              {/* Photo */}
-              <div
-                ref={photoRef}
-                className="relative overflow-hidden rounded-2xl w-full"
-              >
-                <img
-                  src="/foto1.webp"
-                  alt="Raka Alpiansyah - Software Engineer"
-                  width="480"
-                  height="480"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto block object-cover"
-                  draggable="false"
-                />
-
-                {/* Bottom gradient fade */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(to bottom, rgba(10,10,10,0) 50%, rgba(10,10,10,0.78) 100%)',
-                  }}
-                />
-
-                {/* Name badge */}
-                <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-10 pointer-events-none">
-                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-sky-300/80 mb-1">
-                    {t.about.nameBadgeRole}
-                  </p>
-                  <p className="font-heading font-bold text-white text-base leading-tight">
-                    Raka Alpiansyah
-                  </p>
-                </div>
-
-                {/* Border overlay */}
-                <div className="absolute inset-0 rounded-2xl border border-white/10 pointer-events-none" />
-              </div>
+            {/* Photo frame with Pixelated GSAP Entrance */}
+            <div
+              ref={photoWrapRef}
+              data-speed="0.92"
+              className="about-photo relative select-none w-full"
+            >
+              <PixelPhoto
+                src="/foto1.webp"
+                alt="Raka Alpiansyah - Software Engineer"
+                roleBadge={t.about.nameBadgeRole}
+                name="Raka Alpiansyah"
+              />
             </div>
 
             {/* Status pill */}
-            <div className="flex items-center gap-2 px-1">
+            <div className="about-status flex items-center gap-2 px-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span className="font-mono text-[11px] text-zinc-400">{t.about.available}</span>
             </div>
 
             {/* Quick-stat cards */}
-            <div className="flex flex-col gap-2.5">
+            <div
+              data-speed="1.08"
+              data-lag="0.35"
+              className="flex flex-col gap-2.5"
+            >
               {quickStats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.label} className="card-surface rounded-xl px-4 py-3 flex items-center gap-3">
+                  <div key={stat.label} className="about-stat-item card-surface rounded-xl px-4 py-3 flex items-center gap-3">
                     <Icon className="w-4 h-4 text-sky-400 shrink-0" />
                     <div className="min-w-0">
                       <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">{stat.label}</p>
@@ -179,7 +172,7 @@ export default function About() {
               })}
 
               {/* Stack tags */}
-              <div className="card-surface rounded-xl px-4 py-3">
+              <div className="about-stat-item card-surface rounded-xl px-4 py-3">
                 <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-2">{t.about.stackTitle}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map((tag) => (
@@ -201,21 +194,21 @@ export default function About() {
             className="lg:col-span-7 flex flex-col justify-between pt-1"
           >
             {/* Heading + narrative */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2.5 mb-3">
+            <div ref={headingRef} className="mb-6">
+              <div className="about-eyebrow flex items-center gap-2.5 mb-3">
                 <span className="w-6 h-px bg-zinc-700" />
                 <span className="text-[11px] text-zinc-400 uppercase tracking-[0.25em] font-mono">
                   PROFILE &amp; FOUNDATION
                 </span>
               </div>
-              <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-5">
+              <h2 className="about-heading font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-5">
                 {t.about.heading}
               </h2>
 
-              <p className="text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
+              <p className="about-p1 text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
                 {t.about.p1}
               </p>
-              <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              <p className="about-p2 text-zinc-400 text-xs sm:text-sm leading-relaxed">
                 {t.about.p2}
               </p>
             </div>
@@ -227,7 +220,7 @@ export default function About() {
                 return (
                   <div
                     key={idx}
-                    className="card-surface p-4 sm:p-4.5 rounded-xl flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-300"
+                    className="about-milestone-item card-surface p-4 sm:p-4.5 rounded-xl flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-300"
                   >
                     <div>
                       <div className="flex items-center gap-2 mb-2">

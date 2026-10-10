@@ -87,6 +87,13 @@ html.lenis, html.lenis body {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
+  .section-exit-wrap {
+    will-change: transform, opacity, filter;
+    transform-origin: 50% 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
   .projects-track {
     perspective: 1600px;
     transform-style: preserve-3d;
@@ -472,4 +479,17 @@ html.lenis, html.lenis body {
 
 .animate-role-fade-in {
   animation: role-fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 22s linear infinite;
 }

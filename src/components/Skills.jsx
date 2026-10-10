@@ -197,6 +197,7 @@ export default function Skills() {
   const [activeKey, setActiveKey] = useState('linux');
   const [pressedKey, setPressedKey] = useState(null);
   const sectionRef = useRef(null);
+  const contentWrapRef = useRef(null);
   const headerRef = useRef(null);
   const detailsPanelRef = useRef(null);
   const keyboardDeckRef = useRef(null);
@@ -270,62 +271,71 @@ export default function Skills() {
   // Section entrance reveal
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (headerRef.current) {
-        gsap.fromTo(
+      // Master choreographed entrance timeline for all parts inside Skills
+      const enterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+        defaults: { ease: 'power3.out' },
+      });
+
+      enterTl
+        .fromTo(
           headerRef.current,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 85%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
-
-      if (detailsPanelRef.current) {
-        gsap.fromTo(
-          detailsPanelRef.current,
-          { x: -40, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
-
-      if (keyboardDeckRef.current) {
-        gsap.fromTo(
+          { opacity: 0, y: 35, scale: 0.95, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+        )
+        // 3D Keyboard Macropad drops in with physical 3D presence
+        .fromTo(
           keyboardDeckRef.current,
-          { y: 50, opacity: 0, scale: 0.92 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.0,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 78%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
+          { opacity: 0, y: 55, scale: 0.92, filter: 'blur(12px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.0, ease: 'power4.out' },
+          '-=0.5'
+        )
+        // Keycaps cascade ripple
+        .fromTo(
+          '.skills-keycap-btn',
+          { opacity: 0, y: 14, scale: 0.86 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.45, stagger: 0.025, ease: 'back.out(1.6)' },
+          '-=0.65'
+        )
+        // Details panel: Glowing emblem bloom
+        .fromTo(
+          '.skills-emblem',
+          { opacity: 0, scale: 0.75, filter: 'blur(10px)' },
+          { opacity: 1, scale: 1.0, filter: 'blur(0px)', duration: 0.75, ease: 'back.out(1.5)' },
+          '-=0.6'
+        )
+        .fromTo(
+          ['.skills-badge', '.skills-tech-title', '.skills-punchline', '.skills-desc'],
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.skills-chip',
+          { opacity: 0, y: 12, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.04 },
+          '-=0.4'
         );
+
+      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
+      if (contentWrapRef.current) {
+        gsap.to(contentWrapRef.current, {
+          y: -100,
+          opacity: 0,
+          scale: 0.93,
+          filter: 'blur(6px)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'bottom 75%',
+            end: 'bottom 20%',
+            scrub: 0.7,
+          },
+        });
       }
     }, sectionRef);
 
@@ -382,7 +392,8 @@ export default function Skills() {
       ref={sectionRef}
       className="relative py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
-      {/* Section Header */}
+      <div ref={contentWrapRef} className="skills-content-wrap section-exit-wrap w-full">
+        {/* Section Header */}
       <div ref={headerRef} className="flex flex-col items-center text-center mb-16">
         <h2 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
           {t.skills.heading}
@@ -398,7 +409,7 @@ export default function Skills() {
           {/* Top row: Category badge + Large glowing Logo Emblem */}
           <div className="flex items-center gap-4 mb-6">
             <div
-              className="w-14 h-14 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center p-3 shadow-lg relative flex-shrink-0"
+              className="skills-emblem w-14 h-14 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center p-3 shadow-lg relative flex-shrink-0"
               style={{
                 boxShadow: `0 0 25px ${currentSkill.glowColor}`,
               }}
@@ -411,7 +422,7 @@ export default function Skills() {
             </div>
 
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-300 w-fit mb-1">
+              <div className="skills-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-300 w-fit mb-1">
                 <span
                   className="w-1.5 h-1.5 rounded-full"
                   style={{ backgroundColor: currentSkill.accentColor }}
@@ -422,15 +433,15 @@ export default function Skills() {
             </div>
           </div>
 
-          <h3 className="font-heading font-black text-4xl sm:text-5xl text-white tracking-tight mb-2">
+          <h3 className="skills-tech-title font-heading font-black text-4xl sm:text-5xl text-white tracking-tight mb-2">
             {currentSkill.label}
           </h3>
 
-          <div className="text-zinc-300 font-mono text-sm sm:text-base leading-relaxed mb-5">
+          <div className="skills-punchline text-zinc-300 font-mono text-sm sm:text-base leading-relaxed mb-5">
             &quot;{currentSkill.punchline}&quot;
           </div>
 
-          <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed border-t border-zinc-800/80 pt-4 mb-6">
+          <p className="skills-desc text-zinc-400 text-xs sm:text-sm leading-relaxed border-t border-zinc-800/80 pt-4 mb-6">
             {currentSkill.description}
           </p>
 
@@ -443,7 +454,7 @@ export default function Skills() {
               {currentSkill.highlights.map((item) => (
                 <span
                   key={item}
-                  className="px-2.5 py-1 rounded-lg text-xs font-mono bg-zinc-900/70 border border-zinc-800 text-zinc-300"
+                  className="skills-chip px-2.5 py-1 rounded-lg text-xs font-mono bg-zinc-900/70 border border-zinc-800 text-zinc-300"
                 >
                   {item}
                 </span>
@@ -523,7 +534,7 @@ export default function Skills() {
                         if (activeKey !== kc.id) setActiveKey(kc.id);
                       }}
                       onFocus={() => setActiveKey(kc.id)}
-                      className={`relative group rounded-2xl p-2.5 sm:p-3 text-center font-mono font-bold transition-all duration-75 select-none focus:outline-none cursor-pointer flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] ${kc.bg} ${
+                      className={`skills-keycap-btn relative group rounded-2xl p-2.5 sm:p-3 text-center font-mono font-bold transition-all duration-75 select-none focus:outline-none cursor-pointer flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] ${kc.bg} ${
                         isSelected
                           ? 'ring-2 ring-white ring-offset-2 ring-offset-zinc-950 translate-y-1 shadow-[0_1px_0_rgba(0,0,0,0.8)]'
                           : ''
@@ -581,6 +592,7 @@ export default function Skills() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

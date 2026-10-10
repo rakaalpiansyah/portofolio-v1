@@ -16,11 +16,16 @@ import Experience from './components/Experience';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import { LanguageProvider } from './context/LanguageContext';
+import useParallaxLag from './hooks/useParallaxLag';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   const [introComplete, setIntroComplete] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  // Universal data-speed & data-lag Parallax and Trailing Engine
+  useParallaxLag(isRevealed);
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -65,7 +70,6 @@ export default function App() {
     };
   }, []);
 
-  const [isRevealed, setIsRevealed] = useState(false);
 
   const handleStartReveal = () => {
     setIsRevealed(true);

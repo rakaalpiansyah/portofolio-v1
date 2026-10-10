@@ -23,23 +23,69 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        contentRef.current?.children || [],
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.12,
-          duration: 0.85,
-          ease: 'power3.out',
+      // Master choreographed entrance timeline for all parts inside Contact
+      const enterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+        defaults: { ease: 'power3.out' },
+      });
+
+      enterTl
+        .fromTo(
+          '.contact-header-block',
+          { opacity: 0, y: 35, scale: 0.96, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+        )
+        .fromTo(
+          '.contact-channels-card',
+          { opacity: 0, y: 45, scale: 0.94, filter: 'blur(8px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.9, ease: 'power4.out' },
+          '-=0.5'
+        )
+        .fromTo(
+          '.contact-form-card',
+          { opacity: 0, y: 45, scale: 0.94, filter: 'blur(8px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.9, ease: 'power4.out' },
+          '-=0.75'
+        )
+        .fromTo(
+          '.contact-social-item',
+          { opacity: 0, x: -18 },
+          { opacity: 1, x: 0, duration: 0.5, stagger: 0.08 },
+          '-=0.6'
+        )
+        .fromTo(
+          '.contact-form-field',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 },
+          '-=0.6'
+        )
+        .fromTo(
+          '.contact-submit-btn',
+          { opacity: 0, y: 15, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.55, ease: 'back.out(1.4)' },
+          '-=0.3'
+        );
+
+      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
+      if (contentRef.current) {
+        gsap.to(contentRef.current, {
+          y: -100,
+          opacity: 0,
+          scale: 0.93,
+          filter: 'blur(6px)',
+          ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 82%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            start: 'bottom 75%',
+            end: 'bottom 20%',
+            scrub: 0.7,
           },
-        }
-      );
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -98,17 +144,19 @@ export default function Contact() {
       ref={sectionRef}
       className="relative py-28 px-4 sm:px-6 max-w-5xl mx-auto"
     >
-      <div ref={contentRef}>
-        <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
-          {t.contact.heading}
-        </h2>
-        <p className="text-zinc-400 text-sm sm:text-base max-w-lg mb-14">
-          {t.contact.subtitle}
-        </p>
+      <div ref={contentRef} className="contact-content-wrap section-exit-wrap w-full">
+        <div className="contact-header-block mb-14">
+          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
+            {t.contact.heading}
+          </h2>
+          <p className="text-zinc-400 text-sm sm:text-base max-w-lg">
+            {t.contact.subtitle}
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Contact Info Card */}
-        <div className="md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
+        <div className="contact-channels-card md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 className="font-heading font-semibold text-lg text-white mb-5">
               {t.contact.channelsTitle}
@@ -143,7 +191,7 @@ export default function Contact() {
                 href="https://github.com/rakaalpiansyah"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
               >
                 <Github className="w-4 h-4 text-zinc-400" />
                 <div>
@@ -156,7 +204,7 @@ export default function Contact() {
                 href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
               >
                 <Linkedin className="w-4 h-4 text-zinc-400" />
                 <div>
@@ -169,7 +217,7 @@ export default function Contact() {
                 href="https://instagram.com/vcols_"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
+                className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors"
               >
                 <Instagram className="w-4 h-4 text-zinc-400" />
                 <div>
@@ -187,7 +235,7 @@ export default function Contact() {
         </div>
 
         {/* Message Form */}
-        <div className="md:col-span-7 card-surface p-7 rounded-2xl">
+        <div className="contact-form-card md:col-span-7 card-surface p-7 rounded-2xl">
           <h3 className="font-heading font-semibold text-lg text-white mb-5">
             {t.contact.formTitle}
           </h3>
@@ -228,7 +276,7 @@ export default function Contact() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="contact-form-field grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.nameLabel}</label>
                   <input
@@ -253,7 +301,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div>
+              <div className="contact-form-field">
                 <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.topicLabel}</label>
                 <input
                   type="text"
@@ -265,7 +313,7 @@ export default function Contact() {
                 />
               </div>
 
-              <div>
+              <div className="contact-form-field">
                 <label className="block text-zinc-300 mb-1.5 text-xs font-medium">{t.contact.messageLabel}</label>
                 <textarea
                   rows="4"
@@ -280,7 +328,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
+                className="contact-submit-btn w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

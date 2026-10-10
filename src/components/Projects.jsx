@@ -24,6 +24,7 @@ export default function Projects() {
   const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
+  const contentWrapRef = useRef(null);
   const headerRef = useRef(null);
   const showcaseRef = useRef(null);
   const card3dRef = useRef(null);
@@ -214,43 +215,75 @@ export default function Projects() {
   // Section Entrance
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: 'top 85%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
+      // Master choreographed entrance timeline for all parts inside Projects
+      const enterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+        defaults: { ease: 'power3.out' },
+      });
 
-      if (showcaseRef.current) {
-        gsap.fromTo(
-          showcaseRef.current,
-          { y: 50, opacity: 0, scale: 0.94 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.0,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: showcaseRef.current,
-              start: 'top 82%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
+      enterTl
+        .fromTo(
+          headerRef.current,
+          { opacity: 0, y: 35, scale: 0.95, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+        )
+        // 3D Perspective Card floats in with subtle tilt and blur clearing
+        .fromTo(
+          card3dRef.current,
+          { opacity: 0, y: 55, scale: 0.9, filter: 'blur(12px)', rotationY: -22 },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', rotationY: -14, duration: 1.05, ease: 'power4.out' },
+          '-=0.55'
+        )
+        .fromTo(
+          ['.projects-meta-lead', '.projects-title-hero', '.projects-sub', '.projects-desc'],
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.65, stagger: 0.08 },
+          '-=0.7'
+        )
+        .fromTo(
+          '.projects-box',
+          { opacity: 0, y: 20, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.6, stagger: 0.1 },
+          '-=0.45'
+        )
+        .fromTo(
+          '.projects-chip',
+          { opacity: 0, y: 12, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.03 },
+          '-=0.4'
+        )
+        .fromTo(
+          '.projects-cta-btn',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 },
+          '-=0.35'
+        )
+        .fromTo(
+          '.projects-bottom-selector',
+          { opacity: 0, y: 20, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.6 },
+          '-=0.3'
         );
+
+      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
+      if (contentWrapRef.current) {
+        gsap.to(contentWrapRef.current, {
+          y: -100,
+          opacity: 0,
+          scale: 0.93,
+          filter: 'blur(6px)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'bottom 75%',
+            end: 'bottom 20%',
+            scrub: 0.7,
+          },
+        });
       }
     }, containerRef);
 
@@ -332,7 +365,8 @@ export default function Projects() {
       ref={containerRef}
       className="relative py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
-      {/* Header */}
+      <div ref={contentWrapRef} className="projects-content-wrap section-exit-wrap w-full">
+        {/* Header */}
       <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
         <div>
           <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
@@ -612,30 +646,30 @@ export default function Projects() {
 
           {/* Right: Detailed Engineering Specifications */}
           <div ref={detailsColRef} className="lg:col-span-6 flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-sky-400 mb-2">
+            <div className="projects-meta-lead inline-flex items-center gap-2 text-xs font-mono text-sky-400 mb-2">
               <CurrentIcon className="w-4 h-4" />
               <span>{currentProject.category}</span>
             </div>
 
-            <h3 className="font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
+            <h3 className="projects-title-hero font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
               {currentProject.title}
             </h3>
 
-            <p className="text-zinc-300 font-mono text-xs sm:text-sm mb-5">
+            <p className="projects-sub text-zinc-300 font-mono text-xs sm:text-sm mb-5">
               {currentProject.subtitle}
             </p>
 
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+            <p className="projects-desc text-zinc-400 text-sm leading-relaxed mb-6">
               {currentProject.description}
             </p>
 
             {/* Challenge & Solution Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
                 <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.challengeLabel || 'Tantangan Rekayasa'}</div>
                 <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.challenge}</p>
               </div>
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
                 <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.solutionLabel || 'Solusi Arsitektur'}</div>
                 <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.solution}</p>
               </div>
@@ -646,7 +680,7 @@ export default function Projects() {
               {currentProject.techStack.map((tech) => (
                 <span
                   key={tech}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-800/60 text-zinc-300 border border-zinc-700/60"
+                  className="projects-chip px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-800/60 text-zinc-300 border border-zinc-700/60"
                 >
                   {tech}
                 </span>
@@ -661,7 +695,7 @@ export default function Projects() {
                   href={currentProject.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm whitespace-nowrap"
+                  className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm whitespace-nowrap"
                 >
                   <span>{currentProject.liveLabel || 'Live Demo'}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -673,7 +707,7 @@ export default function Projects() {
                 href={currentProject.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap"
+                className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap"
               >
                 <Github className="w-4 h-4" />
                 <span>{t.projects.sourceCode || 'GitHub Repository'}</span>
@@ -685,7 +719,7 @@ export default function Projects() {
       </div>
 
       {/* Project Selector (Bottom Segmented Control Navigation) */}
-      <div className="mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
+      <div className="projects-bottom-selector mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
         {/* Segmented control bar */}
         <div className="inline-flex items-center gap-1 p-1 rounded-2xl glass-pill max-w-full">
           {projects.map((p, idx) => {
@@ -727,6 +761,7 @@ export default function Projects() {
             {currentProject.title.replace(/"/g, '')}
           </span>
         </div>
+      </div>
       </div>
     </section>
   );

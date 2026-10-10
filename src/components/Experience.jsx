@@ -9,6 +9,8 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Experience() {
   const { t } = useLanguage();
   const sectionRef = useRef(null);
+  const contentWrapRef = useRef(null);
+  const headerRef = useRef(null);
   const timelineRef = useRef(null);
   const spineLineRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -83,9 +85,44 @@ export default function Experience() {
       ? experiences
       : experiences.filter((exp) => exp.category === activeCategory);
 
-  // GSAP ScrollTrigger for spine progress and cards stagger
+  // GSAP ScrollTrigger for header entrance, spine progress, and cards stagger
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Master choreographed entrance timeline for all parts inside Experience
+      const enterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 80%',
+          once: true,
+        },
+        defaults: { ease: 'power3.out' },
+      });
+
+      enterTl
+        .fromTo(
+          headerRef.current,
+          { opacity: 0, y: 35, scale: 0.96, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+        )
+        .fromTo(
+          '.experience-tab-btn',
+          { opacity: 0, y: 15, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.45, stagger: 0.08 },
+          '-=0.45'
+        )
+        .fromTo(
+          '.experience-card-item',
+          { opacity: 0, x: -35, scale: 0.95, filter: 'blur(8px)' },
+          { opacity: 1, x: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, stagger: 0.15, ease: 'power4.out' },
+          '-=0.3'
+        )
+        .fromTo(
+          '.experience-station-node',
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.4, stagger: 0.15, ease: 'back.out(2.0)' },
+          '-=0.8'
+        );
+
       // Timeline spine drawing down on scroll
       if (spineLineRef.current && timelineRef.current) {
         gsap.fromTo(
@@ -104,25 +141,21 @@ export default function Experience() {
         );
       }
 
-      // Stagger reveal of cards (bidirectional in and out)
-      if (timelineRef.current) {
-        gsap.fromTo(
-          timelineRef.current.children,
-          { x: -32, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            stagger: 0.12,
-            duration: 0.75,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: timelineRef.current,
-              start: 'top 82%',
-              end: 'bottom 15%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
+      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
+      if (contentWrapRef.current) {
+        gsap.to(contentWrapRef.current, {
+          y: -100,
+          opacity: 0,
+          scale: 0.93,
+          filter: 'blur(6px)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'bottom 75%',
+            end: 'bottom 20%',
+            scrub: 0.7,
+          },
+        });
       }
     }, sectionRef);
 
@@ -166,8 +199,9 @@ export default function Experience() {
       ref={sectionRef}
       className="relative py-28 px-4 sm:px-6 max-w-5xl mx-auto"
     >
-      {/* Header */}
-      <div className="mb-14">
+      <div ref={contentWrapRef} className="experience-content-wrap section-exit-wrap w-full">
+        {/* Header */}
+      <div ref={headerRef} className="mb-14">
         <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
           {t.experience.heading}
         </h2>
@@ -183,7 +217,7 @@ export default function Experience() {
               <button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
-                className={`relative px-3 sm:px-4 py-2 sm:py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap select-none ${
+                className={`experience-tab-btn relative px-3 sm:px-4 py-2 sm:py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap select-none ${
                   isActive
                     ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
                     : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
@@ -210,31 +244,31 @@ export default function Experience() {
       {/* Timeline track container */}
       <div className="relative pl-7 sm:pl-10">
         {/* Background static spine */}
-        <div className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-zinc-800/80" />
+        <div className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-white/10" />
 
         {/* Scroll-driven active spine fill */}
         <div
           ref={spineLineRef}
-          className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-sky-400 via-sky-500 to-indigo-500 origin-top pointer-events-none"
+          className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-white origin-top pointer-events-none shadow-[0_0_8px_rgba(255,255,255,0.35)]"
         />
 
         {/* Timeline items list */}
         <div ref={timelineRef} className="space-y-8 sm:space-y-10">
           {filteredExperiences.map((exp) => (
-            <div key={exp.id} className="relative group">
+            <div key={exp.id} className="experience-card-item relative group">
               {/* Timeline Station Node */}
               <div
-                className={`absolute -left-[24px] sm:-left-[29px] top-5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
+                className={`experience-station-node absolute -left-[24px] sm:-left-[29px] top-5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
                   exp.isLatest
-                    ? 'bg-sky-400 ring-4 ring-sky-500/20 shadow-[0_0_14px_rgba(56,189,248,0.7)]'
-                    : 'bg-zinc-900 border-2 border-zinc-700 group-hover:border-sky-400 group-hover:scale-110'
+                    ? 'bg-white ring-4 ring-white/20 shadow-[0_0_12px_rgba(255,255,255,0.5)]'
+                    : 'bg-zinc-950 border-2 border-zinc-700 group-hover:border-white group-hover:scale-110'
                 }`}
               >
                 {exp.isLatest && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-950" />
                 )}
                 {!exp.isLatest && (
-                  <span className="w-1 h-1 rounded-full bg-zinc-500 group-hover:bg-sky-400 transition-colors" />
+                  <span className="w-1 h-1 rounded-full bg-zinc-600 group-hover:bg-white transition-colors" />
                 )}
               </div>
 
@@ -279,7 +313,7 @@ export default function Experience() {
                       key={hIdx}
                       className="text-zinc-300 text-xs sm:text-sm flex items-start gap-2.5 leading-relaxed"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400/70 mt-1.5 flex-shrink-0 group-hover:bg-sky-400 transition-colors" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/60 mt-1.5 flex-shrink-0 group-hover:bg-white transition-colors" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -300,6 +334,7 @@ export default function Experience() {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

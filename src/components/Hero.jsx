@@ -103,9 +103,13 @@ export default function Hero({ isRevealed = true }) {
       className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden pt-28 pb-16"
     >
       {/* Centered Hero Content */}
-      <div className="hero-content-wrap relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+      <div className="hero-content-wrap section-exit-wrap relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         {/* Eyebrow */}
-        <div className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8">
+        <div
+          data-speed="1.2"
+          data-lag="0.25"
+          className="hero-eyebrow flex items-center gap-2 mb-6 sm:mb-8"
+        >
           <span className="w-8 h-px bg-zinc-700/80" />
           <span className="text-xs text-zinc-400 uppercase tracking-[0.3em] font-mono">
             INFORMATICS ENGINEERING
@@ -162,7 +166,11 @@ export default function Hero({ isRevealed = true }) {
       </div>
 
       {/* Scroll Down Indicator */}
-      <div className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10">
+      <div
+        data-speed="0.8"
+        data-lag="0.4"
+        className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-10"
+      >
         <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-mono">
           SCROLL
         </span>

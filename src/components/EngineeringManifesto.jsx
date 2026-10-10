@@ -25,6 +25,8 @@ gsap.registerPlugin(ScrollTrigger);
 export default function EngineeringManifesto() {
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
+  const canvasWrapRef = useRef(null);
+  const typographyWrapRef = useRef(null);
 
   // Typography refs for GSAP scrub
   const wareRef = useRef(null);
@@ -378,97 +380,24 @@ export default function EngineeringManifesto() {
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════
-  // 2. GSAP SCROLLTRIGGER PINNED 1-VIEW FULL ANIMATION
+  // 2. GSAP SCROLL PROGRESS FOR 3D CANVAS (NO IN/OUT TRANSITIONS)
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
-      const ware = wareRef.current;
-      const engineer = engineerRef.current;
-      const isWord = isRef.current;
-      const future = futureRef.current;
-
-      if (!ware || !engineer || !isWord || !future) return;
-
-      // Initial offsets: rows enter from opposing screen edges
-      gsap.set(ware, { x: '35vw' });
-      gsap.set(engineer, { x: '45vw' });
-      gsap.set(isWord, { x: '-35vw' });
-      gsap.set(future, { x: '40vw' });
-
-      // PINNED TIMELINE:
-      // Locks into 1 full screen view as it reaches top of screen
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: '+=125%',
-          pin: true,
-          scrub: 1.2,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            if (section._update3DProgress) {
-              section._update3DProgress(self.progress);
-            }
-          },
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+        onUpdate: (self) => {
+          if (section._update3DProgress) {
+            section._update3DProgress(self.progress);
+          }
         },
       });
-
-      // ── PHASE 1: Slide In & Lock (0% -> 45%) ──
-      tl.to(
-        ware,
-        { x: '0vw', ease: 'power2.out' },
-        0
-      )
-        .to(
-          engineer,
-          { x: '0vw', ease: 'power2.out' },
-          0.02
-        )
-        .to(
-          isWord,
-          { x: '0vw', ease: 'power2.out' },
-          0.04
-        )
-        .to(
-          future,
-          { x: '0vw', ease: 'power2.out' },
-          0.06
-        );
-
-      // ── PHASE 2: Lock & Admire (45% -> 70%) ──
-      tl.to(
-        [ware, engineer, isWord, future],
-        { opacity: 1, ease: 'none' },
-        0.45
-      );
-
-      // ── PHASE 3: Exit Depth Dissolve (70% -> 100%) ──
-      tl.to(
-        ware,
-        { x: '18vw', opacity: 0.25, ease: 'power1.in' },
-        0.72
-      )
-        .to(
-          engineer,
-          { x: '-22vw', opacity: 0.25, ease: 'power1.in' },
-          0.72
-        )
-        .to(
-          isWord,
-          { x: '22vw', opacity: 0.25, ease: 'power1.in' },
-          0.72
-        )
-        .to(
-          future,
-          { x: '-28vw', opacity: 0.25, ease: 'power1.in' },
-          0.72
-        );
     }, section);
 
     return () => ctx.revert();
@@ -493,8 +422,8 @@ export default function EngineeringManifesto() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          MAIN KINETIC BRUTALIST TYPOGRAPHY GRID
-          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI) - ZERO SLOP CLUTTER
+          MAIN MONUMENTAL BRUTALIST TYPOGRAPHY GRID (STATIC & CRISP)
+          FULL EDGE-TO-EDGE (MENTOK KANAN & KIRI) - ZERO TRANSITION
           ═══════════════════════════════════════════════════════════════ */}
       <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center my-auto pointer-events-none">
         
