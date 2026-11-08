@@ -11,8 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 function LinuxLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-      {/* Tux penguin body */}
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M12 2C9.8 2 8 3.8 8 6v4c-1.1.5-2 1.6-2 2.9 0 1.2.7 2.2 1.7 2.7-.4.9-.7 1.9-.7 3 0 .8.5 1.4 1.3 1.4h7.4c.8 0 1.3-.6 1.3-1.4 0-1.1-.3-2.1-.7-3 1-.5 1.7-1.5 1.7-2.7 0-1.3-.9-2.4-2-2.9V6c0-2.2-1.8-4-4-4z" />
       <ellipse cx="12" cy="14" rx="3.2" ry="4.2" fill="#f4f4f5" />
       <circle cx="10.5" cy="5.5" r="0.7" fill="#f4f4f5" />
@@ -28,7 +27,7 @@ function LinuxLogo({ className = 'w-5 h-5' }) {
 
 function DockerLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <rect x="2" y="8" width="2.4" height="2" rx="0.3" fill="currentColor" />
       <rect x="5.4" y="8" width="2.4" height="2" rx="0.3" fill="currentColor" />
       <rect x="8.8" y="8" width="2.4" height="2" rx="0.3" fill="currentColor" />
@@ -44,7 +43,7 @@ function DockerLogo({ className = 'w-5 h-5' }) {
 
 function GitLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="18" cy="18" r="3" fill="currentColor" fillOpacity="0.25" />
       <circle cx="6" cy="6" r="3" fill="currentColor" fillOpacity="0.25" />
       <circle cx="18" cy="6" r="3" fill="currentColor" fillOpacity="0.25" />
@@ -56,7 +55,7 @@ function GitLogo({ className = 'w-5 h-5' }) {
 
 function CiscoLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <rect x="2" y="10" width="1.6" height="4.5" rx="0.6" />
       <rect x="4.5" y="7" width="1.6" height="10.5" rx="0.6" />
       <rect x="7" y="10" width="1.6" height="4.5" rx="0.6" />
@@ -72,7 +71,7 @@ function CiscoLogo({ className = 'w-5 h-5' }) {
 
 function LaravelLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M11.5 2.2a1 1 0 0 1 1 0l8.5 4.9a1 1 0 0 1 .5.9v9.8a1 1 0 0 1-.5.9l-8.5 4.9a1 1 0 0 1-1 0l-8.5-4.9a1 1 0 0 1-.5-.9V8a1 1 0 0 1 .5-.9l8.5-4.9zm0 2.2L4.5 8.5l7 4 7-4-7-4.1zm-7.5 6.1v6.9l7 4.1v-6.9l-7-4.1zm15 0l-7 4.1v6.9l7-4.1v-6.9z" />
     </svg>
   );
@@ -80,7 +79,7 @@ function LaravelLogo({ className = 'w-5 h-5' }) {
 
 function PhpLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className}>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
       <ellipse cx="12" cy="12" rx="10" ry="6.5" fill="#4338ca" />
       <text x="12" y="14.5" fontSize="6.5" fontWeight="900" fontFamily="system-ui, sans-serif" textAnchor="middle" fill="#ffffff">
         PHP
@@ -91,7 +90,7 @@ function PhpLogo({ className = 'w-5 h-5' }) {
 
 function MysqlLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M19.5 7.5c-1-1.5-2.8-2.5-4.8-2.5-2.5 0-4.5 1.5-5.5 3.5-.8 1.5-1.5 3-2.5 4-1 .8-2.2 1.2-3.7 1.2V15c2 0 3.5-.5 4.8-1.5 1.2-1 2-2.3 2.7-3.8.8-1.7 2.3-2.7 4.2-2.7 1.5 0 2.8.7 3.5 1.8l-1.5 1.2c-.5-.7-1.2-1.1-2-1.1-1.2 0-2.2.7-2.7 1.8-.4.9-.9 1.8-1.5 2.5 1.5.8 3.2 1.3 5 1.3 3.5 0 6.5-1.8 7.5-4.5l-1.7-.5z" />
       <circle cx="15.5" cy="8.5" r="0.8" fill="#ffffff" />
       <path d="M4 18h16v1.5H4zM6 21h12v1.5H6z" opacity="0.6" />
@@ -101,7 +100,7 @@ function MysqlLogo({ className = 'w-5 h-5' }) {
 
 function OracleLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M7 6h10a6 6 0 0 1 0 12H7A6 6 0 0 1 7 6zm10 9a3 3 0 0 0 0-6H7a3 3 0 0 0 0 6h10z" />
     </svg>
   );
@@ -109,7 +108,7 @@ function OracleLogo({ className = 'w-5 h-5' }) {
 
 function FlutterLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M14.2 2.5L4 12.7l3.2 3.2L20.6 2.5h-6.4zm-.2 8.5L8.5 16.5l3.2 3.2 5.5-5.5 4.8 4.8h6.4l-8-8-6.4 0z" />
     </svg>
   );
@@ -117,7 +116,7 @@ function FlutterLogo({ className = 'w-5 h-5' }) {
 
 function DartLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M4.5 3.5h7.2L20 12l-5.3 7.8L3 17.5l1.5-14zm1.8 2.2l-.8 9.5 8.2 1.6 3.6-5.3-5-5.8H6.3z" />
     </svg>
   );
@@ -125,7 +124,7 @@ function DartLogo({ className = 'w-5 h-5' }) {
 
 function ReactLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
       <ellipse cx="12" cy="12" rx="10" ry="4" />
       <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" />
       <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" />
@@ -136,7 +135,7 @@ function ReactLogo({ className = 'w-5 h-5' }) {
 
 function TsLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className}>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
       <rect x="2" y="2" width="20" height="20" rx="3" fill="#2563eb" />
       <path d="M6 8h6v2H9.5v7h-2V10H6V8zm7.5 4.5c0-1.5 1-2.5 3-2.5 1.5 0 2.5.5 3 1.2l-1.3 1.2c-.4-.4-.9-.6-1.7-.6-.8 0-1.2.3-1.2.8 0 .5.3.7 1.4 1 2 .5 2.8 1.2 2.8 2.5 0 1.6-1.2 2.6-3.2 2.6-1.8 0-2.8-.7-3.4-1.5l1.3-1.2c.5.6 1.1.9 2.1.9.8 0 1.3-.3 1.3-.8 0-.5-.4-.7-1.5-1-1.8-.4-2.6-1.1-2.6-2.6z" fill="#ffffff" />
     </svg>
@@ -145,16 +144,12 @@ function TsLogo({ className = 'w-5 h-5' }) {
 
 function JavaLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor">
-      {/* Steam lines */}
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" aria-hidden="true">
       <path d="M9 2c0 2 1.5 2.5 1.5 4.5S9 9 9 10" strokeWidth="1.6" strokeLinecap="round" />
       <path d="M13 1c0 2 1.5 2.5 1.5 4.5S13 8 13 9.5" strokeWidth="1.6" strokeLinecap="round" />
       <path d="M17 2c0 2 1.5 2.5 1.5 4.5S17 9 17 10" strokeWidth="1.6" strokeLinecap="round" />
-      {/* Cup body */}
       <path d="M5 12h12a3 3 0 0 1-3 4H8a3 3 0 0 1-3-4z" fill="currentColor" fillOpacity="0.25" strokeWidth="1.8" />
-      {/* Cup handle */}
       <path d="M17 12.5h1.5a2 2 0 0 1 0 4H15" strokeWidth="1.8" />
-      {/* Saucer */}
       <path d="M4 19.5h16" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
@@ -162,7 +157,7 @@ function JavaLogo({ className = 'w-5 h-5' }) {
 
 function JsLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className}>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
       <rect x="2" y="2" width="20" height="20" rx="3" fill="#facc15" />
       <path d="M8 8h2v6.5c0 1.5-.8 2.2-2 2.2-.6 0-1.3-.2-1.7-.5l.5-1.5c.3.2.7.4 1.1.4.5 0 .8-.3.8-.9V8zm5.5 4.5c0-1.5 1-2.5 3-2.5 1.5 0 2.5.5 3 1.2l-1.3 1.2c-.4-.4-.9-.6-1.7-.6-.8 0-1.2.3-1.2.8 0 .5.3.7 1.4 1 2 .5 2.8 1.2 2.8 2.5 0 1.6-1.2 2.6-3.2 2.6-1.8 0-2.8-.7-3.4-1.5l1.3-1.2c.5.6 1.1.9 2.1.9.8 0 1.3-.3 1.3-.8 0-.5-.4-.7-1.5-1-1.8-.4-2.6-1.1-2.6-2.6z" fill="#09090b" />
     </svg>
@@ -171,7 +166,7 @@ function JsLogo({ className = 'w-5 h-5' }) {
 
 function ApiLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M4 7h12a3 3 0 0 1 3 3v1" />
       <polyline points="7 4 4 7 7 10" />
       <path d="M20 17H8a3 3 0 0 1-3-3v-1" />
@@ -182,16 +177,12 @@ function ApiLogo({ className = 'w-5 h-5' }) {
 
 function PythonLogo({ className = 'w-5 h-5' }) {
   return (
-    <svg viewBox="0 0 24 24" className={className}>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
       <path d="M11.9 2c-3.1 0-5 1.5-5 3.5v2.5h5v1H4.5C2.5 9 1 10.9 1 14s1.5 5 3.5 5h2v-2.5c0-1.8 1.4-3.5 3.5-3.5h5v-1h-5v-5c0-1.4 1-2.5 2.5-2.5h4c1.4 0 2.5 1 2.5 2.5v1h2V5.5C21 3.5 19.1 2 16 2h-4.1zm-2.4 2a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6z" fill="#38bdf8" />
       <path d="M12.1 22c3.1 0 5-1.5 5-3.5v-2.5h-5v-1h7.4c2 0 3.5-1.9 3.5-5s-1.5-5-3.5-5h-2v2.5c0 1.8-1.4 3.5-3.5 3.5h-5v1h5v5c0 1.4-1 2.5-2.5 2.5h-4c-1.4 0-2.5-1-2.5-2.5v-1h-2v1.5C3 20.5 4.9 22 8 22h4.1zm2.4-2a.8.8 0 1 1 0-1.6.8.8 0 0 1 0 1.6z" fill="#facc15" />
     </svg>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// SKILLS COMPONENT
-// ═══════════════════════════════════════════════════════════════════
 
 export default function Skills() {
   const [activeKey, setActiveKey] = useState('linux');
@@ -204,7 +195,6 @@ export default function Skills() {
 
   const { t } = useLanguage();
 
-  // Static visual attributes for 16 Mechanical Keycaps
   const staticKeycaps = [
     { id: 'linux', key: 'L', label: 'Linux', Logo: LinuxLogo, accentColor: '#38bdf8', bg: 'bg-zinc-800 text-white border-zinc-600 shadow-[0_5px_0_#27272a]', glowColor: 'rgba(56,189,248,0.25)' },
     { id: 'docker', key: 'K', label: 'Docker', Logo: DockerLogo, accentColor: '#0284c7', bg: 'bg-sky-600 text-white border-sky-400 shadow-[0_5px_0_#0284c7]', glowColor: 'rgba(2,132,199,0.3)' },
@@ -245,9 +235,9 @@ export default function Skills() {
     }, 120);
   };
 
-  // Keyboard Event Listener
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       const char = e.key.toUpperCase();
       const matched = keycaps.find((k) => k.key === char || k.label.toUpperCase().startsWith(char));
       if (matched) {
@@ -268,10 +258,11 @@ export default function Skills() {
     };
   }, []);
 
-  // Section entrance reveal
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
-      // Master choreographed entrance timeline for all parts inside Skills
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -284,50 +275,45 @@ export default function Skills() {
       enterTl
         .fromTo(
           headerRef.current,
-          { opacity: 0, y: 35, scale: 0.95, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+          { opacity: 0, y: 28, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.7, ease: 'power4.out' }
         )
-        // 3D Keyboard Macropad drops in with physical 3D presence
         .fromTo(
           keyboardDeckRef.current,
-          { opacity: 0, y: 55, scale: 0.92, filter: 'blur(12px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.0, ease: 'power4.out' },
-          '-=0.5'
+          { opacity: 0, y: 36, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.85, ease: 'power4.out' },
+          '-=0.45'
         )
-        // Keycaps cascade ripple
         .fromTo(
           '.skills-keycap-btn',
-          { opacity: 0, y: 14, scale: 0.86 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.45, stagger: 0.025, ease: 'back.out(1.6)' },
-          '-=0.65'
-        )
-        // Details panel: Glowing emblem bloom
-        .fromTo(
-          '.skills-emblem',
-          { opacity: 0, scale: 0.75, filter: 'blur(10px)' },
-          { opacity: 1, scale: 1.0, filter: 'blur(0px)', duration: 0.75, ease: 'back.out(1.5)' },
+          { opacity: 0, y: 12, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.02, ease: 'back.out(1.5)' },
           '-=0.6'
         )
         .fromTo(
+          '.skills-emblem',
+          { opacity: 0, scale: 0.85 },
+          { opacity: 1, scale: 1.0, duration: 0.6, ease: 'back.out(1.4)' },
+          '-=0.55'
+        )
+        .fromTo(
           ['.skills-badge', '.skills-tech-title', '.skills-punchline', '.skills-desc'],
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 },
-          '-=0.5'
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.07 },
+          '-=0.45'
         )
         .fromTo(
           '.skills-chip',
-          { opacity: 0, y: 12, scale: 0.92 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.04 },
-          '-=0.4'
+          { opacity: 0, y: 10, scale: 0.95 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.35, stagger: 0.03 },
+          '-=0.35'
         );
 
-      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -40,
+          y: -36,
           opacity: 0,
-          scale: 0.95,
-          filter: 'blur(6px)',
+          scale: 0.97,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -342,7 +328,6 @@ export default function Skills() {
     return () => ctx.revert();
   }, []);
 
-  // Micro-transition when activeKey changes
   useEffect(() => {
     if (detailsPanelRef.current) {
       gsap.fromTo(
@@ -353,7 +338,6 @@ export default function Skills() {
     }
   }, [activeKey]);
 
-  // Smooth 3D deck tilt via GSAP (avoids CSS transition freezing hit-tests)
   const handleDeckMouseMove = (e) => {
     const deck = keyboardDeckRef.current;
     if (!deck) return;
@@ -393,206 +377,192 @@ export default function Skills() {
       className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
       <div ref={contentWrapRef} className="skills-content-wrap section-exit-wrap w-full">
-        {/* Section Header */}
-      <div ref={headerRef} className="flex flex-col items-center text-center mb-10 sm:mb-16">
-        <h2 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
-          {t.skills.heading}
-        </h2>
-        <span className="font-mono text-xs sm:text-sm text-zinc-500 mt-2">
-          {t.skills.hint}
-        </span>
-      </div>
+        <div ref={headerRef} className="flex flex-col items-center text-center mb-10 sm:mb-16">
+          <h2 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
+            {t.skills.heading}
+          </h2>
+          <span className="font-mono text-xs sm:text-sm text-zinc-400 mt-2">
+            {t.skills.hint}
+          </span>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-        {/* Left: Active Tech Showcase & Specs */}
-        <div ref={detailsPanelRef} className="lg:col-span-5 flex flex-col justify-center">
-          {/* Top row: Category badge + Large glowing Logo Emblem */}
-          <div className="flex items-center gap-4 mb-6">
-            <div
-              className="skills-emblem w-14 h-14 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center p-3 shadow-lg relative flex-shrink-0"
-              style={{
-                boxShadow: `0 0 25px ${currentSkill.glowColor}`,
-              }}
-            >
-              <ActiveLogo className="w-full h-full" />
-              <span
-                className="absolute inset-0 rounded-2xl pointer-events-none border opacity-60"
-                style={{ borderColor: currentSkill.accentColor }}
-              />
-            </div>
-
-            <div>
-              <div className="skills-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-300 w-fit mb-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* Left: Active Tech Showcase & Specs */}
+          <div ref={detailsPanelRef} className="lg:col-span-5 flex flex-col justify-center">
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="skills-emblem w-14 h-14 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center p-3 shadow-lg relative flex-shrink-0"
+                style={{
+                  boxShadow: `0 0 25px ${currentSkill.glowColor}`,
+                }}
+              >
+                <ActiveLogo className="w-full h-full" />
                 <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: currentSkill.accentColor }}
+                  className="absolute inset-0 rounded-2xl pointer-events-none border opacity-60"
+                  style={{ borderColor: currentSkill.accentColor }}
                 />
-                <span>{currentSkill.tag}</span>
               </div>
-              <p className="text-zinc-500 font-mono text-[11px]">{t.skills.profileBadge}</p>
+
+              <div>
+                <div className="skills-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-200 w-fit mb-1">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: currentSkill.accentColor }}
+                  />
+                  <span>{currentSkill.tag}</span>
+                </div>
+                <p className="text-zinc-400 font-mono text-[11px]">{t.skills.profileBadge}</p>
+              </div>
             </div>
-          </div>
 
-          <h3 className="skills-tech-title font-heading font-black text-4xl sm:text-5xl text-white tracking-tight mb-2">
-            {currentSkill.label}
-          </h3>
+            <h3 className="skills-tech-title font-heading font-black text-4xl sm:text-5xl text-white tracking-tight mb-2">
+              {currentSkill.label}
+            </h3>
 
-          <div className="skills-punchline text-zinc-300 font-mono text-sm sm:text-base leading-relaxed mb-5">
-            &quot;{currentSkill.punchline}&quot;
-          </div>
+            <div className="skills-punchline text-zinc-200 font-mono text-sm sm:text-base leading-relaxed mb-5">
+              &quot;{currentSkill.punchline}&quot;
+            </div>
 
-          <p className="skills-desc text-zinc-400 text-xs sm:text-sm leading-relaxed border-t border-zinc-800/80 pt-4 mb-6">
-            {currentSkill.description}
-          </p>
-
-          {/* Core Competency Highlights */}
-          <div className="mb-6">
-            <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-wider mb-2">
-              {t.skills.focusLabel}
+            <p className="skills-desc text-zinc-300 text-xs sm:text-sm leading-relaxed border-t border-zinc-800/80 pt-4 mb-6">
+              {currentSkill.description}
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {currentSkill.highlights.map((item) => (
-                <span
-                  key={item}
-                  className="skills-chip px-2.5 py-1 rounded-lg text-xs font-mono bg-zinc-900/70 border border-zinc-800 text-zinc-300"
-                >
-                  {item}
-                </span>
-              ))}
+
+            <div className="mb-6">
+              <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-wider mb-2">
+                {t.skills.focusLabel}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {currentSkill.highlights.map((item) => (
+                  <span
+                    key={item}
+                    className="skills-chip px-2.5 py-1 rounded-lg text-xs font-mono bg-zinc-900/70 border border-zinc-800 text-zinc-200"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 text-xs font-mono text-zinc-400 pt-3 border-t border-zinc-900">
+              <kbd className="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold">
+                {currentSkill.key}
+              </kbd>
+              <span>
+                {t.skills.pressKey
+                  ? t.skills.pressKey.replace('{key}', currentSkill.key)
+                  : `Tekan tombol [${currentSkill.key}] untuk beralih`}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono text-zinc-500 pt-3 border-t border-zinc-900">
-            <kbd className="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 font-bold">
-              {currentSkill.key}
-            </kbd>
-            <span>{t.skills.pressKey ? t.skills.pressKey.replace('{key}', currentSkill.key) : `Tekan tombol [${currentSkill.key}] untuk beralih`}</span>
-          </div>
-        </div>
-
-        {/* Right: 3D Mechanical Macropad with Official Logos & 100% Reliable Hit-Testing */}
-        <div className="lg:col-span-7 flex justify-center items-center py-6">
-          <div
-            className="perspective-[1400px] w-full max-w-[520px]"
-            style={{ perspective: '1400px' }}
-          >
+          {/* Right: 3D Mechanical Macropad */}
+          <div className="lg:col-span-7 flex justify-center items-center py-6">
             <div
-              ref={keyboardDeckRef}
-              onMouseMove={handleDeckMouseMove}
-              onMouseLeave={handleDeckMouseLeave}
-              className="p-5 sm:p-7 rounded-[30px] bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border-2 border-zinc-700/80 shadow-[0_30px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.18)]"
-              style={{
-                transform: 'rotateX(18deg) rotateY(12deg) rotateZ(-3deg)',
-                transformStyle: 'preserve-3d',
-              }}
+              className="perspective-[1400px] w-full max-w-[520px]"
+              style={{ perspective: '1400px' }}
             >
-              {/* Chassis Top Bar: Hardware Hex Screws + Status OLED */}
-              <div className="mb-4 pb-3 border-b border-zinc-800/80 flex items-center justify-between select-none">
-                {/* Left Screw & Brand */}
-                <div className="flex items-center gap-2">
+              <div
+                ref={keyboardDeckRef}
+                onMouseMove={handleDeckMouseMove}
+                onMouseLeave={handleDeckMouseLeave}
+                className="p-5 sm:p-7 rounded-[30px] bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border-2 border-zinc-700/80 shadow-[0_30px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                style={{
+                  transform: 'rotateX(18deg) rotateY(12deg) rotateZ(-3deg)',
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                <div className="mb-4 pb-3 border-b border-zinc-800/80 flex items-center justify-between select-none">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center">
+                      <span className="w-1 h-0.5 bg-zinc-400" />
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-400 font-bold">
+                      PRO-BOARD 16K
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full glass-pill font-mono text-[10px]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+                    <span className="text-zinc-300 uppercase">ONLINE</span>
+                    <span className="text-zinc-500">|</span>
+                    <span className="text-sky-400 font-bold uppercase">
+                      {currentSkill.key}: {currentSkill.label}
+                    </span>
+                  </div>
+
                   <span className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center">
-                    <span className="w-1 h-0.5 bg-zinc-500" />
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 font-bold">
-                    PRO-BOARD 16K
+                    <span className="w-1 h-0.5 bg-zinc-400 rotate-90" />
                   </span>
                 </div>
 
-                {/* OLED Mini Status Pill */}
-                <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-full glass-pill font-mono text-[10px]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
-                  <span className="text-zinc-400 uppercase">ONLINE</span>
-                  <span className="text-zinc-600">|</span>
-                  <span className="text-sky-400 font-bold uppercase">{currentSkill.key}: {currentSkill.label}</span>
+                <div className="grid grid-cols-4 gap-3 sm:gap-3.5">
+                  {keycaps.map((kc) => {
+                    const isSelected = activeKey === kc.id;
+                    const isDepressed = pressedKey === kc.id;
+                    const KeyLogo = kc.Logo;
+
+                    return (
+                      <button
+                        key={kc.id}
+                        type="button"
+                        onClick={() => handleKeySelect(kc.id)}
+                        onMouseEnter={() => setActiveKey(kc.id)}
+                        onFocus={() => setActiveKey(kc.id)}
+                        className={`skills-keycap-btn relative group rounded-2xl p-2.5 sm:p-3 text-center font-mono font-bold transition-all duration-75 select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 cursor-pointer flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] ${kc.bg} ${
+                          isSelected
+                            ? 'ring-2 ring-white ring-offset-2 ring-offset-zinc-950 translate-y-1 shadow-[0_1px_0_rgba(0,0,0,0.8)]'
+                            : ''
+                        } ${
+                          isDepressed
+                            ? 'translate-y-2 shadow-none'
+                            : 'hover:-translate-y-0.5 active:translate-y-2 active:shadow-none'
+                        }`}
+                        style={{
+                          boxShadow: isSelected
+                            ? `0 0 16px ${kc.glowColor}, 0 2px 0 rgba(0,0,0,0.8)`
+                            : undefined,
+                        }}
+                        title={`${kc.label} (Tekan ${kc.key})`}
+                        aria-label={`${kc.label} (${kc.key})`}
+                        aria-pressed={isSelected}
+                      >
+                        <div className="pointer-events-none w-full flex items-center justify-between text-[10px] opacity-90 leading-none">
+                          <span className="font-mono text-[9px] px-1 py-0.5 rounded bg-black/35">
+                            {kc.key}
+                          </span>
+                          {isSelected && (
+                            <span
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: kc.accentColor }}
+                            />
+                          )}
+                        </div>
+
+                        <div className="pointer-events-none my-1 flex items-center justify-center text-white filter drop-shadow">
+                          <KeyLogo className="w-5 h-5 sm:w-6 sm:h-6" />
+                        </div>
+
+                        <div className="pointer-events-none text-xs sm:text-sm font-extrabold truncate w-full text-center leading-none">
+                          {kc.label}
+                        </div>
+
+                        <div className="pointer-events-none absolute inset-x-1.5 top-1 h-[2px] bg-white/35 rounded-full" />
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {/* Right Screw */}
-                <span className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center">
-                  <span className="w-1 h-0.5 bg-zinc-500 rotate-90" />
-                </span>
-              </div>
-
-              {/* Keyboard Macropad Grid (4x4 Matrix) */}
-              <div className="grid grid-cols-4 gap-3 sm:gap-3.5">
-                {keycaps.map((kc) => {
-                  const isSelected = activeKey === kc.id;
-                  const isDepressed = pressedKey === kc.id;
-                  const KeyLogo = kc.Logo;
-
-                  return (
-                    <button
-                      key={kc.id}
-                      type="button"
-                      onClick={() => handleKeySelect(kc.id)}
-                      onMouseEnter={() => setActiveKey(kc.id)}
-                      onMouseMove={() => {
-                        if (activeKey !== kc.id) setActiveKey(kc.id);
-                      }}
-                      onPointerEnter={() => setActiveKey(kc.id)}
-                      onPointerOver={() => setActiveKey(kc.id)}
-                      onPointerMove={() => {
-                        if (activeKey !== kc.id) setActiveKey(kc.id);
-                      }}
-                      onFocus={() => setActiveKey(kc.id)}
-                      className={`skills-keycap-btn relative group rounded-2xl p-2.5 sm:p-3 text-center font-mono font-bold transition-all duration-75 select-none focus:outline-none cursor-pointer flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] ${kc.bg} ${
-                        isSelected
-                          ? 'ring-2 ring-white ring-offset-2 ring-offset-zinc-950 translate-y-1 shadow-[0_1px_0_rgba(0,0,0,0.8)]'
-                          : ''
-                      } ${
-                        isDepressed
-                          ? 'translate-y-2 shadow-none'
-                          : 'hover:-translate-y-0.5 active:translate-y-2 active:shadow-none'
-                      }`}
-                      style={{
-                        boxShadow: isSelected
-                          ? `0 0 16px ${kc.glowColor}, 0 2px 0 rgba(0,0,0,0.8)`
-                          : undefined,
-                      }}
-                      title={`${kc.label} (Tekan ${kc.key})`}
-                      aria-label={`${kc.label} (${kc.key})`}
-                    >
-                      {/* Top Stamp: Monospace Key Bind Indicator */}
-                      <div className="pointer-events-none w-full flex items-center justify-between text-[10px] opacity-75 leading-none">
-                        <span className="font-mono text-[9px] px-1 py-0.5 rounded bg-black/25">
-                          {kc.key}
-                        </span>
-                        {isSelected && (
-                          <span
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: kc.accentColor }}
-                          />
-                        )}
-                      </div>
-
-                      {/* Center: Official Vector Brand Logo */}
-                      <div className="pointer-events-none my-1 flex items-center justify-center text-white filter drop-shadow">
-                        <KeyLogo className="w-5 h-5 sm:w-6 sm:h-6" />
-                      </div>
-
-                      {/* Bottom: Crisp Tech Name */}
-                      <div className="pointer-events-none text-xs sm:text-sm font-extrabold truncate w-full text-center leading-none">
-                        {kc.label}
-                      </div>
-
-                      {/* Tactile Keycap Top-Bevel Specular Reflection */}
-                      <div className="pointer-events-none absolute inset-x-1.5 top-1 h-[2px] bg-white/35 rounded-full" />
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Chassis Bottom Bar */}
-              <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-500 select-none">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                  {t.skills.keycapsCount || '16 Keycaps Mekanikal'}
-                </span>
-                <span>{t.skills.keycapsAction || 'Klik atau arahkan kursor'}</span>
+                <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-400 select-none">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                    {t.skills.keycapsCount || '16 Keycaps Mekanikal'}
+                  </span>
+                  <span>{t.skills.keycapsAction || 'Klik atau arahkan kursor'}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

@@ -1,0 +1,26 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Raka Alpiansyah Portfolio API",
+    "version": "1.0.0",
+    "description": "Structured portfolio information, projects, skills, and experience of Raka Alpiansyah, Software & AI Engineer."
+  },
+  "servers": [
+    {
+      "url": "https://rakaalpiansyah.site"
+    }
+  ],
+  "paths": {
+    "/llms.txt": {
+      "get": {
+        "operationId": "getPortfolioSummary",
+        "summary": "Get machine-readable portfolio summary in llms.txt Markdown format",
+        "responses": {
+          "200": {
+            "description": "Markdown summary of Raka Alpiansyah's engineering portfolio"
+          }
+        }
+      }
+    }
+  }
+}

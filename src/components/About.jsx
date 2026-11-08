@@ -8,76 +8,72 @@ import PixelPhoto from './PixelPhoto';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
-  const sectionRef  = useRef(null);
+  const sectionRef = useRef(null);
   const contentWrapRef = useRef(null);
   const photoWrapRef = useRef(null);
-  const headingRef  = useRef(null);
-  const leftColRef  = useRef(null);
+  const headingRef = useRef(null);
+  const leftColRef = useRef(null);
   const rightColRef = useRef(null);
   const { t } = useLanguage();
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
-      // Master choreographed entrance timeline for all parts inside About
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 82%',
           once: true,
         },
         defaults: { ease: 'power3.out' },
       });
 
       enterTl
-        .fromTo(
-          '.about-eyebrow',
-          { opacity: 0, y: 24 },
-          { opacity: 1, y: 0, duration: 0.65 }
-        )
+        .fromTo('.about-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.55 })
         .fromTo(
           '.about-heading',
-          { opacity: 0, y: 40, scale: 0.96, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.95, ease: 'power4.out' },
-          '-=0.4'
+          { opacity: 0, y: 32, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.75, ease: 'power4.out' },
+          '-=0.35'
         )
         .fromTo(
           '.about-photo',
-          { opacity: 0, y: 50, scale: 0.93, filter: 'blur(12px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 1.05, ease: 'power4.out' },
-          '-=0.75'
-        )
-        .fromTo(
-          '.about-status',
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.5 },
-          '-=0.65'
-        )
-        .fromTo(
-          ['.about-p1', '.about-p2'],
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 0.7, stagger: 0.12 },
-          '-=0.55'
-        )
-        .fromTo(
-          '.about-stat-item',
-          { opacity: 0, y: 24, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.65, stagger: 0.08 },
+          { opacity: 0, y: 36, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.85, ease: 'power4.out' },
           '-=0.6'
         )
         .fromTo(
-          '.about-milestone-item',
-          { opacity: 0, y: 28, scale: 0.96, filter: 'blur(6px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.75, stagger: 0.09 },
+          '.about-status',
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.45 },
           '-=0.55'
+        )
+        .fromTo(
+          ['.about-p1', '.about-p2'],
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.about-stat-item',
+          { opacity: 0, y: 18, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.55, stagger: 0.07 },
+          '-=0.5'
+        )
+        .fromTo(
+          '.about-milestone-item',
+          { opacity: 0, y: 22, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.6, stagger: 0.08 },
+          '-=0.45'
         );
 
-      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -40,
+          y: -36,
           opacity: 0,
-          scale: 0.95,
-          filter: 'blur(6px)',
+          scale: 0.97,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -120,16 +116,9 @@ export default function About() {
       className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6"
     >
       <div ref={contentWrapRef} className="about-content-wrap section-exit-wrap max-w-6xl mx-auto">
-
-        {/* Main grid: 5 col photo | 7 col content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-
           {/* LEFT COLUMN */}
-          <div
-            ref={leftColRef}
-            className="lg:col-span-5 flex flex-col gap-4"
-          >
-            {/* Photo frame with Pixelated GSAP Entrance */}
+          <div ref={leftColRef} className="lg:col-span-5 flex flex-col gap-4">
             <div
               ref={photoWrapRef}
               data-speed="0.92"
@@ -143,13 +132,11 @@ export default function About() {
               />
             </div>
 
-            {/* Status pill */}
             <div className="about-status flex items-center gap-2 px-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span className="font-mono text-[11px] text-zinc-400">{t.about.available}</span>
+              <span className="font-mono text-[11px] text-zinc-300">{t.about.available}</span>
             </div>
 
-            {/* Quick-stat cards */}
             <div
               data-speed="1.08"
               data-lag="0.35"
@@ -158,42 +145,48 @@ export default function About() {
               {quickStats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.label} className="about-stat-item card-surface rounded-xl px-4 py-3 flex items-center gap-3">
+                  <div
+                    key={stat.label}
+                    className="about-stat-item card-surface rounded-xl px-4 py-3 flex items-center gap-3"
+                  >
                     <Icon className="w-4 h-4 text-sky-400 shrink-0" />
                     <div className="min-w-0">
-                      <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">{stat.label}</p>
-                      <p className="font-heading text-xs font-semibold text-white leading-snug">{stat.value}</p>
+                      <p className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider mb-0.5">
+                        {stat.label}
+                      </p>
+                      <p className="font-heading text-xs font-semibold text-white leading-snug">
+                        {stat.value}
+                      </p>
                       {stat.sub && (
-                        <p className="font-mono text-[10px] text-zinc-500 mt-0.5">{stat.sub}</p>
+                        <p className="font-mono text-[10px] text-zinc-400 mt-0.5">{stat.sub}</p>
                       )}
                     </div>
                   </div>
                 );
               })}
 
-              {/* Stack tags */}
               <div className="about-stat-item card-surface rounded-xl px-4 py-3">
-                <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mb-2">{t.about.stackTitle}</p>
+                <p className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider mb-2">
+                  {t.about.stackTitle}
+                </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map(
+                    (tag) => (
+                      <span
+                        key={tag}
+                        className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-200"
+                      >
+                        {tag}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           {/* RIGHT COLUMN */}
-          <div
-            ref={rightColRef}
-            className="lg:col-span-7 flex flex-col justify-between pt-1"
-          >
-            {/* Heading + narrative */}
+          <div ref={rightColRef} className="lg:col-span-7 flex flex-col justify-between pt-1">
             <div ref={headingRef} className="mb-6">
               <div className="about-eyebrow flex items-center gap-2.5 mb-3">
                 <span className="w-6 h-px bg-zinc-700" />
@@ -208,12 +201,11 @@ export default function About() {
               <p className="about-p1 text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
                 {t.about.p1}
               </p>
-              <p className="about-p2 text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              <p className="about-p2 text-zinc-300 text-xs sm:text-sm leading-relaxed">
                 {t.about.p2}
               </p>
             </div>
 
-            {/* Milestones grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-5 border-t border-zinc-800/80">
               {t.about.milestones.map((item, idx) => {
                 const Icon = milestoneIcons[idx] || Award;
@@ -225,19 +217,20 @@ export default function About() {
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                        <span className="font-mono text-[11px] text-zinc-400 truncate">{item.org}</span>
+                        <span className="font-mono text-[11px] text-zinc-300 truncate">
+                          {item.org}
+                        </span>
                       </div>
                       <h3 className="font-heading font-semibold text-white text-xs sm:text-sm mb-1.5 leading-snug">
                         {item.title}
                       </h3>
-                      <p className="text-zinc-400 text-xs leading-relaxed">{item.desc}</p>
+                      <p className="text-zinc-300 text-xs leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-
         </div>
       </div>
     </section>

@@ -5,26 +5,22 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Universal GSAP data-speed & data-lag Engine
- * Recreates GSAP ScrollSmoother's iconic data attribute effects with native GSAP ScrollTrigger + Lenis.
- * 
- * - data-speed="<number>":
- *     speed < 1.0 (e.g. 0.7): moves slower than scroll (deep background parallax)
- *     speed > 1.0 (e.g. 1.25): moves faster than scroll (floating foreground layer)
- * 
- * - data-lag="<number>":
- *     inertial trailing / spring delay (e.g. 0.4s to 0.8s) for buttery smooth elasticity
- * 
- * - Responsive: automatically active on desktop/tablets (min-width: 768px), disabled on mobile touch screens
- *   to maintain optimal touch performance and zero layout shifting.
+ * Universal GSAP data-speed & data-lag Engine (Idle-Deferred for 0ms TBT)
  */
 export function useParallaxLag(isRevealed = true) {
   useEffect(() => {
     if (!isRevealed) return;
+    if (window.innerWidth < 768) return;
 
-    // Small delay to ensure all DOM layout heights and images have settled
-    const initTimer = setTimeout(() => {
-      const mm = gsap.matchMedia();
+    let mm = null;
+    let initialized = false;
+
+    const setupParallax = () => {
+      if (initialized) return;
+      initialized = true;
+      window.removeEventListener('scroll', setupParallax);
+
+      mm = gsap.matchMedia();
 
       mm.add('(min-width: 768px)', () => {
         const elements = document.querySelectorAll('[data-speed], [data-lag]');
@@ -41,15 +37,8 @@ export function useParallaxLag(isRevealed = true) {
 
           if (isNaN(speed) && isNaN(lag)) return;
 
-          // Parallax travel distance in pixels (based on speed variance)
-          // speed 0.7 -> travel = (1 - 0.7) * 160 = +48px (moves slower, stays in frame longer)
-          // speed 1.3 -> travel = (1 - 1.3) * 160 = -48px (moves faster, floats forward)
-          const travel = (1 - speed) * 140;
-
-          // Lag scrub duration in seconds:
-          // If lag is set (e.g. 0.5), scrub takes lag seconds to smoothly catch up
-          // If lag is 0, scrub is 0.7 for fluid optical response
-          const scrubDuration = lag > 0 ? Math.max(0.4, lag * 1.6) : 0.7;
+          const travel = (1 - speed) * 120;
+          const scrubDuration = lag > 0 ? Math.max(0.4, lag * 1.5) : 0.6;
 
           const tween = gsap.fromTo(
             el,
@@ -76,11 +65,16 @@ export function useParallaxLag(isRevealed = true) {
           triggers.forEach((st) => st.kill());
         };
       });
+    };
 
-      return () => mm.revert();
-    }, 150);
+    window.addEventListener('scroll', setupParallax, { passive: true, once: true });
+    const idleTimer = setTimeout(setupParallax, 2500);
 
-    return () => clearTimeout(initTimer);
+    return () => {
+      clearTimeout(idleTimer);
+      window.removeEventListener('scroll', setupParallax);
+      if (mm) mm.revert();
+    };
   }, [isRevealed]);
 }
 

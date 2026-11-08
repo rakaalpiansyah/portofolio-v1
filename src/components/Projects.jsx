@@ -32,7 +32,6 @@ export default function Projects() {
   const isAnimating = useRef(false);
   const touchStartX = useRef(0);
 
-  // Static configs for real verified projects — unified to signature Sky Blue accent (Anti-slop / Taste)
   const staticProjectConfigs = [
     {
       icon: Smartphone,
@@ -57,7 +56,14 @@ export default function Projects() {
     },
     {
       icon: Layers,
-      techStack: ['Hyperledger Fabric', 'Go / Node Chaincode', 'Docker', 'Hyperledger Caliper', 'Cryptography', 'Consortium Network'],
+      techStack: [
+        'Hyperledger Fabric',
+        'Go / Node Chaincode',
+        'Docker',
+        'Hyperledger Caliper',
+        'Cryptography',
+        'Consortium Network',
+      ],
       githubUrl: 'https://github.com/rakaalpiansyah/agritraceChain',
       color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
@@ -81,7 +87,14 @@ export default function Projects() {
     },
     {
       icon: ShoppingBag,
-      techStack: ['Laravel 11', 'PHP', 'MySQL', 'KiriminAja API', 'Payment Gateway', 'Watzap API'],
+      techStack: [
+        'Laravel 11',
+        'PHP',
+        'MySQL',
+        'KiriminAja API',
+        'Payment Gateway',
+        'Watzap API',
+      ],
       githubUrl: 'https://github.com/rakaalpiansyah',
       color: 'from-zinc-800/20 via-zinc-900/40 to-transparent',
       accentColor: '#38bdf8',
@@ -119,7 +132,6 @@ export default function Projects() {
       return;
     }
 
-    // Kill any active tweens on card and details to prevent conflict / snapping
     gsap.killTweensOf(card);
     gsap.killTweensOf(details);
     if (details.children) {
@@ -135,7 +147,6 @@ export default function Projects() {
       },
     });
 
-    // Step 1: Fluid 3D Exit Animation
     tl.to(card, {
       x: -45 * dir,
       rotationY: -14 - 15 * dir,
@@ -155,11 +166,9 @@ export default function Projects() {
         },
         '<0.02'
       )
-      // Step 2: Swap content via React state while elements are invisible
       .call(() => {
         setActiveIndex(newIndex);
       })
-      // Step 3: Stage incoming state
       .call(() => {
         gsap.set(card, {
           x: 55 * dir,
@@ -179,7 +188,6 @@ export default function Projects() {
           });
         }
       })
-      // Step 4: Fluid swooping entrance
       .to(card, {
         x: 0,
         rotationY: -14,
@@ -212,10 +220,11 @@ export default function Projects() {
     animateSlide(prevIdx, -1);
   };
 
-  // Section Entrance
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
-      // Master choreographed entrance timeline for all parts inside Projects
       const enterTl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -228,54 +237,51 @@ export default function Projects() {
       enterTl
         .fromTo(
           headerRef.current,
-          { opacity: 0, y: 35, scale: 0.95, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }
+          { opacity: 0, y: 28, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.7, ease: 'power4.out' }
         )
-        // 3D Perspective Card floats in with subtle tilt and blur clearing
         .fromTo(
           card3dRef.current,
-          { opacity: 0, y: 55, scale: 0.9, filter: 'blur(12px)', rotationY: -22 },
-          { opacity: 1, y: 0, scale: 1.0, filter: 'blur(0px)', rotationY: -14, duration: 1.05, ease: 'power4.out' },
-          '-=0.55'
-        )
-        .fromTo(
-          ['.projects-meta-lead', '.projects-title-hero', '.projects-sub', '.projects-desc'],
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 0.65, stagger: 0.08 },
-          '-=0.7'
-        )
-        .fromTo(
-          '.projects-box',
-          { opacity: 0, y: 20, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.6, stagger: 0.1 },
+          { opacity: 0, y: 36, scale: 0.95, rotationY: -20 },
+          { opacity: 1, y: 0, scale: 1.0, rotationY: -14, duration: 0.85, ease: 'power4.out' },
           '-=0.45'
         )
         .fromTo(
-          '.projects-chip',
-          { opacity: 0, y: 12, scale: 0.92 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.03 },
+          ['.projects-meta-lead', '.projects-title-hero', '.projects-sub', '.projects-desc'],
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.07 },
+          '-=0.6'
+        )
+        .fromTo(
+          '.projects-box',
+          { opacity: 0, y: 16, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.5, stagger: 0.08 },
           '-=0.4'
         )
         .fromTo(
-          '.projects-cta-btn',
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 },
+          '.projects-chip',
+          { opacity: 0, y: 10, scale: 0.95 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.35, stagger: 0.025 },
           '-=0.35'
         )
         .fromTo(
-          '.projects-bottom-selector',
-          { opacity: 0, y: 20, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.6 },
+          '.projects-cta-btn',
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.45, stagger: 0.07 },
           '-=0.3'
+        )
+        .fromTo(
+          '.projects-bottom-selector',
+          { opacity: 0, y: 16, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1.0, duration: 0.5 },
+          '-=0.25'
         );
 
-      // Smooth scroll out animation when scrolled past (Hero-style bidirectional scrub)
       if (contentWrapRef.current) {
         gsap.to(contentWrapRef.current, {
-          y: -40,
+          y: -36,
           opacity: 0,
-          scale: 0.95,
-          filter: 'blur(6px)',
+          scale: 0.97,
           ease: 'none',
           scrollTrigger: {
             trigger: containerRef.current,
@@ -290,12 +296,10 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
-  // Smooth mouse tilt tracking & initial 3D pose for card
   useEffect(() => {
     const card = card3dRef.current;
     if (!card) return;
 
-    // Set initial 3D pose via GSAP to avoid React VDOM clobbering
     gsap.set(card, {
       rotationY: -14,
       rotationX: 6,
@@ -336,7 +340,7 @@ export default function Projects() {
       });
     };
 
-    showcase.addEventListener('pointermove', handlePointerMove);
+    showcase.addEventListener('pointermove', handlePointerMove, { passive: true });
     showcase.addEventListener('pointerleave', handlePointerLeave);
 
     return () => {
@@ -367,401 +371,398 @@ export default function Projects() {
     >
       <div ref={contentWrapRef} className="projects-content-wrap section-exit-wrap w-full">
         {/* Header */}
-      <div ref={headerRef} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
-        <div>
-          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
-            {t.projects.heading}
-          </h2>
-          <p className="text-zinc-400 text-sm sm:text-base max-w-xl">
-            {t.projects.subtitle}
-          </p>
-        </div>
-
-        {/* 3D Slide Navigation Controls */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-zinc-400">
-            0{activeIndex + 1} / 0{projects.length}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={prevProject}
-              className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-400 active:scale-90 active:bg-zinc-800 transition-all duration-100"
-              aria-label="Previous Project"
-              title="Proyek Sebelumnya"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={nextProject}
-              className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-400 active:scale-90 active:bg-zinc-800 transition-all duration-100"
-              aria-label="Next Project"
-              title="Proyek Selanjutnya"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main 3D Perspective Showcase */}
-      <div
-        ref={showcaseRef}
-        className="perspective-[1600px] w-full"
-        style={{ perspective: '1600px' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left: 3D Tilted Perspective Preview Window */}
-          <div className="lg:col-span-6 flex justify-center py-6">
-            <div
-              ref={card3dRef}
-              className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-zinc-900/70 via-zinc-950 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
-              style={{
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              {/* App / Window Header */}
-              <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4 select-none">
-                {/* Sleek Hardware Minimal Window Control Dots (Linear / Dark IDE standard) */}
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
-                </div>
-
-                {/* Route / URL Badge */}
-                <span className="px-2.5 py-0.5 rounded-md bg-white/[0.06] border border-white/10 font-mono text-[10px] text-zinc-300 max-w-[200px] truncate">
-                  {currentProject.routeBadge}
-                </span>
-
-                {/* Unified Status Dot */}
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full animate-pulse bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
-                </div>
-              </div>
-
-              {/* Visual Mockup & Viewport Area */}
-              <div className="relative rounded-2xl glass-surface p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
-                {/* Ambient backglow — Unified Brand Glow */}
-                <div
-                  className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)',
-                  }}
-                />
-
-                {/* Case 1: Real Mobile App Screenshot (Rehat) */}
-                {currentProject.image ? (
-                  <div className="relative z-10 w-full flex items-center justify-center py-2">
-                    <img
-                      src={currentProject.image}
-                      alt={currentProject.title}
-                      width="220"
-                      height="220"
-                      loading="lazy"
-                      decoding="async"
-                      className="max-h-[200px] sm:max-h-[220px] w-auto object-contain rounded-xl shadow-2xl border border-white/10 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                ) : null}
-
-                {/* Case 2: Meeting AI — Speech Audio Waveform & Diarization Mockup */}
-                {currentProject.type === 'speech_ai' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Activity className="w-3.5 h-3.5 animate-pulse" /> WHISPER STREAMING
-                      </span>
-                      <span>00:14 / LIVE</span>
-                    </div>
-
-                    {/* Audio Waveform Bars */}
-                    <div className="flex items-end justify-center gap-1 h-10 py-1">
-                      {[35, 60, 90, 45, 80, 100, 70, 50, 85, 95, 40, 65, 80, 30, 75, 90, 60, 40].map((h, i) => (
-                        <span
-                          key={i}
-                          className="w-1.5 rounded-full bg-sky-400/80 transition-all duration-150"
-                          style={{ height: `${h}%` }}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Speaker Diarization Preview Box */}
-                    <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-sky-500/30 text-[11px] leading-relaxed">
-                      <span className="text-sky-400 font-bold">[Speaker 01 - 00:08]:</span>{' '}
-                      <span className="text-zinc-200">
-                        &quot;Model diarization membagi audio rapat secara presisi dengan latensi rendah.&quot;
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span className="text-emerald-400">HTTP 200 OK • JSON</span>
-                      <span className="text-sky-400">Railway Deployed</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 3: PlantVillage AI — Deep Learning Computer Vision Scanner */}
-                {currentProject.type === 'vision_ai' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Sparkles className="w-3.5 h-3.5" /> CNN 4-BLOCK INFERENCE
-                      </span>
-                      <span className="text-emerald-400 font-bold">ACC: 97.12%</span>
-                    </div>
-
-                    {/* Vision Detection Scanning Reticle */}
-                    <div className="relative h-20 rounded-xl bg-zinc-900/80 border border-dashed border-sky-500/40 p-2.5 flex items-center justify-between">
-                      <div className="space-y-1">
-                        <span className="text-[10px] text-sky-400 uppercase block tracking-wider">
-                          Target Diagnosa
-                        </span>
-                        <span className="font-heading text-sm font-bold text-white block">
-                          PlantVillage Leaf Dataset
-                        </span>
-                        <span className="text-[10px] text-emerald-400 block">
-                          Inferensi CPU ~6ms (TFLite)
-                        </span>
-                      </div>
-                      <div className="w-12 h-12 rounded-lg border-2 border-sky-400/70 bg-sky-400/10 flex items-center justify-center text-sky-300 font-bold text-xs">
-                        97%
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>TensorFlow Lite Quantized</span>
-                      <span className="text-sky-400">Edge Device Ready</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 4: GreenV — Environmental Sustainability Platform */}
-                {currentProject.type === 'waste_platform' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Recycle className="w-3.5 h-3.5" /> UNIVERSITAS JAMBI SDGs
-                      </span>
-                      <span className="text-zinc-200 font-bold">JUARA 1</span>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-zinc-400 block mb-0.5">Sirkulasi Sampah Terverifikasi</span>
-                        <span className="font-heading text-base font-extrabold text-white">
-                          Waste-to-Reward Calculator
-                        </span>
-                      </div>
-                      <div className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold">
-                        Eco Point
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Smart Pickup Routing</span>
-                      <span className="text-sky-400">SDGs Action 2024</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 5: PT. Royale Essence Indonesia E-Commerce Backend */}
-                {currentProject.type === 'logistics_backend' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <ShieldCheck className="w-3.5 h-3.5" /> LOGISTICS AUTOMATION
-                      </span>
-                      <span className="text-emerald-400">AUTO-AWB</span>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-white font-bold">KiriminAja Logistics API</span>
-                        <span className="text-emerald-400 text-[10px] font-bold">Connected</span>
-                      </div>
-                      <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                        <span>Payment Gateway: Midtrans</span>
-                        <span className="text-sky-400">Watzap Bot: Active</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Automated Shipping Rates</span>
-                      <span className="text-sky-400">Production Ready</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Case 6: AgriTraceChain — Hyperledger Fabric Blockchain Visualizer */}
-                {currentProject.type === 'blockchain' && (
-                  <div className="relative z-10 w-full space-y-3 font-mono">
-                    <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/10 pb-2">
-                      <span className="flex items-center gap-1.5 text-sky-400">
-                        <Layers className="w-3.5 h-3.5" /> FABRIC CHANNEL: AGRI
-                      </span>
-                      <span className="text-emerald-400 font-bold">5 ORGS CONSENSUS</span>
-                    </div>
-
-                    {/* Cryptographic Block Nodes Flow */}
-                    <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #142</span>
-                        <span className="text-sky-300 font-bold block truncate">Farmer Reg</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #143</span>
-                        <span className="text-sky-300 font-bold block truncate">Certify Batch</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
-                        <span className="text-zinc-500 block mb-0.5 text-[9px]">BLOCK #144</span>
-                        <span className="text-sky-300 font-bold block truncate">LoC Settle</span>
-                        <span className="text-emerald-400 text-[9px]">Confirmed</span>
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-white/10 flex items-center justify-between text-[10px]">
-                      <span className="text-zinc-300">4 Chaincodes Deployed</span>
-                      <span className="text-sky-400 font-bold">Caliper Benchmarked</span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                      <span>Immutable Ledger Record</span>
-                      <span className="text-sky-400">Zero-Tamper Audit</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Bottom Card Bar: Category & Spec */}
-              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-300 font-semibold">{currentProject.metrics}</span>
-                <span className="text-zinc-400">{currentProject.category.split('&')[0]}</span>
-              </div>
-            </div>
+        <div
+          ref={headerRef}
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14"
+        >
+          <div>
+            <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight mb-2">
+              {t.projects.heading}
+            </h2>
+            <p className="text-zinc-300 text-sm sm:text-base max-w-xl">
+              {t.projects.subtitle}
+            </p>
           </div>
 
-          {/* Right: Detailed Engineering Specifications */}
-          <div ref={detailsColRef} className="lg:col-span-6 flex flex-col justify-center">
-            <div className="projects-meta-lead inline-flex items-center gap-2 text-xs font-mono text-sky-400 mb-2">
-              <CurrentIcon className="w-4 h-4" />
-              <span>{currentProject.category}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-zinc-400">
+              0{activeIndex + 1} / 0{projects.length}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={prevProject}
+                className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-300 active:scale-90 active:bg-zinc-800 transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                aria-label="Previous Project"
+                title="Proyek Sebelumnya"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={nextProject}
+                className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 hover:text-white text-zinc-300 active:scale-90 active:bg-zinc-800 transition-all duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                aria-label="Next Project"
+                title="Proyek Selanjutnya"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
+          </div>
+        </div>
 
-            <h3 className="projects-title-hero font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
-              {currentProject.title}
-            </h3>
+        {/* Main 3D Perspective Showcase */}
+        <div
+          ref={showcaseRef}
+          className="perspective-[1600px] w-full"
+          style={{ perspective: '1600px' }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left: 3D Tilted Perspective Preview Window */}
+            <div className="lg:col-span-6 flex justify-center py-6">
+              <div
+                ref={card3dRef}
+                className="w-full max-w-[500px] rounded-3xl p-5 sm:p-7 bg-gradient-to-br from-zinc-900/70 via-zinc-950 to-black border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] flex flex-col justify-between transition-colors relative overflow-hidden"
+                style={{
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-700/80 border border-zinc-600/40" />
+                  </div>
 
-            <p className="projects-sub text-zinc-300 font-mono text-xs sm:text-sm mb-5">
-              {currentProject.subtitle}
-            </p>
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/[0.06] border border-white/10 font-mono text-[10px] text-zinc-200 max-w-[200px] truncate">
+                    {currentProject.routeBadge}
+                  </span>
 
-            <p className="projects-desc text-zinc-400 text-sm leading-relaxed mb-6">
-              {currentProject.description}
-            </p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full animate-pulse bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
+                  </div>
+                </div>
 
-            {/* Challenge & Solution Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.challengeLabel || 'Tantangan Rekayasa'}</div>
-                <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.challenge}</p>
+                {/* Visual Mockup & Viewport Area */}
+                <div className="relative rounded-2xl glass-surface p-4 sm:p-5 min-h-[240px] sm:min-h-[260px] flex flex-col justify-center items-center overflow-hidden">
+                  <div
+                    className="absolute inset-0 opacity-20 blur-2xl pointer-events-none"
+                    style={{
+                      background:
+                        'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)',
+                    }}
+                  />
+
+                  {currentProject.image ? (
+                    <div className="relative z-10 w-full flex items-center justify-center py-2">
+                      <img
+                        src={currentProject.image}
+                        alt={currentProject.title}
+                        width="220"
+                        height="220"
+                        loading="lazy"
+                        decoding="async"
+                        className="max-h-[200px] sm:max-h-[220px] w-auto object-contain rounded-xl shadow-2xl border border-white/10 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : null}
+
+                  {currentProject.type === 'speech_ai' && (
+                    <div className="relative z-10 w-full space-y-3 font-mono">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-300 border-b border-white/10 pb-2">
+                        <span className="flex items-center gap-1.5 text-sky-400">
+                          <Activity className="w-3.5 h-3.5 animate-pulse" /> WHISPER STREAMING
+                        </span>
+                        <span>00:14 / LIVE</span>
+                      </div>
+
+                      <div className="flex items-end justify-center gap-1 h-10 py-1">
+                        {[
+                          35, 60, 90, 45, 80, 100, 70, 50, 85, 95, 40, 65, 80, 30, 75, 90, 60, 40,
+                        ].map((h, i) => (
+                          <span
+                            key={i}
+                            className="w-1.5 rounded-full bg-sky-400/80 transition-all duration-150"
+                            style={{ height: `${h}%` }}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-zinc-900/90 border border-sky-500/30 text-[11px] leading-relaxed">
+                        <span className="text-sky-400 font-bold">[Speaker 01 - 00:08]:</span>{' '}
+                        <span className="text-zinc-200">
+                          &quot;Model diarization membagi audio rapat secara presisi dengan latensi rendah.&quot;
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                        <span className="text-emerald-400">HTTP 200 OK • JSON</span>
+                        <span className="text-sky-400">Railway Deployed</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentProject.type === 'vision_ai' && (
+                    <div className="relative z-10 w-full space-y-3 font-mono">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-300 border-b border-white/10 pb-2">
+                        <span className="flex items-center gap-1.5 text-sky-400">
+                          <Sparkles className="w-3.5 h-3.5" /> CNN 4-BLOCK INFERENCE
+                        </span>
+                        <span className="text-emerald-400 font-bold">ACC: 97.12%</span>
+                      </div>
+
+                      <div className="relative h-20 rounded-xl bg-zinc-900/80 border border-dashed border-sky-500/40 p-2.5 flex items-center justify-between">
+                        <div className="space-y-1">
+                          <span className="text-[10px] text-sky-400 uppercase block tracking-wider">
+                            Target Diagnosa
+                          </span>
+                          <span className="font-heading text-sm font-bold text-white block">
+                            PlantVillage Leaf Dataset
+                          </span>
+                          <span className="text-[10px] text-emerald-400 block">
+                            Inferensi CPU ~6ms (TFLite)
+                          </span>
+                        </div>
+                        <div className="w-12 h-12 rounded-lg border-2 border-sky-400/70 bg-sky-400/10 flex items-center justify-center text-sky-300 font-bold text-xs">
+                          97%
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                        <span>TensorFlow Lite Quantized</span>
+                        <span className="text-sky-400">Edge Device Ready</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentProject.type === 'waste_platform' && (
+                    <div className="relative z-10 w-full space-y-3 font-mono">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-300 border-b border-white/10 pb-2">
+                        <span className="flex items-center gap-1.5 text-sky-400">
+                          <Recycle className="w-3.5 h-3.5" /> UNIVERSITAS JAMBI SDGs
+                        </span>
+                        <span className="text-zinc-200 font-bold">JUARA 1</span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-zinc-300 block mb-0.5">
+                            Sirkulasi Sampah Terverifikasi
+                          </span>
+                          <span className="font-heading text-base font-extrabold text-white">
+                            Waste-to-Reward Calculator
+                          </span>
+                        </div>
+                        <div className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold">
+                          Eco Point
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                        <span>Smart Pickup Routing</span>
+                        <span className="text-sky-400">SDGs Action 2024</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentProject.type === 'logistics_backend' && (
+                    <div className="relative z-10 w-full space-y-3 font-mono">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-300 border-b border-white/10 pb-2">
+                        <span className="flex items-center gap-1.5 text-sky-400">
+                          <ShieldCheck className="w-3.5 h-3.5" /> LOGISTICS AUTOMATION
+                        </span>
+                        <span className="text-emerald-400">AUTO-AWB</span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-zinc-900/80 border border-sky-500/30 space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-white font-bold">KiriminAja Logistics API</span>
+                          <span className="text-emerald-400 text-[10px] font-bold">Connected</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                          <span>Payment Gateway: Midtrans</span>
+                          <span className="text-sky-400">Watzap Bot: Active</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                        <span>Automated Shipping Rates</span>
+                        <span className="text-sky-400">Production Ready</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentProject.type === 'blockchain' && (
+                    <div className="relative z-10 w-full space-y-3 font-mono">
+                      <div className="flex items-center justify-between text-[11px] text-zinc-300 border-b border-white/10 pb-2">
+                        <span className="flex items-center gap-1.5 text-sky-400">
+                          <Layers className="w-3.5 h-3.5" /> FABRIC CHANNEL: AGRI
+                        </span>
+                        <span className="text-emerald-400 font-bold">5 ORGS CONSENSUS</span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
+                          <span className="text-zinc-400 block mb-0.5 text-[9px]">BLOCK #142</span>
+                          <span className="text-sky-300 font-bold block truncate">Farmer Reg</span>
+                          <span className="text-emerald-400 text-[9px]">Confirmed</span>
+                        </div>
+                        <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
+                          <span className="text-zinc-400 block mb-0.5 text-[9px]">BLOCK #143</span>
+                          <span className="text-sky-300 font-bold block truncate">
+                            Certify Batch
+                          </span>
+                          <span className="text-emerald-400 text-[9px]">Confirmed</span>
+                        </div>
+                        <div className="p-2 rounded-xl bg-zinc-900/90 border border-sky-500/30">
+                          <span className="text-zinc-400 block mb-0.5 text-[9px]">BLOCK #144</span>
+                          <span className="text-sky-300 font-bold block truncate">LoC Settle</span>
+                          <span className="text-emerald-400 text-[9px]">Confirmed</span>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-white/10 flex items-center justify-between text-[10px]">
+                        <span className="text-zinc-200">4 Chaincodes Deployed</span>
+                        <span className="text-sky-400 font-bold">Caliper Benchmarked</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-zinc-300">
+                        <span>Immutable Ledger Record</span>
+                        <span className="text-sky-400">Zero-Tamper Audit</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                  <span className="text-zinc-200 font-semibold">{currentProject.metrics}</span>
+                  <span className="text-zinc-300">{currentProject.category.split('&')[0]}</span>
+                </div>
               </div>
-              <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1">{t.projects.solutionLabel || 'Solusi Arsitektur'}</div>
-                <p className="text-zinc-300 text-xs leading-relaxed">{currentProject.solution}</p>
+            </div>
+
+            {/* Right: Detailed Engineering Specifications */}
+            <div ref={detailsColRef} className="lg:col-span-6 flex flex-col justify-center">
+              <div className="projects-meta-lead inline-flex items-center gap-2 text-xs font-mono text-sky-400 mb-2">
+                <CurrentIcon className="w-4 h-4" />
+                <span>{currentProject.category}</span>
               </div>
-            </div>
 
-            {/* Tech Stack Chips */}
-            <div className="flex flex-wrap gap-1.5 mb-6">
-              {currentProject.techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="projects-chip px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-800/60 text-zinc-300 border border-zinc-700/60"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
+              <h3 className="projects-title-hero font-heading font-black text-3xl sm:text-4xl text-white tracking-tight mb-2">
+                {currentProject.title}
+              </h3>
 
-            {/* Action CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-zinc-800">
-              {/* Live Demo or Live Docs if available */}
-              {currentProject.liveUrl && (
+              <p className="projects-sub text-zinc-200 font-mono text-xs sm:text-sm mb-5">
+                {currentProject.subtitle}
+              </p>
+
+              <p className="projects-desc text-zinc-300 text-sm leading-relaxed mb-6">
+                {currentProject.description}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                  <div className="text-[11px] font-mono text-zinc-400 mb-1">
+                    {t.projects.challengeLabel || 'Tantangan Rekayasa'}
+                  </div>
+                  <p className="text-zinc-200 text-xs leading-relaxed">
+                    {currentProject.challenge}
+                  </p>
+                </div>
+                <div className="projects-box p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+                  <div className="text-[11px] font-mono text-zinc-400 mb-1">
+                    {t.projects.solutionLabel || 'Solusi Arsitektur'}
+                  </div>
+                  <p className="text-zinc-200 text-xs leading-relaxed">
+                    {currentProject.solution}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                {currentProject.techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="projects-chip px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-800/60 text-zinc-200 border border-zinc-700/60"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-zinc-800">
+                {currentProject.liveUrl && (
+                  <a
+                    href={currentProject.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                  >
+                    <span>{currentProject.liveLabel || 'Live Demo'}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+
                 <a
-                  href={currentProject.liveUrl}
+                  href={currentProject.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 shadow-sm whitespace-nowrap"
+                  className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-200 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                 >
-                  <span>{currentProject.liveLabel || 'Live Demo'}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Github className="w-4 h-4" />
+                  <span>{t.projects.sourceCode || 'GitHub Repository'}</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
                 </a>
-              )}
-
-              {/* GitHub Repository */}
-              <a
-                href={currentProject.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="projects-cta-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:text-white active:scale-95 transition-all duration-100 whitespace-nowrap"
-              >
-                <Github className="w-4 h-4" />
-                <span>{t.projects.sourceCode || 'GitHub Repository'}</span>
-                <ExternalLink className="w-3.5 h-3.5 text-zinc-500" />
-              </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Project Selector (Bottom Segmented Control Navigation) */}
-      <div className="projects-bottom-selector mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
-        {/* Segmented control bar */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-2xl glass-pill max-w-full">
-          {projects.map((p, idx) => {
-            const isActive = activeIndex === idx;
-            return (
-              <button
-                key={p.title}
-                onClick={() => {
-                  if (idx !== activeIndex) {
-                    const dir = idx > activeIndex ? 1 : -1;
-                    animateSlide(idx, dir);
-                  }
-                }}
-                className={`relative px-3 sm:px-4 py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 select-none ${
-                  isActive
-                    ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
-                }`}
-                aria-label={`Pilih proyek ${idx + 1}`}
-                title={p.title.replace(/"/g, '')}
-              >
-                {/* Mobile: compact '01', Desktop/Tablet: '01. Rehat App' */}
-                <span className="sm:hidden font-bold">0{idx + 1}</span>
-                <span className="hidden sm:inline">
-                  0{idx + 1}. {p.shortTitle}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Project Selector */}
+        <div className="projects-bottom-selector mt-14 pt-8 border-t border-zinc-900/80 flex flex-col items-center gap-3">
+          <div className="inline-flex items-center gap-1 p-1 rounded-2xl glass-pill max-w-full">
+            {projects.map((p, idx) => {
+              const isActive = activeIndex === idx;
+              return (
+                <button
+                  key={p.title}
+                  type="button"
+                  onClick={() => {
+                    if (idx !== activeIndex) {
+                      const dir = idx > activeIndex ? 1 : -1;
+                      animateSlide(idx, dir);
+                    }
+                  }}
+                  className={`relative px-3 sm:px-4 py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+                    isActive
+                      ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
+                      : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+                  }`}
+                  aria-label={`Pilih proyek ${idx + 1}: ${p.shortTitle}`}
+                  aria-pressed={isActive}
+                  title={p.title.replace(/"/g, '')}
+                >
+                  <span className="sm:hidden font-bold">0{idx + 1}</span>
+                  <span className="hidden sm:inline">
+                    0{idx + 1}. {p.shortTitle}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Mobile active project title indicator */}
-        <div className="sm:hidden flex items-center gap-2 text-xs font-mono text-zinc-400 pt-0.5">
-          <span
-            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-            style={{ backgroundColor: currentProject.accentColor }}
-          />
-          <span className="font-medium text-zinc-200 truncate max-w-[260px]">
-            {currentProject.title.replace(/"/g, '')}
-          </span>
+          <div className="sm:hidden flex items-center gap-2 text-xs font-mono text-zinc-300 pt-0.5">
+            <span
+              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: currentProject.accentColor }}
+            />
+            <span className="font-medium text-zinc-200 truncate max-w-[260px]">
+              {currentProject.title.replace(/"/g, '')}
+            </span>
+          </div>
         </div>
-      </div>
       </div>
     </section>
   );

@@ -15,18 +15,18 @@ export default function Footer() {
           <span className="font-heading font-semibold text-sm text-white">
             Raka Alpiansyah
           </span>
-          <span className="text-zinc-500 text-xs font-mono">
+          <span className="text-zinc-400 text-xs font-mono">
             &copy; {new Date().getFullYear()} {t.footer.role || 'Software Engineer.'}
           </span>
         </div>
 
         {/* Links & Back to top */}
-        <div className="flex items-center gap-4 text-zinc-400">
+        <div className="flex items-center gap-4 text-zinc-300">
           <a
             href="https://github.com/rakaalpiansyah"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
+            className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
             aria-label="GitHub Raka Alpiansyah"
           >
             <Github className="w-4 h-4" />
@@ -36,7 +36,7 @@ export default function Footer() {
             href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
+            className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
             aria-label="LinkedIn Raka Alpiansyah"
           >
             <Linkedin className="w-4 h-4" />
@@ -46,7 +46,7 @@ export default function Footer() {
             href="https://instagram.com/vcols_"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
+            className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
             aria-label="Instagram @vcols_"
           >
             <Instagram className="w-4 h-4" />
@@ -54,15 +54,16 @@ export default function Footer() {
 
           <a
             href="mailto:rakaalpiansyah@gmail.com"
-            className="hover:text-white transition-colors"
+            className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
             aria-label="Email Raka Alpiansyah"
           >
             <Mail className="w-4 h-4" />
           </a>
 
           <button
+            type="button"
             onClick={scrollToTop}
-            className="p-2 ml-2 rounded-xl border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 ml-2 rounded-xl border border-zinc-800 hover:border-zinc-600 text-zinc-300 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
             aria-label={t.footer.backToTop || 'Kembali ke atas'}
             title={t.footer.backToTop || 'Kembali ke atas'}
           >

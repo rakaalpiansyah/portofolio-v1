@@ -1,0 +1,30 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Raka Alpiansyah Portfolio",
+    "identifier": "did:web:rakaalpiansyah.site",
+    "documentationUrl": "https://rakaalpiansyah.site/llms.txt",
+    "logoUrl": "https://rakaalpiansyah.site/favicon.png"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:rakaalpiansyah.site:portfolio:engineering-api",
+      "displayName": "Raka Alpiansyah Portfolio & Engineering Capabilities",
+      "type": "application/openapi+json",
+      "url": "https://rakaalpiansyah.site/openapi.json",
+      "description": "Machine-readable OpenAPI specification exposing Raka Alpiansyah's software engineering portfolio, AI projects, technical skills, and professional experience.",
+      "representativeQueries": [
+        "What software engineering and AI projects has Raka Alpiansyah built?",
+        "Show Raka Alpiansyah backend architecture and machine learning skills",
+        "How to contact Raka Alpiansyah for software engineer roles?"
+      ],
+      "tags": [
+        "portfolio",
+        "software-engineering",
+        "ai-engineering",
+        "backend"
+      ],
+      "version": "1.0.0"
+    }
+  ]
+}

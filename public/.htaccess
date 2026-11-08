@@ -1,13 +1,35 @@
 # Apache .htaccess configuration for InfinityFree
-# Handles SPA routing and enables gzip / cache headers
+# Handles Agentic Browsing (.well-known), SEO (robots.txt/sitemap.xml), SPA routing, and cache headers
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Map .well-known agentic discovery endpoints directly to root static files as fallback
+  RewriteRule ^\.well-known/ai-catalog\.json$ /ai-catalog.json [L]
+  RewriteRule ^\.well-known/ard\.json$ /ard.json [L]
+  RewriteRule ^\.well-known/openapi\.json$ /openapi.json [L]
+
+  # Do not rewrite static files, directories, or .well-known requests to index.html
   RewriteRule ^index\.html$ - [L]
+  RewriteRule ^\.well-known/ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !\.(json|txt|xml|webp|png|jpg|jpeg|ico|css|js|woff2)$ [NC]
   RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(json|txt|xml)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|webp|png|jpg|jpeg|ico|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
 
 # Caching static assets
@@ -19,6 +41,7 @@
   ExpiresByType image/png "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/json "access plus 1 day"
 </IfModule>
