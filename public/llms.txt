@@ -1,29 +1,34 @@
-# Raka Alpiansyah — Software & AI Engineer Portfolio
+# Raka Alpiansyah (rakaalpiansyah) - Software & AI Engineer Portfolio
 
-> Official engineering portfolio of Raka Alpiansyah, an Informatics Engineering student and Software & AI Engineer based in Bandung, Indonesia, specializing in high-throughput backend systems (Laravel, FastAPI, REST APIs), AI/ML engineering (Whisper AI, TensorFlow, Computer Vision), enterprise blockchain (Hyperledger Fabric), and cross-platform Flutter mobile applications.
+> Official engineering portfolio of Raka Alpiansyah (handles: rakaalpiansyah, @vcols_), an Informatics Engineering student at Universitas Nasional Pasim and Software & AI Engineer based in Bandung, Indonesia, specializing in backend systems (Laravel, FastAPI, REST APIs), AI/ML engineering (Whisper AI, TensorFlow, Computer Vision), enterprise blockchain (Hyperledger Fabric), and cross-platform Flutter mobile applications.
 
-Raka Alpiansyah builds production-grade backend architectures, intelligent AI pipelines, and modern full-stack web and mobile applications with clean code principles.
+Raka Alpiansyah builds production backend architectures, AI pipelines, and full-stack web and mobile applications. Official social handles: LinkedIn `in/rakaalpiansyah`, GitHub `@rakaalpiansyah`, and Instagram `@vcols_`.
+
+## Official Identity & Verified Social Profiles
+
+- [LinkedIn: Raka Alpiansyah (in/rakaalpiansyah)](https://www.linkedin.com/in/rakaalpiansyah): Official LinkedIn profile, career history, education at Universitas Nasional Pasim, and certifications.
+- [GitHub: Raka Alpiansyah (@rakaalpiansyah)](https://github.com/rakaalpiansyah): Official open-source code repositories, backend architectures, and AI research projects.
+- [Instagram: Raka Alpiansyah (@vcols_)](https://www.instagram.com/vcols_/): Official personal Instagram account (@vcols_).
+- [Official Portfolio Website](https://rakaalpiansyah.site/): Canonical personal website and project documentation.
 
 ## Portfolio Sections
 
 - [Hero & Overview](https://rakaalpiansyah.site/#hero): Introduction to Raka Alpiansyah, Informatics Engineering & Software Engineer in Bandung, Indonesia.
 - [About & Milestones](https://rakaalpiansyah.site/#about): Academic background at Universitas Nasional Pasim (GPA 3.82/4.00), Full Programming Scholarship, 1st Place Web Design Winner at Universitas Jambi, and Alibaba Cloud & Dicoding certifications.
 - [Technical Skills & Stack](https://rakaalpiansyah.site/#skills): Interactive 16-keycap technical matrix covering Linux, Docker, Git, Cisco, Laravel, PHP, MySQL, Oracle, Flutter, Dart, React, TypeScript, Java, JavaScript, REST APIs, and Python AI.
-- [Featured Engineering Projects](https://rakaalpiansyah.site/#projects): Deep-dive case studies of 6 production software, AI, blockchain, and mobile systems.
-- [Experience & Education](https://rakaalpiansyah.site/#experience): Industry track record at PT. Sonasoft, PT. Royale Essence Indonesia, and PT. Pos Indonesia.
-- [Contact & Collaboration](https://rakaalpiansyah.site/#contact): Direct communication channels for software engineering, backend, and AI roles.
+- [Featured Engineering Projects](https://rakaalpiansyah.site/#projects): Case studies of 6 production software, AI, blockchain, and mobile systems.
+- [Experience & Education](https://rakaalpiansyah.site/#experience): Industry work at PT. Sonasoft, PT. Royale Essence Indonesia, and PT. Pos Indonesia.
+- [Contact & Collaboration](https://rakaalpiansyah.site/#contact): Direct communication channels (`rakaalpiansyah@gmail.com`) for software engineering, backend, and AI roles.
 
 ## Featured Engineering Projects
 
-- [Rehat — Digital Detox & Mindfulness App](https://github.com/rakaalpiansyah/rehat-app): Cross-platform Flutter & Dart mobile application published on Google Play Store for digital wellbeing and screen-time management.
-- [Meeting AI Backend — Whisper Speech Diarization](https://github.com/rakaalpiansyah/Meeting-AI-Backend): Python 3.11 & FastAPI microservice powered by Whisper AI and PyTorch for automated meeting transcription and speaker diarization.
-- [AgriTraceChain — Enterprise Blockchain Supply Chain](https://github.com/rakaalpiansyah/agritraceChain): 5-organization Hyperledger Fabric permissioned blockchain network with 4 smart contracts and Caliper benchmarking.
-- [PlantVillage AI — Leaf Disease Detection CNN](https://github.com/rakaalpiansyah/plantvillage-disease-detection): 4-block Convolutional Neural Network achieving 97.12% validation accuracy and quantized to TensorFlow Lite (~6ms CPU inference).
-- [GreenV — Sustainable Waste Management Platform](https://github.com/rakaalpiansyah/web-GreenV): Award-winning (1st Place National Web Design, Universitas Jambi) Laravel platform converting verified waste recycling into Eco Points.
+- [Rehat - Digital Detox & Mindfulness App](https://github.com/rakaalpiansyah/rehat-app): Cross-platform Flutter & Dart mobile application published on Google Play Store for digital wellbeing and screen-time management.
+- [Meeting AI Backend - Whisper Speech Diarization](https://github.com/rakaalpiansyah/Meeting-AI-Backend): Python 3.11 & FastAPI microservice powered by Whisper AI and PyTorch for automated meeting transcription and speaker diarization.
+- [AgriTraceChain - Enterprise Blockchain Supply Chain](https://github.com/rakaalpiansyah/agritraceChain): 5-organization Hyperledger Fabric permissioned blockchain network with 4 smart contracts and Caliper benchmarking.
+- [PlantVillage AI - Leaf Disease Detection CNN](https://github.com/rakaalpiansyah/plantvillage-disease-detection): 4-block Convolutional Neural Network achieving 97.12% validation accuracy and quantized to TensorFlow Lite (~6ms CPU inference).
+- [GreenV - Sustainable Waste Management Platform](https://github.com/rakaalpiansyah/web-GreenV): 1st Place National Web Design winner (Universitas Jambi) built with Laravel for converting verified waste recycling into Eco Points.
 
 ## Optional
 
-- [GitHub Profile](https://github.com/rakaalpiansyah): Open-source repositories, backend architectures, and AI research code.
-- [LinkedIn Profile](https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6): Professional network and career credentials.
 - [AI Capability Catalog](https://rakaalpiansyah.site/.well-known/ai-catalog.json): Agentic Resource Discovery (ARD) v1.0 manifest for AI agents.
 - [OpenAPI Specification](https://rakaalpiansyah.site/.well-known/openapi.json): Machine-readable OpenAPI 3.1.0 specification of portfolio resources.

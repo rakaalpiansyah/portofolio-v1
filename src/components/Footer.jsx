@@ -25,29 +25,29 @@ export default function Footer() {
           <a
             href="https://github.com/rakaalpiansyah"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
-            aria-label="GitHub Raka Alpiansyah"
+            aria-label="GitHub Raka Alpiansyah (rakaalpiansyah)"
           >
             <Github className="w-4 h-4" />
           </a>
 
           <a
-            href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+            href="https://www.linkedin.com/in/rakaalpiansyah"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
-            aria-label="LinkedIn Raka Alpiansyah"
+            aria-label="LinkedIn Raka Alpiansyah (rakaalpiansyah)"
           >
             <Linkedin className="w-4 h-4" />
           </a>
 
           <a
-            href="https://instagram.com/vcols_"
+            href="https://www.instagram.com/vcols_/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             className="p-1.5 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 rounded-lg"
-            aria-label="Instagram @vcols_"
+            aria-label="Instagram Raka Alpiansyah (@vcols_)"
           >
             <Instagram className="w-4 h-4" />
           </a>

@@ -1,9 +1,14 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Raka Alpiansyah Portfolio API",
-    "version": "1.0.0",
-    "description": "Structured portfolio information, projects, skills, and experience of Raka Alpiansyah, Software & AI Engineer."
+    "title": "Raka Alpiansyah (rakaalpiansyah) Portfolio & Identity API",
+    "version": "1.1.0",
+    "description": "Structured portfolio information, official social profiles (LinkedIn: in/rakaalpiansyah, GitHub: @rakaalpiansyah, Instagram: @vcols_), projects, skills, and experience of Raka Alpiansyah, Software & AI Engineer.",
+    "contact": {
+      "name": "Raka Alpiansyah",
+      "url": "https://www.linkedin.com/in/rakaalpiansyah",
+      "email": "rakaalpiansyah@gmail.com"
+    }
   },
   "servers": [
     {
@@ -14,10 +19,10 @@
     "/llms.txt": {
       "get": {
         "operationId": "getPortfolioSummary",
-        "summary": "Get machine-readable portfolio summary in llms.txt Markdown format",
+        "summary": "Get machine-readable portfolio summary and verified social profiles in llms.txt Markdown format",
         "responses": {
           "200": {
-            "description": "Markdown summary of Raka Alpiansyah's engineering portfolio"
+            "description": "Markdown summary of Raka Alpiansyah's engineering portfolio and official social links"
           }
         }
       }

@@ -194,7 +194,7 @@ export default function Contact() {
                 <a
                   href="https://github.com/rakaalpiansyah"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
                 >
                   <Github className="w-4 h-4 text-zinc-300" />
@@ -207,30 +207,32 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="https://www.linkedin.com/in/raka-alpiansyah-a7a1932b6?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  href="https://www.linkedin.com/in/rakaalpiansyah"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
                 >
                   <Linkedin className="w-4 h-4 text-zinc-300" />
                   <div>
                     <span className="text-sm text-zinc-200 block">LinkedIn</span>
                     <span className="text-[11px] text-zinc-400 font-mono">
-                      linkedin.com/in/raka-alpiansyah
+                      linkedin.com/in/rakaalpiansyah
                     </span>
                   </div>
                 </a>
 
                 <a
-                  href="https://instagram.com/vcols_"
+                  href="https://www.instagram.com/vcols_/"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
                 >
                   <Instagram className="w-4 h-4 text-zinc-300" />
                   <div>
                     <span className="text-sm text-zinc-200 block">Instagram</span>
-                    <span className="text-[11px] text-zinc-400 font-mono">@vcols_</span>
+                    <span className="text-[11px] text-zinc-400 font-mono">
+                      instagram.com/vcols_ (@vcols_)
+                    </span>
                   </div>
                 </a>
               </div>
