@@ -1,104 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, Github, Linkedin, Instagram, Send, Copy, Check } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import {
+  ArrowUpRight,
+  CopySimple,
+  Check,
+  PaperPlaneTilt,
+  EnvelopeSimple,
+  X,
+} from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const { t } = useLanguage();
+  const emailAddress = 'rakaalpiansyah@gmail.com';
+  const nameInputRef = useRef(null);
+
   const [copied, setCopied] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
   });
+  const [validationError, setValidationError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
-  const sectionRef = useRef(null);
-  const contentRef = useRef(null);
-  const emailAddress = 'rakaalpiansyah@gmail.com';
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      const enterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 85%',
-          once: true,
-        },
-        defaults: { ease: 'power3.out' },
-      });
-
-      enterTl
-        .fromTo(
-          '.contact-header-block',
-          { opacity: 0, y: 28, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.7, ease: 'power4.out' }
-        )
-        .fromTo(
-          '.contact-channels-card',
-          { opacity: 0, y: 32, scale: 0.97 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.75, ease: 'power4.out' },
-          '-=0.45'
-        )
-        .fromTo(
-          '.contact-form-card',
-          { opacity: 0, y: 32, scale: 0.97 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.75, ease: 'power4.out' },
-          '-=0.65'
-        )
-        .fromTo(
-          '.contact-social-item',
-          { opacity: 0, x: -14 },
-          { opacity: 1, x: 0, duration: 0.45, stagger: 0.07 },
-          '-=0.5'
-        )
-        .fromTo(
-          '.contact-form-field',
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.45, stagger: 0.07 },
-          '-=0.5'
-        )
-        .fromTo(
-          '.contact-submit-btn',
-          { opacity: 0, y: 12, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.5, ease: 'back.out(1.4)' },
-          '-=0.25'
-        );
-
-      if (contentRef.current) {
-        gsap.to(contentRef.current, {
-          y: -36,
-          opacity: 0,
-          scale: 0.97,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'bottom 45%',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(emailAddress);
+  const handleCopyEmail = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(emailAddress).catch(() => {});
+    }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    setTimeout(() => setCopied(false), 2400);
+  };
+
+  const openAndFocusForm = () => {
+    setFormOpen(true);
+    setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 80);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setValidationError('');
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMsg = formData.message.trim();
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
+
+    if (!trimmedName || !emailValid || !trimmedSubject || !trimmedMsg) {
+      setValidationError(t.contact.errorValidation);
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
@@ -110,11 +67,11 @@ export default function Contact() {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          _subject: `[Portfolio] Pesan Baru dari ${formData.name}: ${formData.subject}`,
+          name: trimmedName,
+          email: trimmedEmail,
+          subject: trimmedSubject,
+          message: trimmedMsg,
+          _subject: `[Portfolio] Pesan Baru dari ${trimmedName}: ${trimmedSubject}`,
         }),
       });
 
@@ -122,13 +79,13 @@ export default function Contact() {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error('FormSubmit network response not ok');
+        throw new Error('FormSubmit network error');
       }
     } catch (err) {
       const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(
-        formData.subject || 'Pesan dari Portofolio'
+        trimmedSubject
       )}&body=${encodeURIComponent(
-        `Halo Raka,\n\nNama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
+        `Halo Raka,\n\nNama: ${trimmedName}\nEmail: ${trimmedEmail}\n\nPesan:\n${trimmedMsg}`
       )}`;
       window.location.href = mailtoUrl;
       setSubmitStatus('fallback');
@@ -140,136 +97,187 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={sectionRef}
-      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-5xl mx-auto"
+      data-canvas-theme="dark"
+      className="relative w-full bg-[#080A12] text-[#F8F9FC] py-20 md:py-28 px-4 sm:px-8 overflow-hidden"
     >
-      <div ref={contentRef} className="contact-content-wrap section-exit-wrap w-full relative z-10">
-        <div className="contact-header-block mb-10 sm:mb-14">
-          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mb-4">
-            {t.contact.heading}
-          </h2>
-          <p className="text-zinc-300 text-sm sm:text-base max-w-lg">
-            {t.contact.subtitle}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Contact Info Card */}
-          <div className="contact-channels-card md:col-span-5 card-surface p-7 rounded-2xl flex flex-col justify-between">
+      <div className="max-w-[1440px] mx-auto space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Left 7 Columns: Headline, Giant Copyable Email, Metadata Specs, Socials */}
+          <div className="lg:col-span-7 space-y-8">
             <div>
-              <h3 className="font-heading font-semibold text-lg text-white mb-5">
-                {t.contact.channelsTitle}
-              </h3>
-
-              {/* Email Box */}
-              <div className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/60 mb-5">
-                <div className="text-[11px] font-mono text-zinc-400 mb-1.5 flex items-center justify-between">
-                  <span>{t.contact.emailLabel}</span>
-                  {copied && (
-                    <span className="text-emerald-400 text-[10px] font-mono flex items-center gap-1">
-                      <Check className="w-3 h-3" /> {t.contact.copied}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-zinc-200 truncate font-mono">{emailAddress}</span>
-                  <button
-                    type="button"
-                    onClick={copyToClipboard}
-                    className="p-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-300 hover:text-white active:scale-90 transition-all duration-100 flex-shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-                    title="Salin Email"
-                    aria-label="Salin alamat email"
-                  >
-                    {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5" />
-                    )}
-                  </button>
-                </div>
+              <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-[#A3AAC2] mb-4">
+                <span className="text-[#FF5B4D] font-semibold">(08)</span>
+                <span>{t.contact.indexLabel}</span>
               </div>
-
-              {/* Social channels */}
-              <div className="space-y-2">
-                <a
-                  href="https://github.com/rakaalpiansyah"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-                >
-                  <Github className="w-4 h-4 text-zinc-300" />
-                  <div>
-                    <span className="text-sm text-zinc-200 block">GitHub</span>
-                    <span className="text-[11px] text-zinc-400 font-mono">
-                      github.com/rakaalpiansyah
-                    </span>
-                  </div>
-                </a>
-
-                <a
-                  href="https://www.linkedin.com/in/rakaalpiansyah"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-                >
-                  <Linkedin className="w-4 h-4 text-zinc-300" />
-                  <div>
-                    <span className="text-sm text-zinc-200 block">LinkedIn</span>
-                    <span className="text-[11px] text-zinc-400 font-mono">
-                      linkedin.com/in/rakaalpiansyah
-                    </span>
-                  </div>
-                </a>
-
-                <a
-                  href="https://www.instagram.com/vcols_/"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="contact-social-item flex items-center gap-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/40 hover:border-zinc-700 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-                >
-                  <Instagram className="w-4 h-4 text-zinc-300" />
-                  <div>
-                    <span className="text-sm text-zinc-200 block">Instagram</span>
-                    <span className="text-[11px] text-zinc-400 font-mono">
-                      instagram.com/vcols_ (@vcols_)
-                    </span>
-                  </div>
-                </a>
-              </div>
+              <h2 className="kx-display text-[clamp(2.8rem,6.5vw,5.75rem)] leading-[0.86] text-white">
+                <span className="block">{t.contact.headingLine1}</span>
+                <span className="block text-[#FF5B4D]">{t.contact.headingLine2}</span>
+              </h2>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-zinc-800/60 text-xs text-zinc-400 flex items-center justify-between">
-              <span>{t.contact.location}</span>
-              <span>{t.contact.mode}</span>
+            {/* Email + Copy Pill */}
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href={`mailto:${emailAddress}`}
+                className="kx-display text-2xl sm:text-4xl md:text-5xl text-white underline underline-offset-8 decoration-white/35 hover:decoration-[#FF5B4D] hover:text-[#FF5B4D] transition-colors break-all"
+              >
+                {emailAddress.toUpperCase()}
+              </a>
+
+              <button
+                type="button"
+                onClick={handleCopyEmail}
+                data-cursor="COPY"
+                className="min-h-[44px] px-5 py-2.5 rounded-full border border-white/25 text-white hover:border-[#FF5B4D] hover:bg-[#FF5B4D] hover:text-[#080A12] inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.08em] transition-colors"
+              >
+                {copied ? (
+                  <>
+                    <Check weight="bold" className="w-4 h-4" aria-hidden="true" />
+                    <span>{t.contact.copiedBtn}</span>
+                  </>
+                ) : (
+                  <>
+                    <CopySimple weight="bold" className="w-4 h-4" aria-hidden="true" />
+                    <span>{t.contact.copyBtn}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* 3-Column Factual Specs */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-white/15">
+              {t.contact.specs.map((spec) => (
+                <div key={spec.label}>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#A3AAC2] block mb-1">
+                    {spec.label}
+                  </span>
+                  <span className="text-sm sm:text-base font-medium text-white">
+                    {spec.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Social Links & Direct Form Toggle */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-5">
+                {[
+                  { name: 'GitHub', href: 'https://github.com/rakaalpiansyah' },
+                  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/rakaalpiansyah' },
+                  { name: 'Instagram', href: 'https://www.instagram.com/vcols_/' },
+                ].map((soc) => (
+                  <a
+                    key={soc.name}
+                    href={soc.href}
+                    target="_blank"
+                    rel="me noopener noreferrer"
+                    className="min-h-[44px] inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[#A3AAC2] hover:text-[#FF5B4D] transition-colors"
+                  >
+                    <span>{soc.name}</span>
+                    <ArrowUpRight weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => (formOpen ? setFormOpen(false) : openAndFocusForm())}
+                aria-expanded={formOpen}
+                className="min-h-[44px] px-5 py-2.5 rounded-full border border-white/25 text-white hover:border-[#FF5B4D] hover:text-[#FF5B4D] font-mono text-xs uppercase tracking-[0.08em] transition-colors"
+              >
+                {formOpen ? t.contact.formToggleClose : t.contact.formToggleOpen}
+              </button>
             </div>
           </div>
 
-          {/* Message Form */}
-          <div className="contact-form-card md:col-span-7 card-surface p-7 rounded-2xl">
-            <h3 className="font-heading font-semibold text-lg text-white mb-5">
-              {t.contact.formTitle}
-            </h3>
+          {/* Right 5 Columns: Circular Swiss Signal Vermilion Disc CTA with Rotating SVG Ring */}
+          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+            <button
+              type="button"
+              onClick={openAndFocusForm}
+              data-thread-anchor="contact-disc"
+              data-thread-loop="circle"
+              data-cursor="OPEN"
+              aria-label={t.contact.formToggleOpen}
+              className="group relative w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-[#C92A1D] text-white hover:bg-[#9E1F14] active:scale-[0.98] transition-colors flex flex-col items-center justify-center p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              {/* Continuously Rotating Outer Circular Text */}
+              <svg
+                viewBox="0 0 240 240"
+                className="kx-spin-slow absolute inset-0 w-full h-full pointer-events-none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <path
+                    id="kx-contact-circle"
+                    d="M 120, 120 m -98, 0 a 98,98 0 1,1 196,0 a 98,98 0 1,1 -196,0"
+                  />
+                </defs>
+                <text
+                  fill="#FFFFFF"
+                  fontSize="10.5"
+                  fontWeight="600"
+                  letterSpacing="2.4"
+                  className="font-mono uppercase"
+                >
+                  <textPath href="#kx-contact-circle" startOffset="0%">
+                    {t.contact.discRing}
+                  </textPath>
+                </text>
+              </svg>
+
+              <span className="relative z-10 text-center space-y-1.5">
+                <span className="kx-display text-4xl sm:text-5xl leading-[0.88] block">
+                  {t.contact.discTop}
+                  <br />
+                  {t.contact.discBottom}
+                </span>
+                <ArrowUpRight
+                  weight="bold"
+                  className="w-6 h-6 mx-auto group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                  aria-hidden="true"
+                />
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-white block">
+                  {t.contact.discSub}
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Inline Progressive Direct Message Form */}
+        {formOpen && (
+          <div className="p-6 sm:p-8 rounded-2xl bg-[#111524] border border-white/15 space-y-6">
+            <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/12">
+              <h3 className="kx-display text-3xl text-white leading-none">
+                {t.contact.formTitle}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setFormOpen(false)}
+                aria-label={t.contact.formToggleClose}
+                className="min-w-[44px] min-h-[44px] rounded-full border border-white/20 text-white hover:border-[#FF5B4D] hover:text-[#FF5B4D] flex items-center justify-center transition-colors"
+              >
+                <X weight="bold" className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </div>
 
             {submitStatus === 'success' ? (
               <div
                 role="status"
                 aria-live="polite"
-                className="p-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3"
+                className="p-6 rounded-xl bg-[#080A12] border border-emerald-500/40 text-center space-y-3"
               >
-                <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                  <Check className="w-6 h-6" />
-                </div>
-                <h4 className="font-heading font-semibold text-white text-base">
-                  {t.contact.successTitle}
-                </h4>
-                <p className="text-zinc-200 text-sm max-w-md mx-auto leading-relaxed">
+                <Check weight="bold" className="w-8 h-8 text-emerald-400 mx-auto" aria-hidden="true" />
+                <h4 className="text-lg font-semibold text-white">{t.contact.successTitle}</h4>
+                <p className="text-sm text-[#A3AAC2]">
                   {t.contact.successDesc}{' '}
-                  <span className="text-emerald-400 font-mono text-xs">{emailAddress}</span>.
+                  <span className="font-mono text-white">{emailAddress}</span>.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitStatus(null)}
-                  className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+                  className="min-h-[44px] px-5 py-2 rounded-full bg-white text-[#080A12] text-xs font-semibold uppercase tracking-[0.06em]"
                 >
                   {t.contact.sendAnother}
                 </button>
@@ -278,37 +286,47 @@ export default function Contact() {
               <div
                 role="status"
                 aria-live="polite"
-                className="p-8 rounded-xl bg-sky-500/10 border border-sky-500/20 text-center space-y-3"
+                className="p-6 rounded-xl bg-[#080A12] border border-[#FF5B4D]/40 text-center space-y-3"
               >
-                <div className="w-12 h-12 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <h4 className="font-heading font-semibold text-white text-base">
-                  {t.contact.fallbackTitle}
-                </h4>
-                <p className="text-zinc-200 text-sm max-w-md mx-auto leading-relaxed">
+                <EnvelopeSimple
+                  weight="bold"
+                  className="w-8 h-8 text-[#FF5B4D] mx-auto"
+                  aria-hidden="true"
+                />
+                <h4 className="text-lg font-semibold text-white">{t.contact.fallbackTitle}</h4>
+                <p className="text-sm text-[#A3AAC2]">
                   {t.contact.fallbackDesc}{' '}
-                  <span className="text-sky-400 font-mono text-xs">{emailAddress}</span>.
+                  <span className="font-mono text-white">{emailAddress}</span>.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitStatus(null)}
-                  className="mt-3 px-5 py-2 rounded-xl text-xs font-medium text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+                  className="min-h-[44px] px-5 py-2 rounded-full bg-white text-[#080A12] text-xs font-semibold uppercase tracking-[0.06em]"
                 >
                   {t.contact.backToForm}
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="contact-form-field grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                {validationError && (
+                  <div
+                    role="alert"
+                    className="p-3.5 rounded-xl bg-[#C92A1D] text-white text-xs sm:text-sm font-medium"
+                  >
+                    {validationError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
                     <label
                       htmlFor="contact-name"
-                      className="block text-zinc-200 mb-1.5 text-xs font-medium"
+                      className="block text-xs font-semibold uppercase tracking-[0.06em] text-[#F8F9FC]"
                     >
                       {t.contact.nameLabel}
                     </label>
                     <input
+                      ref={nameInputRef}
                       id="contact-name"
                       name="name"
                       type="text"
@@ -317,13 +335,14 @@ export default function Contact() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder={t.contact.namePlaceholder}
-                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/60 border border-zinc-700 focus:border-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 text-white placeholder:text-zinc-400 text-sm transition-colors"
+                      className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#080A12] border border-[#6B728E] focus:border-[#FF5B4D] text-white placeholder:text-[#9BA3BC] text-sm transition-colors"
                     />
                   </div>
-                  <div>
+
+                  <div className="space-y-1.5">
                     <label
                       htmlFor="contact-email"
-                      className="block text-zinc-200 mb-1.5 text-xs font-medium"
+                      className="block text-xs font-semibold uppercase tracking-[0.06em] text-[#F8F9FC]"
                     >
                       {t.contact.emailInputLabel}
                     </label>
@@ -335,16 +354,16 @@ export default function Contact() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="email@contoh.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/60 border border-zinc-700 focus:border-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 text-white placeholder:text-zinc-400 text-sm transition-colors"
+                      placeholder={t.contact.emailPlaceholder}
+                      className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#080A12] border border-[#6B728E] focus:border-[#FF5B4D] text-white placeholder:text-[#9BA3BC] text-sm transition-colors"
                     />
                   </div>
                 </div>
 
-                <div className="contact-form-field">
+                <div className="space-y-1.5">
                   <label
                     htmlFor="contact-subject"
-                    className="block text-zinc-200 mb-1.5 text-xs font-medium"
+                    className="block text-xs font-semibold uppercase tracking-[0.06em] text-[#F8F9FC]"
                   >
                     {t.contact.topicLabel}
                   </label>
@@ -356,14 +375,14 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     placeholder={t.contact.topicPlaceholder}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/60 border border-zinc-700 focus:border-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 text-white placeholder:text-zinc-400 text-sm transition-colors"
+                    className="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#080A12] border border-[#6B728E] focus:border-[#FF5B4D] text-white placeholder:text-[#9BA3BC] text-sm transition-colors"
                   />
                 </div>
 
-                <div className="contact-form-field">
+                <div className="space-y-1.5">
                   <label
                     htmlFor="contact-message"
-                    className="block text-zinc-200 mb-1.5 text-xs font-medium"
+                    className="block text-xs font-semibold uppercase tracking-[0.06em] text-[#F8F9FC]"
                   >
                     {t.contact.messageLabel}
                   </label>
@@ -375,34 +394,25 @@ export default function Contact() {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder={t.contact.messagePlaceholder}
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-900/60 border border-zinc-700 focus:border-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 text-white placeholder:text-zinc-400 text-sm transition-colors resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#080A12] border border-[#6B728E] focus:border-[#FF5B4D] text-white placeholder:text-[#9BA3BC] text-sm transition-colors resize-none"
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="contact-submit-btn w-full py-3 rounded-xl text-sm font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 shadow-sm disabled:opacity-75 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="w-4 h-4 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin" />
-                      <span>{t.contact.sending}</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>{t.contact.sendBtn}</span>
-                      <Send className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="min-h-[44px] px-7 py-3 rounded-full bg-[#C92A1D] hover:bg-[#FF5B4D] hover:text-[#080A12] text-white font-semibold text-xs uppercase tracking-[0.08em] inline-flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
+                  >
+                    <span>{isSubmitting ? t.contact.sending : t.contact.sendBtn}</span>
+                    <PaperPlaneTilt weight="bold" className="w-4 h-4" aria-hidden="true" />
+                  </button>
 
-                <div className="text-center pt-2">
                   <a
                     href={`mailto:${emailAddress}?subject=${encodeURIComponent(
                       formData.subject || t.contact.topicPlaceholder
                     )}`}
-                    className="text-xs font-mono text-zinc-300 hover:text-white transition-colors underline-offset-4 hover:underline"
+                    className="font-mono text-xs text-[#A3AAC2] hover:text-white underline underline-offset-4 transition-colors"
                   >
                     {t.contact.orMailto}
                   </a>
@@ -410,7 +420,7 @@ export default function Contact() {
               </form>
             )}
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

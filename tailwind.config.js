@@ -7,22 +7,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0a',
-        surface: {
-          DEFAULT: 'rgba(24, 24, 27, 0.8)',
-          elevated: 'rgba(39, 39, 42, 0.6)',
+        paper: '#FFFFFF',
+        mist: '#F5F4F0',
+        obsidian: {
+          DEFAULT: '#080A12',
+          elevated: '#111524',
+        },
+        ink: {
+          DEFAULT: '#0B0E1A',
+          muted: '#4A5068',
+          light: '#F8F9FC',
+          'light-muted': '#A3AAC2',
+        },
+        vermilion: {
+          DEFAULT: '#C92A1D',
+          bright: '#FF5B4D',
+          tint: '#FFD8D2',
+          dark: '#9E1F14',
         },
       },
       fontFamily: {
-        display: ['"Instrument Serif"', 'serif'],
-        heading: ['"Space Grotesk"', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        display: ['"Big Shoulders Display"', '"Inter Tight"', 'sans-serif'],
+        body: ['"Inter Tight"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
-      },
-      backdropBlur: {
-        glass: '16px',
       },
     },
   },
   plugins: [],
-}
+};

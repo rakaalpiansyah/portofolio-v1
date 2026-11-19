@@ -1,325 +1,354 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Briefcase, GraduationCap, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, CaretDown, MapPin } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
-gsap.registerPlugin(ScrollTrigger);
+const TOOLKIT_ITEMS = [
+  { id: 'laravel', label: 'Laravel 11', category: 'backend' },
+  { id: 'php', label: 'PHP 8', category: 'backend' },
+  { id: 'mysql', label: 'MySQL', category: 'backend' },
+  { id: 'oracle', label: 'Oracle SQL', category: 'backend' },
+  { id: 'rest', label: 'REST & Webhooks', category: 'backend' },
+  { id: 'ai_python', label: 'Python / FastAPI / AI', category: 'ai' },
+  { id: 'flutter', label: 'Flutter', category: 'mobile_web' },
+  { id: 'dart', label: 'Dart', category: 'mobile_web' },
+  { id: 'react', label: 'React', category: 'mobile_web' },
+  { id: 'ts', label: 'TypeScript', category: 'mobile_web' },
+  { id: 'js', label: 'JavaScript', category: 'mobile_web' },
+  { id: 'java', label: 'Java OOP', category: 'mobile_web' },
+  { id: 'linux', label: 'Linux', category: 'infra' },
+  { id: 'docker', label: 'Docker', category: 'infra' },
+  { id: 'git', label: 'Git & GitHub', category: 'infra' },
+  { id: 'cisco', label: 'Cisco CCNA', category: 'infra' },
+];
+
+const MARQUEE_ROW_ONE = [
+  'LARAVEL 11',
+  'FASTAPI',
+  'FLUTTER',
+  'REACT',
+  'HYPERLEDGER FABRIC',
+  'TENSORFLOW LITE',
+];
+
+const MARQUEE_ROW_TWO = [
+  'MYSQL & ORACLE SQL',
+  'WHISPER AI',
+  'DOCKER',
+  'LINUX',
+  'CISCO CCNA',
+  'TYPESCRIPT',
+];
 
 export default function Experience() {
   const { t } = useLanguage();
-  const sectionRef = useRef(null);
-  const contentWrapRef = useRef(null);
-  const headerRef = useRef(null);
-  const timelineRef = useRef(null);
-  const spineLineRef = useRef(null);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [expFilter, setExpFilter] = useState('all');
+  const [expandedId, setExpandedId] = useState('sonasoft');
+  const [techCategory, setTechCategory] = useState('all');
+  const [activeTechId, setActiveTechId] = useState('laravel');
 
-  const staticExperiences = [
-    {
-      id: 'sonasoft',
-      type: 'work',
-      category: 'work',
-      isLatest: true,
-      skills: ['Laravel 11', 'REST API', 'PHP', 'Backend Architecture', 'Content Resources', 'MySQL'],
-    },
-    {
-      id: 'royale',
-      type: 'work',
-      category: 'work',
-      isLatest: false,
-      skills: ['Laravel', 'PHP', 'MySQL', 'Payment Gateway', 'KiriminAja API', 'Watzap API', 'Brevo SMTP'],
-    },
-    {
-      id: 'informatika',
-      type: 'education',
-      category: 'education',
-      isLatest: false,
-      skills: ['Software Engineering', 'AI Engineering', 'Flutter/Dart', 'Web Development', 'Algorithms'],
-    },
-    {
-      id: 'pos-indonesia',
-      type: 'work',
-      category: 'work',
-      isLatest: false,
-      skills: ['LAN Maintenance', 'Hardware & Software Troubleshooting', 'Data Logistics Operations'],
-    },
-  ];
+  const filteredExp =
+    expFilter === 'all'
+      ? t.experience.items
+      : t.experience.items.filter((item) => item.category === expFilter);
 
-  const experiences = staticExperiences.map((item, idx) => {
-    const data = t.experience.items[idx] || {};
-    return {
-      ...item,
-      period: data.period || '',
-      role: data.role || '',
-      company: data.company || '',
-      location: data.location || '',
-      tag: data.tag || '',
-      highlights: data.highlights || [],
-    };
-  });
+  const visibleTools =
+    techCategory === 'all'
+      ? TOOLKIT_ITEMS
+      : TOOLKIT_ITEMS.filter((tool) => tool.category === techCategory);
 
-  const categories = [
-    {
-      id: 'all',
-      label: t.experience.allTab || 'Semua Rekam Jejak',
-      shortLabel: t.experience.allShort || 'Semua',
-      count: experiences.length,
-    },
-    {
-      id: 'work',
-      label: t.experience.workTab || 'Pengalaman Industri & Magang',
-      shortLabel: t.experience.workShort || 'Industri',
-      count: experiences.filter((e) => e.category === 'work').length,
-    },
-    {
-      id: 'education',
-      label: t.experience.eduTab || 'Pendidikan & Prestasi',
-      shortLabel: t.experience.eduShort || 'Pendidikan',
-      count: experiences.filter((e) => e.category === 'education').length,
-    },
-  ];
+  const selectedToolMeta =
+    TOOLKIT_ITEMS.find((item) => item.id === activeTechId) || TOOLKIT_ITEMS[0];
+  const selectedToolCopy = t.skills.keycaps[selectedToolMeta.id] || {};
 
-  const filteredExperiences =
-    activeCategory === 'all'
-      ? experiences
-      : experiences.filter((exp) => exp.category === activeCategory);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      const enterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 85%',
-          once: true,
-        },
-        defaults: { ease: 'power3.out' },
-      });
-
-      enterTl
-        .fromTo(
-          headerRef.current,
-          { opacity: 0, y: 28, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.7, ease: 'power4.out' }
-        )
-        .fromTo(
-          '.experience-tab-btn',
-          { opacity: 0, y: 12, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.4, stagger: 0.06 },
-          '-=0.4'
-        )
-        .fromTo(
-          '.experience-card-item',
-          { opacity: 0, x: -24, scale: 0.98 },
-          { opacity: 1, x: 0, scale: 1.0, duration: 0.7, stagger: 0.12, ease: 'power4.out' },
-          '-=0.25'
-        )
-        .fromTo(
-          '.experience-station-node',
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.35, stagger: 0.12, ease: 'back.out(2.0)' },
-          '-=0.65'
-        );
-
-      if (spineLineRef.current && timelineRef.current) {
-        gsap.fromTo(
-          spineLineRef.current,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: timelineRef.current,
-              start: 'top 75%',
-              end: 'bottom 85%',
-              scrub: 0.5,
-            },
-          }
-        );
-      }
-
-      if (contentWrapRef.current) {
-        gsap.to(contentWrapRef.current, {
-          y: -36,
-          opacity: 0,
-          scale: 0.97,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'bottom 45%',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleCategoryChange = (catId) => {
-    if (catId === activeCategory) return;
-    const cards = timelineRef.current;
-    if (cards) {
-      gsap.to(cards.children, {
-        opacity: 0,
-        y: -10,
-        duration: 0.18,
-        stagger: 0.03,
-        ease: 'power2.in',
-        onComplete: () => {
-          setActiveCategory(catId);
-          gsap.fromTo(
-            cards.children,
-            { opacity: 0, y: 14 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.35,
-              stagger: 0.06,
-              ease: 'power2.out',
-            }
-          );
-        },
-      });
-    } else {
-      setActiveCategory(catId);
+  const handleCategoryPick = (catId) => {
+    setTechCategory(catId);
+    const nextList =
+      catId === 'all' ? TOOLKIT_ITEMS : TOOLKIT_ITEMS.filter((i) => i.category === catId);
+    if (nextList.length && !nextList.some((i) => i.id === activeTechId)) {
+      setActiveTechId(nextList[0].id);
     }
   };
 
   return (
     <section
       id="experience"
-      ref={sectionRef}
-      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6 max-w-5xl mx-auto"
+      data-canvas-theme="mist"
+      className="relative w-full bg-[#F5F4F0] text-[#0B0E1A] pt-20 md:pt-28 border-t border-[#0B0E1A]/10 overflow-hidden"
     >
-      <div ref={contentWrapRef} className="experience-content-wrap section-exit-wrap w-full">
-        <div ref={headerRef} className="mb-10 sm:mb-14">
-          <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight mb-4">
-            {t.experience.heading}
-          </h2>
-          <p className="text-zinc-300 text-sm sm:text-base max-w-2xl leading-relaxed mb-8">
-            {t.experience.subtitle}
-          </p>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pb-16 md:pb-24 space-y-12">
+        {/* Header + Track Record Filter Tabs */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-[#4A5068] mb-4">
+              <span className="text-[#C92A1D] font-semibold">(07)</span>
+              <span>{t.experience.indexLabel}</span>
+            </div>
+            <h2 className="kx-display text-[clamp(2.8rem,6.2vw,5.25rem)] leading-[0.86] text-[#0B0E1A]">
+              <span className="block">{t.experience.headingLine1}</span>
+              <span className="block text-[#C92A1D]">{t.experience.headingLine2}</span>
+            </h2>
+          </div>
 
-          <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl glass-pill max-w-full overflow-x-auto no-scrollbar">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => handleCategoryChange(cat.id)}
-                  className={`experience-tab-btn relative px-3 sm:px-4 py-2 sm:py-1.5 rounded-xl text-xs font-mono transition-all duration-150 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
-                    isActive
-                      ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                      : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
-                  }`}
-                  aria-label={`Filter ${cat.label}`}
-                  aria-pressed={isActive}
-                >
-                  <span className="sm:hidden">{cat.shortLabel}</span>
-                  <span className="hidden sm:inline">{cat.label}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${
-                      isActive
-                        ? 'bg-zinc-900 text-zinc-100 font-bold'
-                        : 'bg-zinc-900/60 text-zinc-300'
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="font-mono text-xs uppercase tracking-[0.1em] text-[#4A5068] mr-2 tabular-nums">
+              {t.experience.spanLabel}
+            </span>
+            <div className="inline-flex items-center p-1 rounded-full bg-white border border-[#0B0E1A]/12">
+              {[
+                { id: 'all', label: t.experience.allTab },
+                { id: 'work', label: t.experience.workTab },
+                { id: 'education', label: t.experience.eduTab },
+              ].map((tab) => {
+                const active = expFilter === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setExpFilter(tab.id)}
+                    aria-pressed={active}
+                    className={`min-h-[40px] px-4 rounded-full font-mono text-xs uppercase tracking-[0.06em] transition-colors ${
+                      active
+                        ? 'bg-[#0B0E1A] text-white font-semibold'
+                        : 'text-[#4A5068] hover:text-[#0B0E1A]'
                     }`}
                   >
-                    {cat.count}
-                  </span>
-                </button>
-              );
-            })}
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        <div className="relative pl-7 sm:pl-10">
-          <div className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-white/10" />
-
-          <div
-            ref={spineLineRef}
-            className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-px bg-white origin-top pointer-events-none shadow-[0_0_8px_rgba(255,255,255,0.35)]"
-          />
-
-          <div ref={timelineRef} className="space-y-8 sm:space-y-10">
-            {filteredExperiences.map((exp) => (
-              <div key={exp.id} className="experience-card-item relative group">
-                <div
-                  className={`experience-station-node absolute -left-[24px] sm:-left-[29px] top-5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-all duration-300 z-10 ${
-                    exp.isLatest
-                      ? 'bg-white ring-4 ring-white/20 shadow-[0_0_12px_rgba(255,255,255,0.5)]'
-                      : 'bg-zinc-950 border-2 border-zinc-700 group-hover:border-white group-hover:scale-110'
-                  }`}
-                >
-                  {exp.isLatest && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-950" />
-                  )}
-                  {!exp.isLatest && (
-                    <span className="w-1 h-1 rounded-full bg-zinc-500 group-hover:bg-white transition-colors" />
-                  )}
-                </div>
-
-                <div className="card-surface p-5 sm:p-8 rounded-2xl border border-white/[0.08] hover:border-white/[0.18] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)] relative overflow-hidden group">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-zinc-900/90 border border-white/10 font-mono text-xs text-zinc-200">
+        {/* 12-Column Career Track Record + Categorized Toolkit Inspector */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+          {/* Left 7 Columns: Editorial Accordion Rows */}
+          <div className="lg:col-span-7 border-b border-[#0B0E1A]/15">
+            {filteredExp.map((exp) => {
+              const isOpen = expandedId === exp.id;
+              return (
+                <div key={exp.id} className="border-t border-[#0B0E1A]/15">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isOpen ? null : exp.id)}
+                    aria-expanded={isOpen}
+                    className="w-full py-6 text-left group flex items-start justify-between gap-4 transition-colors"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 flex-1 items-baseline">
+                      <span className="sm:col-span-4 font-mono text-xs font-semibold uppercase tracking-[0.06em] text-[#C92A1D] tabular-nums">
                         {exp.period}
                       </span>
-                      <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">
-                        {exp.tag}
-                      </span>
+                      <div className="sm:col-span-8">
+                        <h3 className="kx-display text-3xl sm:text-4xl text-[#0B0E1A] leading-none group-hover:translate-x-1.5 transition-transform duration-200">
+                          {exp.role}
+                        </h3>
+                        <p className="font-mono text-xs uppercase tracking-[0.08em] text-[#4A5068] mt-1.5">
+                          {exp.company}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-xs text-zinc-300 font-mono">
-                      <MapPin className="w-3.5 h-3.5 text-zinc-400 flex-shrink-0" />
-                      <span>{exp.location}</span>
+                    <span className="min-w-[40px] min-h-[40px] rounded-full border border-[#0B0E1A]/15 group-hover:border-[#C92A1D] flex items-center justify-center shrink-0 transition-colors">
+                      {isOpen ? (
+                        <CaretDown
+                          weight="bold"
+                          className="w-4 h-4 text-[#C92A1D]"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ArrowRight
+                          weight="bold"
+                          className="w-4 h-4 text-[#0B0E1A] group-hover:text-[#C92A1D] group-hover:-rotate-45 transition-all duration-200"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="pb-6 pl-0 sm:pl-[33.333%] space-y-4">
+                      <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[#4A5068]">
+                        <span className="inline-flex items-center gap-1.5">
+                          <MapPin weight="bold" className="w-3.5 h-3.5 text-[#C92A1D]" aria-hidden="true" />
+                          <span>{exp.location}</span>
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-white border border-[#0B0E1A]/12 text-[#0B0E1A]">
+                          {exp.tag}
+                        </span>
+                      </div>
+
+                      <ul className="space-y-2">
+                        {exp.highlights.map((item, idx) => (
+                          <li
+                            key={idx}
+                            className="text-sm text-[#0B0E1A] leading-relaxed flex items-start gap-2.5"
+                          >
+                            <span
+                              className="w-1.5 h-1.5 rounded-full bg-[#C92A1D] mt-2 shrink-0"
+                              aria-hidden="true"
+                            />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {exp.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="px-2.5 py-1 rounded-full text-[11px] font-mono bg-white border border-[#0B0E1A]/12 text-[#0B0E1A]"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-                  <h3 className="font-heading font-extrabold text-xl sm:text-2xl text-white tracking-tight mb-2 group-hover:text-sky-300 transition-colors">
-                    {exp.role}
-                  </h3>
+          {/* Right 5 Columns: White Architectural Toolkit Panel */}
+          <div className="lg:col-span-5 bg-white rounded-2xl border border-[#0B0E1A]/12 p-5 sm:p-7 space-y-6">
+            <div className="flex items-center justify-between gap-2 pb-4 border-b border-[#0B0E1A]/12">
+              <h3 className="kx-display text-3xl text-[#0B0E1A] leading-none">
+                {t.experience.toolkitTitle}
+              </h3>
+              <span className="font-mono text-xs font-semibold text-[#C92A1D] tracking-[0.08em]">
+                {t.experience.toolkitCount}
+              </span>
+            </div>
 
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs sm:text-sm text-zinc-300 mb-5">
-                    {exp.type === 'work' ? (
-                      <Briefcase className="w-4 h-4 text-sky-400 flex-shrink-0" />
-                    ) : (
-                      <GraduationCap className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    )}
-                    <span className="font-semibold text-white">{exp.company}</span>
-                  </div>
+            {/* Category Filter Chips */}
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                onClick={() => handleCategoryPick('all')}
+                aria-pressed={techCategory === 'all'}
+                className={`min-h-[36px] px-3 rounded-full font-mono text-[11px] uppercase tracking-[0.06em] border transition-colors ${
+                  techCategory === 'all'
+                    ? 'bg-[#C92A1D] border-[#C92A1D] text-white font-semibold'
+                    : 'bg-[#F5F4F0] border-[#0B0E1A]/12 text-[#4A5068] hover:text-[#0B0E1A]'
+                }`}
+              >
+                {t.experience.allTab} (16)
+              </button>
+              {t.experience.categories.map((cat) => {
+                const active = techCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategoryPick(cat.id)}
+                    aria-pressed={active}
+                    className={`min-h-[36px] px-3 rounded-full font-mono text-[11px] uppercase tracking-[0.06em] border transition-colors ${
+                      active
+                        ? 'bg-[#C92A1D] border-[#C92A1D] text-white font-semibold'
+                        : 'bg-[#F5F4F0] border-[#0B0E1A]/12 text-[#4A5068] hover:text-[#0B0E1A]'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
 
-                  <ul className="space-y-2.5 mb-6">
-                    {exp.highlights.map((item, hIdx) => (
-                      <li
-                        key={hIdx}
-                        className="text-zinc-200 text-xs sm:text-sm flex items-start gap-2.5 leading-relaxed"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-white/60 mt-1.5 flex-shrink-0 group-hover:bg-white transition-colors" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+            {/* Interactive Technology Buttons */}
+            <div className="flex flex-wrap gap-2">
+              {visibleTools.map((tool) => {
+                const isSelected = activeTechId === tool.id;
+                return (
+                  <button
+                    key={tool.id}
+                    type="button"
+                    onClick={() => setActiveTechId(tool.id)}
+                    aria-pressed={isSelected}
+                    className={`min-h-[40px] px-3.5 py-1.5 rounded-xl font-mono text-xs border transition-colors ${
+                      isSelected
+                        ? 'bg-[#0B0E1A] border-[#0B0E1A] text-white font-semibold'
+                        : 'bg-white border-[#0B0E1A]/15 text-[#0B0E1A] hover:border-[#C92A1D] hover:text-[#C92A1D]'
+                    }`}
+                  >
+                    {tool.label}
+                  </button>
+                );
+              })}
+            </div>
 
-                  <div className="flex flex-wrap gap-1.5 pt-4 border-t border-zinc-800/80">
-                    {exp.skills.map((skill) => (
+            {/* Verified Competency Detail View */}
+            <div className="p-4 sm:p-5 rounded-xl bg-[#F5F4F0] border border-[#0B0E1A]/10 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="kx-display text-2xl text-[#0B0E1A] leading-none">
+                  {selectedToolMeta.label}
+                </span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#C92A1D] font-semibold">
+                  {selectedToolCopy.tag}
+                </span>
+              </div>
+
+              <p className="text-sm font-medium text-[#0B0E1A] leading-snug">
+                {selectedToolCopy.punchline}
+              </p>
+
+              <p className="text-xs sm:text-sm text-[#4A5068] leading-relaxed">
+                {selectedToolCopy.description}
+              </p>
+
+              {Array.isArray(selectedToolCopy.highlights) && (
+                <div className="pt-2 border-t border-[#0B0E1A]/10">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[#4A5068] mb-2">
+                    {t.experience.focusLabel}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedToolCopy.highlights.map((hl) => (
                       <span
-                        key={skill}
-                        className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-zinc-900/80 text-zinc-200 border border-zinc-800/80 hover:border-zinc-600 hover:text-white transition-colors select-none"
+                        key={hl}
+                        className="px-2.5 py-1 rounded-md bg-white border border-[#0B0E1A]/12 font-mono text-[11px] text-[#0B0E1A]"
                       >
-                        {skill}
+                        {hl}
                       </span>
                     ))}
                   </div>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Single Marquee on Entire Page: Dual-Row Opposing Stack Strip */}
+      <div
+        data-thread-anchor="experience-marquee"
+        className="kx-marquee-wrap border-y border-[#0B0E1A]/12 bg-white py-6 sm:py-8 overflow-hidden select-none"
+        aria-label="Engineering Stack Ticker"
+      >
+        <div className="kx-marquee-track flex items-center gap-8 mb-3">
+          {[...MARQUEE_ROW_ONE, ...MARQUEE_ROW_ONE].map((item, idx) => (
+            <span
+              key={idx}
+              className="kx-display italic text-3xl sm:text-5xl leading-none text-[#0B0E1A] whitespace-nowrap inline-flex items-center gap-8"
+            >
+              <span>{item}</span>
+              <span className="text-[#C92A1D] text-xl not-italic" aria-hidden="true">
+                /
+              </span>
+            </span>
+          ))}
+        </div>
+
+        <div className="kx-marquee-track-reverse flex items-center gap-8">
+          {[...MARQUEE_ROW_TWO, ...MARQUEE_ROW_TWO].map((item, idx) => (
+            <span
+              key={idx}
+              className="kx-display italic text-3xl sm:text-5xl leading-none text-[#C92A1D] whitespace-nowrap inline-flex items-center gap-8"
+            >
+              <span>{item}</span>
+              <span className="text-[#0B0E1A] text-xl not-italic" aria-hidden="true">
+                /
+              </span>
+            </span>
+          ))}
         </div>
       </div>
     </section>

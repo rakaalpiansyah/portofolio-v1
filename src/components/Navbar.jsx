@@ -1,473 +1,429 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Globe, ArrowUpRight, ChevronUp } from 'lucide-react';
+import { X, ArrowUpRight, MapPin } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const headerRef = useRef(null);
-  const drawerRef = useRef(null);
-  const overlayRef = useRef(null);
-  const isClosingRef = useRef(false);
-  const touchStartY = useRef(0);
-  const touchStartX = useRef(0);
-  const currentDragY = useRef(0);
+function RollLink({ href, label, suffix, onClick, className = '' }) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className={`kx-roll-link h-5 leading-5 text-xs font-semibold uppercase tracking-[0.08em] px-1 ${className}`}
+    >
+      <span className="kx-roll-track">
+        <span className="flex items-center gap-1 h-5 leading-5 whitespace-nowrap">
+          <span>{label}</span>
+          {suffix && <span className="opacity-75 font-mono text-[11px]">{suffix}</span>}
+        </span>
+        <span
+          aria-hidden="true"
+          className="flex items-center gap-1 h-5 leading-5 whitespace-nowrap"
+        >
+          <span>{label}</span>
+          {suffix && <span className="opacity-75 font-mono text-[11px]">{suffix}</span>}
+        </span>
+      </span>
+    </a>
+  );
+}
+
+export default function Navbar({ activeTheme = 'light', onNavigate }) {
   const { lang, setLang, t } = useLanguage();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [bandungTime, setBandungTime] = useState('');
 
-  const triggerHaptic = (ms = 8) => {
-    if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      try {
-        navigator.vibrate(ms);
-      } catch (err) {
-        // Gracefully ignore if unsupported
-      }
-    }
-  };
-
-  const executeCloseAnimation = (onDone) => {
-    if (isClosingRef.current) return;
-    isClosingRef.current = true;
-    triggerHaptic(6);
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setMobileMenuOpen(false);
-        isClosingRef.current = false;
-        if (onDone) onDone();
-      },
-    });
-
-    if (drawerRef.current) {
-      tl.to(
-        drawerRef.current,
-        {
-          opacity: 0,
-          y: -24,
-          scale: 0.95,
-          duration: 0.22,
-          ease: 'power2.in',
-        },
-        0
-      );
-    }
-
-    if (overlayRef.current) {
-      tl.to(
-        overlayRef.current,
-        {
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power2.in',
-        },
-        0
-      );
-    }
-  };
-
-  const closeMobileMenu = (shouldPopState = true) => {
-    if (isClosingRef.current || !mobileMenuOpen) return;
-
-    if (shouldPopState && window.history.state?.mobileMenuOpen) {
-      window.history.back();
-    }
-    executeCloseAnimation();
-  };
-
-  const openMobileMenu = () => {
-    if (mobileMenuOpen || isClosingRef.current) return;
-    triggerHaptic(10);
-    try {
-      window.history.pushState({ mobileMenuOpen: true }, '');
-    } catch (e) {
-      // Fallback
-    }
-    setMobileMenuOpen(true);
-  };
-
-  const toggleMobileMenu = () => {
-    if (mobileMenuOpen) {
-      closeMobileMenu(true);
-    } else {
-      openMobileMenu();
-    }
-  };
+  const overlayRef = useRef(null);
+  const menuBtnRef = useRef(null);
+  const closeBtnRef = useRef(null);
 
   useEffect(() => {
-    const handlePopState = () => {
-      if (mobileMenuOpen && !isClosingRef.current) {
-        executeCloseAnimation();
+    const onScroll = () => setScrolled(window.scrollY > 28);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateClock = () => {
+      try {
+        const formatted = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }).format(new Date());
+        setBandungTime(`${formatted} WIB`);
+      } catch (e) {
+        setBandungTime('WIB');
       }
     };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [mobileMenuOpen]);
+    updateClock();
+    const id = setInterval(updateClock, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      const prevOverflow = document.body.style.overflow;
-      const prevTouchAction = document.body.style.touchAction;
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
+    if (!menuOpen) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion && overlayRef.current) {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          overlayRef.current,
+          { clipPath: 'inset(0% 0% 100% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.48, ease: 'power4.inOut' }
+        );
+        gsap.fromTo(
+          '.kx-menu-item',
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.42, stagger: 0.045, delay: 0.16, ease: 'power3.out' }
+        );
+      }, overlayRef);
+
+      setTimeout(() => closeBtnRef.current?.focus(), 100);
 
       return () => {
         document.body.style.overflow = prevOverflow;
-        document.body.style.touchAction = prevTouchAction;
+        ctx.revert();
       };
     }
-  }, [mobileMenuOpen]);
+
+    setTimeout(() => closeBtnRef.current?.focus(), 60);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
-    if (mobileMenuOpen && drawerRef.current) {
-      if (overlayRef.current) {
-        gsap.fromTo(
-          overlayRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.25, ease: 'power2.out' }
-        );
-      }
-      gsap.fromTo(
-        drawerRef.current,
-        { opacity: 0, y: -20, scale: 0.94 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: 'back.out(1.2)' }
-      );
-      const items = drawerRef.current.querySelectorAll('.mobile-nav-item');
-      if (items.length > 0) {
-        gsap.fromTo(
-          items,
-          { opacity: 0, x: -16 },
-          { opacity: 1, x: 0, duration: 0.3, stagger: 0.045, ease: 'power2.out', delay: 0.08 }
-        );
-      }
-      const footer = drawerRef.current.querySelector('.mobile-nav-footer');
-      if (footer) {
-        gsap.fromTo(
-          footer,
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', delay: 0.22 }
-        );
-      }
-    }
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        closeMobileMenu(true);
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && menuOpen) {
+        setMenuOpen(false);
+        menuBtnRef.current?.focus();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
 
-  const handleTouchStart = (e) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartX.current = e.touches[0].clientX;
-    currentDragY.current = 0;
-  };
-
-  const handleTouchMove = (e) => {
-    if (!drawerRef.current || isClosingRef.current) return;
-    const deltaY = e.touches[0].clientY - touchStartY.current;
-    const deltaX = e.touches[0].clientX - touchStartX.current;
-
-    if (deltaY < 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
-      currentDragY.current = deltaY;
-      const dampedY = deltaY * 0.72;
-      const alpha = Math.max(0.15, 1 + deltaY / 220);
-      gsap.set(drawerRef.current, { y: dampedY, opacity: alpha });
-      if (overlayRef.current) {
-        gsap.set(overlayRef.current, { opacity: Math.max(0.1, 1 + deltaY / 300) });
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (isClosingRef.current) return;
-    if (currentDragY.current < -45) {
-      closeMobileMenu(true);
-    } else if (drawerRef.current && currentDragY.current < 0) {
-      gsap.to(drawerRef.current, {
-        y: 0,
-        opacity: 1,
-        duration: 0.25,
-        ease: 'back.out(1.5)',
-      });
-      if (overlayRef.current) {
-        gsap.to(overlayRef.current, { opacity: 1, duration: 0.2 });
-      }
-    }
-    currentDragY.current = 0;
-  };
-
-  const handleNavClick = (e, href) => {
+  const handleLinkClick = (e, href) => {
     e.preventDefault();
-    closeMobileMenu(true);
-    setTimeout(() => {
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 220);
+    if (menuOpen) {
+      setMenuOpen(false);
+    }
+    if (onNavigate) {
+      onNavigate(href);
+    } else {
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 25);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { label: t.nav.about, href: '#about' },
-    { label: t.nav.skills, href: '#skills' },
-    { label: t.nav.projects, href: '#projects' },
-    { label: t.nav.experience, href: '#experience' },
+  const navItems = [
+    { href: '#about', label: t.nav.about },
+    { href: '#projects', label: t.nav.projects, suffix: t.nav.workCount },
+    { href: '#capabilities', label: t.nav.capabilities },
+    { href: '#process', label: t.nav.process },
+    { href: '#experience', label: t.nav.experience },
+    { href: '#contact', label: t.nav.contact },
   ];
 
+  // Explicit high-contrast surface adaptation per active canvas theme (1 glass element max: scrolled header bar)
+  const themeClasses = {
+    light: {
+      bar: scrolled
+        ? 'bg-white/90 backdrop-blur-md border-b border-[#0B0E1A]/10 text-[#0B0E1A]'
+        : 'bg-transparent text-[#0B0E1A]',
+      muted: 'text-[#4A5068]',
+      hover: 'hover:text-[#C92A1D]',
+      pillWrap: 'border-[#0B0E1A]/15 bg-white',
+      langActive: 'bg-[#0B0E1A] text-white',
+      langIdle: 'text-[#4A5068] hover:text-[#0B0E1A]',
+      menuBtn: 'border-[#0B0E1A]/25 text-[#0B0E1A] hover:border-[#C92A1D] hover:text-[#C92A1D]',
+    },
+    mist: {
+      bar: scrolled
+        ? 'bg-[#F5F4F0]/90 backdrop-blur-md border-b border-[#0B0E1A]/10 text-[#0B0E1A]'
+        : 'bg-transparent text-[#0B0E1A]',
+      muted: 'text-[#4A5068]',
+      hover: 'hover:text-[#C92A1D]',
+      pillWrap: 'border-[#0B0E1A]/15 bg-white',
+      langActive: 'bg-[#0B0E1A] text-white',
+      langIdle: 'text-[#4A5068] hover:text-[#0B0E1A]',
+      menuBtn: 'border-[#0B0E1A]/25 text-[#0B0E1A] hover:border-[#C92A1D] hover:text-[#C92A1D]',
+    },
+    dark: {
+      bar: scrolled
+        ? 'bg-[#080A12]/88 backdrop-blur-md border-b border-white/12 text-[#F8F9FC]'
+        : 'bg-transparent text-[#F8F9FC]',
+      muted: 'text-[#A3AAC2]',
+      hover: 'hover:text-[#FF5B4D]',
+      pillWrap: 'border-white/15 bg-[#111524]',
+      langActive: 'bg-[#F8F9FC] text-[#080A12]',
+      langIdle: 'text-[#A3AAC2] hover:text-white',
+      menuBtn: 'border-white/25 text-white hover:border-[#FF5B4D] hover:text-[#FF5B4D]',
+    },
+    accent: {
+      bar: scrolled
+        ? 'bg-[#C92A1D]/92 backdrop-blur-md border-b border-white/20 text-white'
+        : 'bg-transparent text-white',
+      muted: 'text-white/90',
+      hover: 'hover:text-[#FFD8D2]',
+      pillWrap: 'border-white/30 bg-[#9E1F14]',
+      langActive: 'bg-white text-[#C92A1D]',
+      langIdle: 'text-white/90 hover:text-white',
+      menuBtn: 'border-white/40 text-white hover:bg-white hover:text-[#C92A1D]',
+    },
+  }[activeTheme] || {
+    bar: 'bg-white/90 backdrop-blur-md text-[#0B0E1A]',
+    muted: 'text-[#4A5068]',
+    hover: 'hover:text-[#C92A1D]',
+    pillWrap: 'border-[#0B0E1A]/15 bg-white',
+    langActive: 'bg-[#0B0E1A] text-white',
+    langIdle: 'text-[#4A5068] hover:text-[#0B0E1A]',
+    menuBtn: 'border-[#0B0E1A]/25 text-[#0B0E1A]',
+  };
+
   return (
-    <header
-      ref={headerRef}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4 sm:pt-5 transition-all duration-300"
-    >
-      <nav
-        aria-label="Main Navigation"
-        className={`w-full max-w-5xl flex items-center justify-between px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 ${
-          mobileMenuOpen
-            ? 'bg-zinc-950 border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.9)]'
-            : scrolled
-            ? 'nav-glass shadow-[0_8px_30px_rgba(0,0,0,0.6)]'
-            : 'bg-zinc-900/40 backdrop-blur-md border border-white/[0.06]'
-        }`}
-        style={mobileMenuOpen ? { backgroundColor: '#09090b' } : undefined}
+    <>
+      <header
+        className={`fixed top-0 inset-x-0 z-50 h-16 md:h-[72px] transition-colors duration-300 ${themeClasses.bar}`}
       >
-        {/* Brand / Nameplate */}
-        <a
-          href="#hero"
-          className="flex items-center gap-2.5 sm:gap-3 text-zinc-100 group transition-all shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 rounded-full"
+        <nav
+          aria-label="Main Navigation"
+          className="max-w-[1440px] mx-auto h-full px-4 sm:px-8 flex items-center justify-between gap-4"
         >
-          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-zinc-900 border border-white/15 p-0.5 group-hover:border-sky-400/60 group-hover:shadow-[0_0_14px_rgba(56,189,248,0.3)] transition-all duration-300 shrink-0 overflow-hidden">
-            <img
-              src="/avatar.webp"
-              alt="Raka Alpiansyah"
-              width="36"
-              height="36"
-              decoding="async"
-              fetchPriority="high"
-              className="w-full h-full object-cover object-top rounded-full block group-hover:scale-105 transition-transform duration-300"
-              loading="eager"
-            />
-          </div>
-
-          <div className="flex flex-col text-left">
-            <span className="font-heading font-bold text-xs sm:text-[15px] text-white tracking-tight group-hover:text-sky-300 transition-colors leading-tight whitespace-nowrap">
-              Raka Alpiansyah
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400 tracking-wider uppercase leading-tight whitespace-nowrap">
-              {t.nav.softwareEngineer}
-            </span>
-          </div>
-        </a>
-
-        {/* Desktop Nav Items */}
-        <div className="hidden md:flex items-center gap-1 glass-pill px-2.5 py-1 rounded-full">
-          {navLinks.map((link) => (
+          {/* Left: Brand & Location */}
+          <div className="flex items-center gap-5 shrink-0">
             <a
-              key={link.href}
-              href={link.href}
-              className="px-3.5 py-1 rounded-full text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              href="#hero"
+              onClick={(e) => handleLinkClick(e, '#hero')}
+              className="kx-display text-2xl sm:text-3xl tracking-tight leading-none flex items-baseline gap-0.5 py-2"
             >
-              {link.label}
+              <span>RAKA</span>
+              <span className={activeTheme === 'accent' ? 'text-[#FFD8D2]' : activeTheme === 'dark' ? 'text-[#FF5B4D]' : 'text-[#C92A1D]'}>
+                .
+              </span>
             </a>
-          ))}
-        </div>
 
-        {/* Language Switcher & CTA */}
-        <div className="hidden sm:flex items-center gap-2.5">
-          <div className="inline-flex items-center p-0.5 rounded-full glass-pill text-[11px] font-mono select-none">
-            <button
-              type="button"
-              onClick={() => setLang('id')}
-              className={`px-2.5 py-0.5 rounded-full transition-all duration-150 ${
-                lang === 'id'
-                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                  : 'text-zinc-300 hover:text-white'
-              }`}
-              title="Bahasa Indonesia"
-              aria-label="Pilih Bahasa Indonesia"
+            <span
+              className={`hidden xl:inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.08em] whitespace-nowrap ${themeClasses.muted}`}
             >
-              ID
-            </button>
-            <button
-              type="button"
-              onClick={() => setLang('en')}
-              className={`px-2.5 py-0.5 rounded-full transition-all duration-150 ${
-                lang === 'en'
-                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                  : 'text-zinc-300 hover:text-white'
-              }`}
-              title="English"
-              aria-label="Select English"
-            >
-              EN
-            </button>
+              <MapPin weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>{t.nav.location}</span>
+            </span>
           </div>
 
-          <a
-            href="#contact"
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium text-zinc-950 bg-white hover:bg-zinc-200 active:scale-95 transition-all duration-150 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-          >
-            <span>{t.nav.contactCta}</span>
-          </a>
-        </div>
+          {/* Center: Single-line Editorial Nav Links */}
+          <div className="hidden lg:flex items-center gap-5">
+            {navItems.map((item) => (
+              <RollLink
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                suffix={item.suffix}
+                onClick={(e) => handleLinkClick(e, item.href)}
+                className={`transition-colors ${themeClasses.hover}`}
+              />
+            ))}
+          </div>
 
-        {/* Mobile Menu Button */}
-        <div className="sm:hidden flex items-center shrink-0">
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            className="relative w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-xl text-zinc-300 hover:text-white bg-zinc-900/80 border border-white/10 hover:border-sky-400/40 active:scale-90 transition-all duration-200"
-            aria-label={t.nav.menuAria}
-            aria-expanded={mobileMenuOpen}
-          >
-            <span
-              className={`w-4 h-[1.5px] bg-current rounded-full transform transition-all duration-300 origin-center ${
-                mobileMenuOpen ? 'rotate-45 translate-y-[6.5px]' : ''
-              }`}
-            />
-            <span
-              className={`w-4 h-[1.5px] bg-current rounded-full transition-all duration-200 ${
-                mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100'
-              }`}
-            />
-            <span
-              className={`w-4 h-[1.5px] bg-current rounded-full transform transition-all duration-300 origin-center ${
-                mobileMenuOpen ? '-rotate-45 -translate-y-[6.5px]' : ''
-              }`}
-            />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Backdrop & Drawer */}
-      {mobileMenuOpen && (
-        <>
-          <div
-            ref={overlayRef}
-            onClick={() => closeMobileMenu(true)}
-            className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40 touch-none cursor-pointer transition-opacity"
-            aria-hidden="true"
-          />
-
-          <div
-            ref={drawerRef}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            className="md:hidden fixed inset-x-4 top-[74px] p-5 rounded-3xl bg-zinc-950 border border-white/10 shadow-[0_24px_64px_rgba(0,0,0,0.95),0_0_30px_rgba(56,189,248,0.12)] flex flex-col gap-3.5 z-50 overflow-hidden select-none"
-            style={{ backgroundColor: '#09090b', touchAction: 'pan-y' }}
-          >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/50 to-transparent" />
-
-            <div className="flex justify-center -mt-1 mb-0.5">
-              <div className="w-10 h-1 rounded-full bg-zinc-700/60" />
-            </div>
-
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] text-xs font-medium text-zinc-300">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-                <span className="font-mono text-[11px] tracking-wider uppercase text-zinc-300">
-                  {t.nav.mobileNavTitle || 'Navigasi'}
-                </span>
-              </div>
-              <span className="font-mono text-[11px] text-zinc-400">Raka Alpiansyah</span>
-            </div>
-
-            <div className="flex flex-col gap-1 py-1">
-              {navLinks.map((link, idx) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="mobile-nav-item group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/[0.06] active:bg-white/[0.1] active:scale-[0.99] transition-all duration-150"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-[11px] font-mono text-zinc-400 group-hover:text-sky-400 transition-colors">
-                      0{idx + 1}
-                    </span>
-                    <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      {link.label}
-                    </span>
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
-                </a>
-              ))}
-            </div>
-
-            <div className="mobile-nav-footer flex flex-col gap-2.5 pt-3 border-t border-white/[0.08]">
-              <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-900/80 border border-white/[0.08]">
-                <div className="flex items-center gap-2 text-xs font-medium text-zinc-200">
-                  <Globe className="w-4 h-4 text-sky-400" />
-                  <span>{lang === 'id' ? 'Bahasa / Language' : 'Language / Bahasa'}</span>
-                </div>
-                <div className="inline-flex items-center p-0.5 rounded-full bg-zinc-950 border border-white/10 text-xs font-mono select-none">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic(6);
-                      setLang('id');
-                    }}
-                    className={`px-3 py-1 rounded-full transition-all duration-200 ${
-                      lang === 'id'
-                        ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                        : 'text-zinc-300 hover:text-white'
-                    }`}
-                    aria-label="Bahasa Indonesia"
-                  >
-                    ID
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic(6);
-                      setLang('en');
-                    }}
-                    className={`px-3 py-1 rounded-full transition-all duration-200 ${
-                      lang === 'en'
-                        ? 'bg-zinc-100 text-zinc-950 font-bold shadow-sm'
-                        : 'text-zinc-300 hover:text-white'
-                    }`}
-                    aria-label="English"
-                  >
-                    EN
-                  </button>
-                </div>
-              </div>
-
-              <a
-                href="#contact"
-                onClick={(e) => handleNavClick(e, '#contact')}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold text-zinc-950 bg-white hover:bg-zinc-200 active:scale-[0.98] transition-all duration-150 shadow-sm"
-              >
-                <span>{t.nav.contactCta}</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-
+          {/* Right: Language Switch + Menu Trigger */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            <div
+              className={`inline-flex items-center p-1 rounded-full border text-[11px] font-mono ${themeClasses.pillWrap}`}
+              role="group"
+              aria-label="Language switch"
+            >
               <button
                 type="button"
-                onClick={() => closeMobileMenu(true)}
-                className="w-full py-2 flex items-center justify-center gap-1.5 rounded-xl text-xs font-mono text-zinc-300 hover:text-white active:text-sky-300 transition-colors hover:bg-white/[0.04] active:bg-white/[0.08]"
-                aria-label={t.nav.closeMenu}
+                onClick={() => setLang('id')}
+                aria-pressed={lang === 'id'}
+                className={`min-w-[34px] min-h-[32px] px-2.5 rounded-full font-semibold transition-colors ${
+                  lang === 'id' ? themeClasses.langActive : themeClasses.langIdle
+                }`}
               >
-                <ChevronUp className="w-3.5 h-3.5 text-zinc-400 animate-pulse" />
-                <span>{t.nav.closeMenu || (lang === 'id' ? 'Tutup Navigasi' : 'Close Navigation')}</span>
+                ID
+              </button>
+              <button
+                type="button"
+                onClick={() => setLang('en')}
+                aria-pressed={lang === 'en'}
+                className={`min-w-[34px] min-h-[32px] px-2.5 rounded-full font-semibold transition-colors ${
+                  lang === 'en' ? themeClasses.langActive : themeClasses.langIdle
+                }`}
+              >
+                EN
               </button>
             </div>
+
+            <button
+              ref={menuBtnRef}
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              aria-label={t.nav.menuAria}
+              aria-expanded={menuOpen}
+              className={`min-h-[44px] px-3.5 sm:px-4 rounded-full border inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-colors active:scale-[0.98] ${themeClasses.menuBtn}`}
+            >
+              <span className="flex flex-col items-end gap-[3.5px] w-4" aria-hidden="true">
+                <span className="w-full h-[1.5px] bg-current" />
+                <span className="w-2/3 h-[1.5px] bg-current" />
+                <span className="w-full h-[1.5px] bg-current" />
+              </span>
+              <span>{t.nav.menuLabel}</span>
+            </button>
           </div>
-        </>
+        </nav>
+      </header>
+
+      {/* Full-Screen Swiss Signal Vermilion Navigation Overlay */}
+      {menuOpen && (
+        <div
+          ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation Overlay"
+          className="fixed inset-0 z-[80] bg-[#C92A1D] text-white kx-grid-accent overflow-y-auto"
+        >
+          <div className="max-w-[1440px] mx-auto min-h-[100dvh] px-4 sm:px-8 py-5 flex flex-col justify-between gap-10">
+            {/* Top Bar */}
+            <div className="flex items-center justify-between h-14">
+              <span className="kx-display text-3xl tracking-tight text-white">
+                RAKA ALPIANSYAH
+              </span>
+
+              <button
+                ref={closeBtnRef}
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  menuBtnRef.current?.focus();
+                }}
+                aria-label={t.nav.closeAria}
+                className="min-h-[44px] px-4 rounded-full border border-white/40 text-white hover:bg-white hover:text-[#C92A1D] inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] transition-colors"
+              >
+                <X weight="bold" className="w-4 h-4" aria-hidden="true" />
+                <span>{t.nav.closeLabel}</span>
+              </button>
+            </div>
+
+            {/* Main Links + Metadata */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 my-auto py-4">
+              <div className="lg:col-span-7 flex flex-col gap-2">
+                <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/90 mb-2">
+                  {t.nav.navigationHeading}
+                </p>
+                {navItems.map((item, idx) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={(e) => handleLinkClick(e, item.href)}
+                    className="kx-menu-item group flex items-baseline gap-4 sm:gap-6 py-2 border-b border-white/20 hover:border-white transition-colors"
+                  >
+                    <span className="font-mono text-xs sm:text-sm text-white/90 tabular-nums">
+                      0{idx + 1}
+                    </span>
+                    <span className="kx-display text-5xl sm:text-6xl md:text-7xl text-white group-hover:translate-x-2 transition-transform duration-200">
+                      {item.label}
+                    </span>
+                    <ArrowUpRight
+                      weight="bold"
+                      className="w-6 h-6 text-white ml-auto opacity-75 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"
+                      aria-hidden="true"
+                    />
+                  </a>
+                ))}
+              </div>
+
+              <div className="lg:col-span-5 flex flex-col justify-between gap-8 lg:pl-8 lg:border-l border-white/20">
+                <div className="space-y-6">
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/90 mb-2">
+                      {t.nav.softwareEngineer}
+                    </p>
+                    <p className="text-lg font-medium text-white">{t.nav.available}</p>
+                    <p className="text-sm text-white/90 mt-1">{t.nav.location}</p>
+                  </div>
+
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/90 mb-2">
+                      Direct Email
+                    </p>
+                    <a
+                      href="mailto:rakaalpiansyah@gmail.com"
+                      className="text-xl sm:text-2xl font-semibold underline underline-offset-4 text-white hover:text-[#FFD8D2] transition-colors break-all"
+                    >
+                      rakaalpiansyah@gmail.com
+                    </a>
+                  </div>
+
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-[0.12em] text-white/90 mb-3">
+                      {t.nav.socialHeading}
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                      {[
+                        { name: 'GitHub', href: 'https://github.com/rakaalpiansyah' },
+                        { name: 'LinkedIn', href: 'https://www.linkedin.com/in/rakaalpiansyah' },
+                        { name: 'Instagram', href: 'https://www.instagram.com/vcols_/' },
+                      ].map((soc) => (
+                        <a
+                          key={soc.name}
+                          href={soc.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="min-h-[44px] px-4 rounded-full border border-white/35 text-white hover:bg-white hover:text-[#C92A1D] inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.06em] transition-colors"
+                        >
+                          <span>{soc.name}</span>
+                          <ArrowUpRight weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/20">
+                  <div>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/85 block">
+                      {t.nav.localTimeLabel}
+                    </span>
+                    <span className="font-mono text-sm font-semibold tabular-nums text-white">
+                      {bandungTime}
+                    </span>
+                  </div>
+
+                  <div className="inline-flex items-center p-1 rounded-full bg-[#9E1F14] border border-white/30 text-xs font-mono">
+                    <button
+                      type="button"
+                      onClick={() => setLang('id')}
+                      aria-pressed={lang === 'id'}
+                      className={`min-h-[36px] px-3 rounded-full font-semibold transition-colors ${
+                        lang === 'id' ? 'bg-white text-[#C92A1D]' : 'text-white/90 hover:text-white'
+                      }`}
+                    >
+                      ID
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLang('en')}
+                      aria-pressed={lang === 'en'}
+                      className={`min-h-[36px] px-3 rounded-full font-semibold transition-colors ${
+                        lang === 'en' ? 'bg-white text-[#C92A1D]' : 'text-white/90 hover:text-white'
+                      }`}
+                    >
+                      EN
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
-    </header>
+    </>
   );
 }

@@ -1,235 +1,262 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, Server, MapPin, GraduationCap, Briefcase, Cloud, Database } from 'lucide-react';
+import {
+  GithubLogo,
+  LinkedinLogo,
+  InstagramLogo,
+  EnvelopeSimple,
+  CopySimple,
+  Check,
+} from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
-import PixelPhoto from './PixelPhoto';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef(null);
-  const contentWrapRef = useRef(null);
-  const photoWrapRef = useRef(null);
-  const headingRef = useRef(null);
-  const leftColRef = useRef(null);
-  const rightColRef = useRef(null);
+  const scribble1Ref = useRef(null);
+  const scribble2Ref = useRef(null);
+  const [copied, setCopied] = useState(false);
   const { t } = useLanguage();
+
+  const email = 'rakaalpiansyah@gmail.com';
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || !sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      const enterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 82%',
-          once: true,
-        },
-        defaults: { ease: 'power3.out' },
-      });
-
-      enterTl
-        .fromTo('.about-eyebrow', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.55 })
-        .fromTo(
-          '.about-heading',
-          { opacity: 0, y: 32, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.75, ease: 'power4.out' },
-          '-=0.35'
-        )
-        .fromTo(
-          '.about-photo',
-          { opacity: 0, y: 36, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.85, ease: 'power4.out' },
-          '-=0.6'
-        )
-        .fromTo(
-          '.about-status',
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.45 },
-          '-=0.55'
-        )
-        .fromTo(
-          ['.about-p1', '.about-p2'],
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 },
-          '-=0.5'
-        )
-        .fromTo(
-          '.about-stat-item',
-          { opacity: 0, y: 18, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.55, stagger: 0.07 },
-          '-=0.5'
-        )
-        .fromTo(
-          '.about-milestone-item',
-          { opacity: 0, y: 22, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1.0, duration: 0.6, stagger: 0.08 },
-          '-=0.45'
-        );
-
-      if (contentWrapRef.current) {
-        gsap.to(contentWrapRef.current, {
-          y: -36,
-          opacity: 0,
-          scale: 0.97,
-          ease: 'none',
+      [scribble1Ref.current, scribble2Ref.current].forEach((path, idx) => {
+        if (!path) return;
+        const len = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          duration: 0.9,
+          delay: idx * 0.14,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'bottom 45%',
-            end: 'bottom top',
-            scrub: 0.6,
+            start: 'top 72%',
+            once: true,
           },
         });
-      }
+      });
+
+      gsap.fromTo(
+        '.about-cred-item',
+        { y: 18 },
+        {
+          y: 0,
+          duration: 0.65,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-cred-grid',
+            start: 'top 82%',
+            once: true,
+          },
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const milestoneIcons = [Award, Cloud, Server, Database];
+  const handleCopyEmail = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(email).catch(() => {});
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2400);
+  };
 
-  const quickStats = [
-    {
-      icon: MapPin,
-      label: t.about.statLocation,
-      value: t.about.statLocationVal,
-    },
-    {
-      icon: GraduationCap,
-      label: t.about.statEducation,
-      value: t.about.statEducationVal,
-    },
-    {
-      icon: Briefcase,
-      label: t.about.statFocus,
-      value: t.about.statFocusVal,
-      sub: t.about.statFocusSub,
-    },
+  const socials = [
+    { name: 'GitHub', href: 'https://github.com/rakaalpiansyah', Icon: GithubLogo },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/rakaalpiansyah', Icon: LinkedinLogo },
+    { name: 'Instagram', href: 'https://www.instagram.com/vcols_/', Icon: InstagramLogo },
+    { name: 'Email', href: `mailto:${email}`, Icon: EnvelopeSimple },
   ];
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-14 sm:py-20 md:py-28 px-4 sm:px-6"
+      data-canvas-theme="light"
+      className="relative w-full bg-white text-[#0B0E1A] py-20 md:py-28 px-4 sm:px-8 border-t border-[#0B0E1A]/10 overflow-hidden"
     >
-      <div ref={contentWrapRef} className="about-content-wrap section-exit-wrap max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* LEFT COLUMN */}
-          <div ref={leftColRef} className="lg:col-span-5 flex flex-col gap-4">
-            <div
-              ref={photoWrapRef}
-              data-speed="0.92"
-              className="about-photo relative select-none w-full"
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+        {/* Left 8 Columns: Statement, Scribble Underline, Credentials, Bio */}
+        <div className="lg:col-span-8 space-y-10">
+          <div>
+            <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-[#4A5068] mb-5">
+              <span className="text-[#C92A1D] font-semibold">(02)</span>
+              <span>{t.about.indexLabel}</span>
+            </div>
+
+            <h2 className="kx-display text-[clamp(2.8rem,6.4vw,5.5rem)] leading-[0.86] text-[#0B0E1A]">
+              <span className="block">{t.about.headingLine1}</span>
+              <span className="block text-[#C92A1D]">{t.about.headingLine2}</span>
+            </h2>
+
+            {/* Hand-drawn SVG Double Scribble Underline */}
+            <svg
+              viewBox="0 0 540 34"
+              fill="none"
+              className="w-full max-w-[520px] h-7 mt-2 overflow-visible"
+              aria-hidden="true"
             >
-              <PixelPhoto
-                src="/foto1.webp"
-                alt="Raka Alpiansyah - Software Engineer"
-                roleBadge={t.about.nameBadgeRole}
-                name="Raka Alpiansyah"
+              <path
+                ref={scribble1Ref}
+                d="M 4 14 Q 140 4, 290 12 T 532 8"
+                stroke="#C92A1D"
+                strokeWidth="3.5"
+                strokeLinecap="round"
               />
-            </div>
+              <path
+                ref={scribble2Ref}
+                d="M 22 25 Q 170 16, 330 22 T 470 19"
+                stroke="#0B0E1A"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
 
-            <div className="about-status flex items-center gap-2 px-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span className="font-mono text-[11px] text-zinc-300">{t.about.available}</span>
-            </div>
-
-            <div
-              data-speed="1.08"
-              data-lag="0.35"
-              className="flex flex-col gap-2.5"
-            >
-              {quickStats.map((stat) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={stat.label}
-                    className="about-stat-item card-surface rounded-xl px-4 py-3 flex items-center gap-3"
-                  >
-                    <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider mb-0.5">
-                        {stat.label}
-                      </p>
-                      <p className="font-heading text-xs font-semibold text-white leading-snug">
-                        {stat.value}
-                      </p>
-                      {stat.sub && (
-                        <p className="font-mono text-[10px] text-zinc-400 mt-0.5">{stat.sub}</p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div className="about-stat-item card-surface rounded-xl px-4 py-3">
-                <p className="font-mono text-[10px] text-zinc-400 uppercase tracking-wider mb-2">
-                  {t.about.stackTitle}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['React', 'Laravel', 'Flutter', 'Python / AI', 'MySQL', 'Docker', 'Linux'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-zinc-200"
-                      >
-                        {tag}
-                      </span>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
+            <p className="font-mono text-xs sm:text-sm text-[#4A5068] uppercase tracking-[0.06em] mt-4">
+              {t.about.lead}
+            </p>
           </div>
 
-          {/* RIGHT COLUMN */}
-          <div ref={rightColRef} className="lg:col-span-7 flex flex-col justify-between pt-1">
-            <div ref={headingRef} className="mb-6">
-              <div className="about-eyebrow flex items-center gap-2.5 mb-3">
-                <span className="w-6 h-px bg-zinc-700" />
-                <span className="text-[11px] text-zinc-400 uppercase tracking-[0.25em] font-mono">
-                  PROFILE &amp; FOUNDATION
-                </span>
+          {/* 4 Verified Credential Columns */}
+          <div className="about-cred-grid grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+            {t.about.credentials.map((cred, idx) => (
+              <div
+                key={cred.label}
+                data-thread-anchor={idx === 2 ? 'about-credentials' : undefined}
+                data-thread-loop={idx === 2 ? 'circle' : undefined}
+                className="about-cred-item border-t border-[#0B0E1A]/15 pt-4"
+              >
+                <div className="kx-display text-[clamp(2.6rem,4.5vw,4.5rem)] leading-[0.85] text-[#C92A1D] mb-2">
+                  {cred.value}
+                </div>
+                <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0B0E1A]">
+                  {cred.label}
+                </div>
+                <div className="text-xs text-[#4A5068] mt-1 leading-snug">{cred.sub}</div>
               </div>
-              <h2 className="about-heading font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight mb-5">
-                {t.about.heading}
-              </h2>
+            ))}
+          </div>
 
-              <p className="about-p1 text-zinc-200 text-sm sm:text-base leading-relaxed mb-3.5">
-                {t.about.p1}
-              </p>
-              <p className="about-p2 text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                {t.about.p2}
-              </p>
+          {/* Two-Column Human Bio */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 pt-2">
+            <p className="text-sm sm:text-base text-[#0B0E1A] leading-relaxed max-w-[60ch]">
+              {t.about.p1}
+            </p>
+            <p className="text-sm sm:text-base text-[#4A5068] leading-relaxed max-w-[60ch]">
+              {t.about.p2}
+            </p>
+          </div>
+        </div>
+
+        {/* Right 4 Columns: Editorial Profile ID Card */}
+        <div className="lg:col-span-4">
+          <div className="rounded-2xl bg-[#F5F4F0] border border-[#0B0E1A]/12 p-5 sm:p-6 space-y-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="kx-display text-3xl sm:text-4xl text-[#0B0E1A] leading-none">
+                  RAKA <span className="text-[#C92A1D]">ALPIANSYAH</span>
+                </h3>
+                <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#4A5068] mt-1.5">
+                  {t.about.cardRole}
+                </p>
+              </div>
+              <span className="font-mono text-[11px] font-semibold px-2.5 py-1 border border-[#0B0E1A]/20 rounded-md text-[#0B0E1A]">
+                {t.about.cardCode}
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-5 border-t border-zinc-800/80">
-              {t.about.milestones.map((item, idx) => {
-                const Icon = milestoneIcons[idx] || Award;
-                return (
-                  <div
-                    key={idx}
-                    className="about-milestone-item card-surface p-4 sm:p-4.5 rounded-xl flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-300"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Icon className="w-4 h-4 text-sky-400 shrink-0" />
-                        <span className="font-mono text-[11px] text-zinc-300 truncate">
-                          {item.org}
-                        </span>
-                      </div>
-                      <h3 className="font-heading font-semibold text-white text-xs sm:text-sm mb-1.5 leading-snug">
-                        {item.title}
-                      </h3>
-                      <p className="text-zinc-300 text-xs leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Social Square Buttons (44x44px tap targets) */}
+            <div className="flex items-center gap-2">
+              {socials.map(({ name, href, Icon }) => (
+                <a
+                  key={name}
+                  href={href}
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'me noopener noreferrer' : 'me'}
+                  aria-label={name}
+                  title={name}
+                  className="w-11 h-11 rounded-xl border border-[#0B0E1A]/15 bg-white text-[#0B0E1A] hover:border-[#C92A1D] hover:bg-[#C92A1D] hover:text-white transition-colors flex items-center justify-center"
+                >
+                  <Icon weight="bold" className="w-4 h-4" aria-hidden="true" />
+                </a>
+              ))}
             </div>
+
+            {/* Factual Metadata */}
+            <ul className="space-y-1.5 text-xs text-[#4A5068] font-medium">
+              {t.about.cardFacts.map((fact) => (
+                <li key={fact} className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C92A1D] shrink-0" aria-hidden="true" />
+                  <span>{fact}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* Viewfinder Portrait Frame */}
+            <div className="relative rounded-xl overflow-hidden bg-[#080A12] aspect-[4/5] group">
+              <img
+                src="./foto1.webp"
+                alt="Raka Alpiansyah, Software & AI Engineer"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover object-top grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-500"
+              />
+              {/* Subtle Vermilion Editorial Duotone Wash that lifts on hover */}
+              <div className="absolute inset-0 bg-[#C92A1D] mix-blend-screen opacity-20 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none" />
+
+              {/* Viewfinder L-Brackets */}
+              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-white/80 pointer-events-none" />
+              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-white/80 pointer-events-none" />
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-white/80 pointer-events-none" />
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-white/80 pointer-events-none" />
+
+              <span className="absolute top-3.5 left-9 font-mono text-[10px] tracking-[0.12em] uppercase text-white/90 bg-[#080A12]/65 px-2 py-0.5 rounded">
+                PORTRAIT / 01
+              </span>
+
+              <span
+                className="absolute right-2.5 bottom-6 font-mono text-[10px] tracking-[0.14em] uppercase text-white/90 bg-[#080A12]/70 px-2 py-1 rounded origin-bottom-right"
+                style={{ writingMode: 'vertical-rl' }}
+              >
+                {t.about.stamp}
+              </span>
+            </div>
+
+            {/* One-Click Email Copy Bar */}
+            <button
+              type="button"
+              onClick={handleCopyEmail}
+              data-cursor="COPY"
+              className="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-white border border-[#0B0E1A]/15 hover:border-[#C92A1D] text-left flex items-center justify-between gap-2 transition-colors group"
+            >
+              <span className="font-mono text-[11px] sm:text-xs text-[#0B0E1A] truncate">
+                {email}
+              </span>
+              <span className="inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase text-[#C92A1D] shrink-0">
+                {copied ? (
+                  <>
+                    <Check weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>{t.contact.copiedBtn}</span>
+                  </>
+                ) : (
+                  <>
+                    <CopySimple weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>{t.contact.copyBtn}</span>
+                  </>
+                )}
+              </span>
+            </button>
           </div>
         </div>
       </div>

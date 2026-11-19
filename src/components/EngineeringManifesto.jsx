@@ -1,29 +1,41 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowDown } from '@phosphor-icons/react';
+import { useLanguage } from '../context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * EngineeringManifesto (V4 - Viewport-Lazy 3D Monogram & Monumental Brutalist Canvas)
+ * EngineeringManifesto (Chapter 05 - Pinned Split-Expand Showreel + Lazy Three.js 3D </>)
  *
  * - Dynamically imports Three.js and constructs the 3D "< / >" sculpture & industrial chains
- *   ONLY when the user scrolls near the Manifesto section (IntersectionObserver),
- *   eliminating 100% of initial page load main-thread blocking (0ms TBT impact).
- * - Automatically pauses WebGL rendering when scrolled out of the viewport.
+ *   only when near the viewport, pausing automatically when offscreen.
+ * - Desktop (>=768px): Pinned GSAP ScrollTrigger expands the central 3D viewfinder via clip-path
+ *   while CODE / CRAFT split outward.
  */
-export default function EngineeringManifesto() {
+export default function EngineeringManifesto({ onNavigate }) {
   const sectionRef = useRef(null);
+  const frameRef = useRef(null);
   const canvasRef = useRef(null);
-
-  const wareRef = useRef(null);
-  const engineerRef = useRef(null);
-  const isRef = useRef(null);
-  const futureRef = useRef(null);
+  const leftWordRef = useRef(null);
+  const rightWordRef = useRef(null);
 
   const [isDragging, setIsDragging] = useState(false);
+  const [frameTick, setFrameTick] = useState(0);
+  const { t } = useLanguage();
 
-  // 1. Viewport-Lazy Three.js 3D Sculpture & Industrial Chains
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const timer = setInterval(() => {
+      setFrameTick((prev) => (prev + 1) % 3600);
+    }, 100);
+    return () => clearInterval(timer);
+  }, []);
+
+  // 1. Viewport-Lazy Three.js 3D Sculpture & Industrial Chains (Swiss Signal Vermilion & Titanium)
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
@@ -47,7 +59,7 @@ export default function EngineeringManifesto() {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
           42,
-          section.clientWidth / section.clientHeight,
+          section.clientWidth / Math.max(1, section.clientHeight),
           0.1,
           100
         );
@@ -62,20 +74,20 @@ export default function EngineeringManifesto() {
         renderer.setSize(section.clientWidth, section.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.3;
+        renderer.toneMappingExposure = 1.35;
 
-        const ambientLight = new THREE.AmbientLight(0x0a0f1d, 1.8);
+        const ambientLight = new THREE.AmbientLight(0x111524, 2.0);
         scene.add(ambientLight);
 
         const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
         keyLight.position.set(6, 8, 7);
         scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0x64748b, 2.0);
+        const fillLight = new THREE.DirectionalLight(0xa3aac2, 2.2);
         fillLight.position.set(-6, -4, 5);
         scene.add(fillLight);
 
-        const rimLight = new THREE.DirectionalLight(0x38bdf8, 3.5);
+        const rimLight = new THREE.DirectionalLight(0xff5b4d, 4.2);
         rimLight.position.set(0, -6, -4);
         scene.add(rimLight);
 
@@ -96,7 +108,7 @@ export default function EngineeringManifesto() {
         leftShape.lineTo(-1.35, -1.42);
         leftShape.closePath();
 
-        // 2. Central Compiler Slash Shape: "/"
+        // 2. Central Slash Shape: "/"
         const slashShape = new THREE.Shape();
         slashShape.moveTo(-0.16, 1.68);
         slashShape.lineTo(0.24, 1.68);
@@ -136,18 +148,18 @@ export default function EngineeringManifesto() {
         geoRight.translate(1.62, 0, 0);
 
         const faceMaterial = new THREE.MeshPhysicalMaterial({
-          color: new THREE.Color(0x0e1422),
+          color: new THREE.Color(0x111524),
           metalness: 0.94,
           roughness: 0.22,
           clearcoat: 0.85,
           clearcoatRoughness: 0.08,
           reflectivity: 1.0,
-          emissive: new THREE.Color(0x0369a1),
-          emissiveIntensity: 0.04,
+          emissive: new THREE.Color(0x9e1f14),
+          emissiveIntensity: 0.08,
         });
 
         const sideMaterial = new THREE.MeshPhysicalMaterial({
-          color: new THREE.Color(0x05080f),
+          color: new THREE.Color(0x080a12),
           metalness: 0.96,
           roughness: 0.35,
           clearcoat: 0.6,
@@ -158,21 +170,16 @@ export default function EngineeringManifesto() {
         const meshLeft = new THREE.Mesh(geoLeft, materials);
         const meshSlash = new THREE.Mesh(geoSlash, materials);
         const meshRight = new THREE.Mesh(geoRight, materials);
-        masterGroup.add(meshLeft);
-        masterGroup.add(meshSlash);
-        masterGroup.add(meshRight);
+        masterGroup.add(meshLeft, meshSlash, meshRight);
 
         const edgeMat = new THREE.LineBasicMaterial({
-          color: 0x38bdf8,
+          color: 0xff5b4d,
           transparent: true,
-          opacity: 0.85,
+          opacity: 0.9,
         });
-        const edgesLeft = new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 14), edgeMat);
-        const edgesSlash = new THREE.LineSegments(new THREE.EdgesGeometry(geoSlash, 14), edgeMat);
-        const edgesRight = new THREE.LineSegments(new THREE.EdgesGeometry(geoRight, 14), edgeMat);
-        meshLeft.add(edgesLeft);
-        meshSlash.add(edgesSlash);
-        meshRight.add(edgesRight);
+        meshLeft.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoLeft, 14), edgeMat));
+        meshSlash.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoSlash, 14), edgeMat));
+        meshRight.add(new THREE.LineSegments(new THREE.EdgesGeometry(geoRight, 14), edgeMat));
 
         const createIndustrialChain = (
           radius,
@@ -190,11 +197,11 @@ export default function EngineeringManifesto() {
           const chainMat = new THREE.MeshPhysicalMaterial({
             color: new THREE.Color(colorHex),
             metalness: 0.96,
-            roughness: 0.2,
-            clearcoat: 0.9,
+            roughness: 0.22,
+            clearcoat: 0.85,
             clearcoatRoughness: 0.12,
             reflectivity: 1.0,
-            emissive: new THREE.Color(0x0284c7),
+            emissive: new THREE.Color(0x7f1d1d),
             emissiveIntensity: 0.08,
           });
 
@@ -205,7 +212,6 @@ export default function EngineeringManifesto() {
             const theta = i * dTheta;
             const x = radius * Math.cos(theta);
             const y = radius * Math.sin(theta);
-            const z = 0;
 
             const T = new THREE.Vector3(-Math.sin(theta), Math.cos(theta), 0).normalize();
             const N = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0).normalize();
@@ -220,7 +226,7 @@ export default function EngineeringManifesto() {
             const Z = new THREE.Vector3().crossVectors(T, Y).normalize();
 
             const rotMatrix = new THREE.Matrix4().makeBasis(T, Y, Z);
-            rotMatrix.setPosition(x, y, z);
+            rotMatrix.setPosition(x, y, 0);
             instanced.setMatrixAt(i, rotMatrix);
           }
 
@@ -233,29 +239,9 @@ export default function EngineeringManifesto() {
           return { group, instanced, linkGeo, chainMat };
         };
 
-        const outerChain = createIndustrialChain(
-          3.38,
-          104,
-          1.45,
-          0.82,
-          1.0,
-          Math.PI / 2.65,
-          0.22,
-          0x1e293b
-        );
-        masterGroup.add(outerChain.group);
-
-        const innerChain = createIndustrialChain(
-          2.88,
-          80,
-          1.3,
-          0.75,
-          0.9,
-          -Math.PI / 3.1,
-          -0.18,
-          0x0f172a
-        );
-        masterGroup.add(innerChain.group);
+        const outerChain = createIndustrialChain(3.38, 104, 1.45, 0.82, 1.0, Math.PI / 2.65, 0.22, 0x2a2f45);
+        const innerChain = createIndustrialChain(2.88, 80, 1.3, 0.75, 0.9, -Math.PI / 3.1, -0.18, 0x181b2a);
+        masterGroup.add(outerChain.group, innerChain.group);
 
         const mouse = {
           targetX: 0,
@@ -271,7 +257,7 @@ export default function EngineeringManifesto() {
           const rect = section.getBoundingClientRect();
           const clientX = e.clientX - rect.left;
 
-          mouse.targetX = (clientX / rect.width) * 2 - 1;
+          mouse.targetX = (clientX / Math.max(1, rect.width)) * 2 - 1;
           cursorLight.position.x = mouse.targetX * 5.5;
 
           if (mouse.isDown) {
@@ -300,9 +286,9 @@ export default function EngineeringManifesto() {
         const handleResize = () => {
           if (!section || !renderer || !camera) return;
           const width = section.clientWidth;
-          const height = section.clientHeight;
+          const height = Math.max(1, section.clientHeight);
           camera.aspect = width / height;
-          camera.position.z = width < 768 ? 8.6 : 7.8;
+          camera.position.z = width < 768 ? 9.0 : 7.8;
           camera.updateProjectionMatrix();
           renderer.setSize(width, height);
         };
@@ -327,12 +313,12 @@ export default function EngineeringManifesto() {
 
           if (!prefersReducedMotion) {
             const scrollProgress = section._scrollProgress || 0;
-            const scrollRot = scrollProgress * Math.PI * 2.2;
-            masterGroup.rotation.y = scrollRot + mouse.currX * 0.45 + mouse.dragRotY;
+            const scrollRot = scrollProgress * Math.PI * 2.1;
+            masterGroup.rotation.y = scrollRot + mouse.currX * 0.42 + mouse.dragRotY;
             masterGroup.rotation.x = 0.08;
 
-            outerChain.group.rotation.z += delta * 0.18;
-            innerChain.group.rotation.z -= delta * 0.14;
+            outerChain.group.rotation.z += delta * 0.16;
+            innerChain.group.rotation.z -= delta * 0.13;
           }
 
           renderer.render(scene, camera);
@@ -368,15 +354,13 @@ export default function EngineeringManifesto() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-        isVisible = entry.isIntersecting;
+        isVisible = entries[0].isIntersecting;
         if (isVisible && !hasInitialized) {
           initThreeScene();
         }
       },
       { rootMargin: '300px' }
     );
-
     observer.observe(section);
 
     return () => {
@@ -386,7 +370,7 @@ export default function EngineeringManifesto() {
     };
   }, []);
 
-  // 2. GSAP ScrollTrigger Pinned Kinetic Typography Timeline
+  // 2. Desktop Pinned Split-Expand Scroll Choreography
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -394,136 +378,187 @@ export default function EngineeringManifesto() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    const ware = wareRef.current;
-    const engineer = engineerRef.current;
-    const isWord = isRef.current;
-    const future = futureRef.current;
-
-    if (!ware || !engineer || !isWord || !future) return;
-
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 768px)', () => {
-      gsap.set(ware, { x: '35vw', opacity: 0.9 });
-      gsap.set(engineer, { x: '45vw', opacity: 0.9 });
-      gsap.set(isWord, { x: '-35vw', opacity: 0.9 });
-      gsap.set(future, { x: '40vw', opacity: 0.9 });
+      if (!frameRef.current || !leftWordRef.current || !rightWordRef.current) return;
+
+      const applySymmetricClip = (progress) => {
+        if (!frameRef.current) return;
+        const insetY = (16 * (1 - progress)).toFixed(2);
+        const insetX = (20 * (1 - progress)).toFixed(2);
+        const radius = (16 * (1 - progress)).toFixed(1);
+        frameRef.current.style.clipPath = `inset(${insetY}% ${insetX}% ${insetY}% ${insetX}% round ${radius}px)`;
+      };
+
+      const proxy = { progress: 0 };
+      applySymmetricClip(0);
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: '+=125%',
+          end: '+=150%',
           pin: true,
-          scrub: 1.2,
+          scrub: 0.9,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             section._scrollProgress = self.progress;
           },
         },
       });
 
-      tl.to(ware, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0)
-        .to(engineer, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.02)
-        .to(isWord, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.04)
-        .to(future, { x: '0vw', opacity: 1, ease: 'power2.out' }, 0.06);
-
-      tl.to([ware, engineer, isWord, future], { opacity: 1, ease: 'none' }, 0.45);
-
-      tl.to(ware, { x: '18vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
-        .to(engineer, { x: '-22vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
-        .to(isWord, { x: '22vw', opacity: 0.25, ease: 'power1.in' }, 0.72)
-        .to(future, { x: '-28vw', opacity: 0.25, ease: 'power1.in' }, 0.72);
-
-      return () => {
-        gsap.set([ware, engineer, isWord, future], { clearProps: 'all' });
-      };
-    });
-
-    mm.add('(max-width: 767px)', () => {
-      gsap.set([ware, engineer, isWord, future], { x: 0, opacity: 1 });
-
-      const mobileTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 85%',
-          end: 'bottom 15%',
-          scrub: 0.8,
-          onUpdate: (self) => {
-            section._scrollProgress = self.progress;
-          },
+      tl.to(
+        proxy,
+        {
+          progress: 1,
+          ease: 'power2.inOut',
+          onUpdate: () => applySymmetricClip(proxy.progress),
         },
-      });
-
-      mobileTl
-        .fromTo(ware, { x: '8vw' }, { x: '-4vw', ease: 'none' }, 0)
-        .fromTo(engineer, { x: '12vw' }, { x: '-6vw', ease: 'none' }, 0)
-        .fromTo(isWord, { x: '-10vw' }, { x: '5vw', ease: 'none' }, 0)
-        .fromTo(future, { x: '10vw' }, { x: '-5vw', ease: 'none' }, 0);
+        0
+      )
+        .to(
+          leftWordRef.current,
+          {
+            xPercent: -120,
+            opacity: 0.12,
+            ease: 'power2.inOut',
+          },
+          0
+        )
+        .to(
+          rightWordRef.current,
+          {
+            xPercent: 120,
+            opacity: 0.12,
+            ease: 'power2.inOut',
+          },
+          0
+        );
 
       return () => {
-        gsap.set([ware, engineer, isWord, future], { clearProps: 'all' });
+        if (frameRef.current) frameRef.current.style.clipPath = '';
+        gsap.set([leftWordRef.current, rightWordRef.current], {
+          clearProps: 'all',
+        });
       };
     });
 
     return () => mm.revert();
   }, []);
 
+  const formatTimecode = (tick) => {
+    const mins = String(Math.floor(tick / 600)).padStart(2, '0');
+    const secs = String(Math.floor((tick % 600) / 10)).padStart(2, '0');
+    const frames = String((tick % 10) * 2 + 10).padStart(2, '0');
+    return `00:${mins}:${secs}:${frames}`;
+  };
+
+  const handleProcessNav = (e) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate('#process');
+    } else {
+      document.querySelector('#process')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section
       id="manifesto"
       ref={sectionRef}
-      className="relative w-full min-h-[420px] sm:min-h-[500px] md:h-[100dvh] py-8 sm:py-12 md:py-0 bg-black text-white flex flex-col justify-center overflow-hidden select-none"
-      aria-label="Software Engineer Manifesto"
+      data-canvas-theme="dark"
+      aria-label={t.showreel.title}
+      className="relative w-full min-h-[72dvh] md:h-[100dvh] bg-[#080A12] text-[#F8F9FC] flex items-center justify-center overflow-hidden"
     >
-      <h2 className="sr-only">Software Engineer is the Future</h2>
+      {/* Left Anchor for Continuous Thread */}
+      <div
+        data-thread-anchor="manifesto-frame"
+        className="hidden md:block absolute left-10 top-1/2 w-2 h-2 pointer-events-none"
+        aria-hidden="true"
+      />
 
-      <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center pointer-events-auto">
+      {/* Giant Split Display Words Flanking the Expanding Viewfinder (Desktop) */}
+      <div
+        className="hidden md:flex absolute inset-0 items-center justify-between px-6 lg:px-12 pointer-events-none z-20 select-none"
+        aria-hidden="true"
+      >
+        <span
+          ref={leftWordRef}
+          className="kx-display text-[11.5vw] leading-[0.8] text-[#FF5B4D] will-change-transform"
+        >
+          {t.showreel.leftWord}
+        </span>
+        <span
+          ref={rightWordRef}
+          className="kx-display text-[11.5vw] leading-[0.8] text-[#FF5B4D] will-change-transform"
+        >
+          {t.showreel.rightWord}
+        </span>
+      </div>
+
+      {/* Expanding 3D Viewfinder Frame */}
+      <div
+        ref={frameRef}
+        data-cursor="DRAG"
+        className="relative w-full h-[72dvh] md:h-full bg-[#111524] overflow-hidden z-10"
+      >
+        {/* Three.js Canvas */}
         <canvas
           ref={canvasRef}
           aria-hidden="true"
-          className={`w-full h-full cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+          className={`absolute inset-0 w-full h-full cursor-grab ${
+            isDragging ? 'cursor-grabbing' : ''
+          }`}
         />
+
+        {/* Subtle Monitor Scanlines */}
+        <div className="kx-scan absolute inset-0 pointer-events-none opacity-65" />
       </div>
 
-      <div className="relative z-10 w-full px-2 sm:px-4 md:px-6 flex flex-col justify-center md:my-auto pointer-events-none">
-        <div className="flex items-baseline justify-start w-full overflow-hidden leading-[0.74]">
-          <div className="flex items-baseline font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-white drop-shadow-2xl whitespace-nowrap">
-            <span className="inline-block">SOFT</span>
-            <span
-              ref={wareRef}
-              className="inline-block text-zinc-300 ml-[0.01em] will-change-transform"
-            >
-              WARE
-            </span>
+      {/* Outer Unclipped Viewfinder Chrome & HUD */}
+      <div className="absolute inset-0 pointer-events-none z-30 flex flex-col justify-between">
+        {/* Top Viewfinder HUD (Clear of Fixed Navbar) */}
+        <div className="max-w-[1440px] w-full mx-auto px-6 sm:px-10 pt-20 md:pt-24 flex items-center justify-between">
+          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-white">
+            <span className="text-[#FF5B4D] font-semibold">(05)</span>
+            <span>{t.showreel.indexLabel}</span>
+          </div>
+
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-white tabular-nums">
+            <span className="w-2 h-2 rounded-full bg-[#FF3B30] kx-rec-blink" aria-hidden="true" />
+            <span>{t.showreel.recLabel}</span>
+            <span className="text-[#A3AAC2]">{formatTimecode(frameTick)}</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.74] pl-[6vw] sm:pl-[10vw] md:pl-[14vw]">
-          <span
-            ref={engineerRef}
-            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-zinc-100 drop-shadow-2xl whitespace-nowrap will-change-transform"
-          >
-            ENGINEER
-          </span>
+        {/* Mobile Title Fallback */}
+        <div className="md:hidden text-center px-4">
+          <p className="kx-display text-5xl text-[#FF5B4D] leading-none">
+            {t.showreel.leftWord} / {t.showreel.rightWord}
+          </p>
         </div>
 
-        <div className="flex items-center justify-start w-full overflow-hidden leading-[0.74] pl-[3vw] sm:pl-[6vw] md:pl-[8vw]">
-          <span
-            ref={isRef}
-            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-sky-400 drop-shadow-[0_0_40px_rgba(56,189,248,0.4)] whitespace-nowrap will-change-transform"
-          >
-            IS
-          </span>
-        </div>
+        {/* Bottom Viewfinder HUD */}
+        <div className="max-w-[1440px] w-full mx-auto px-6 sm:px-10 pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <h2 className="kx-display text-3xl sm:text-5xl text-white leading-none mb-1">
+              {t.showreel.title}
+            </h2>
+            <p className="font-mono text-xs text-[#A3AAC2] uppercase tracking-[0.08em]">
+              {t.showreel.hint}
+            </p>
+          </div>
 
-        <div className="flex items-center justify-end w-full overflow-hidden leading-[0.74]">
-          <span
-            ref={futureRef}
-            className="inline-block font-heading font-black text-[13.5vw] sm:text-[14vw] md:text-[13vw] lg:text-[12.5vw] tracking-[-0.07em] uppercase text-white drop-shadow-2xl text-right whitespace-nowrap will-change-transform"
+          <a
+            href="#process"
+            onClick={handleProcessNav}
+            className="pointer-events-auto min-h-[44px] px-5 py-2.5 rounded-full border border-white/30 bg-[#080A12]/85 text-white hover:bg-white hover:text-[#080A12] inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.08em] transition-colors w-fit"
           >
-            THE FUTURE
-          </span>
+            <span>{t.showreel.cta}</span>
+            <ArrowDown weight="bold" className="w-4 h-4" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>
