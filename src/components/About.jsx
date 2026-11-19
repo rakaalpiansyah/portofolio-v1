@@ -272,9 +272,6 @@ export default function About() {
                   {t.about.cardRole}
                 </p>
               </div>
-              <span className="font-mono text-[11px] font-semibold px-2.5 py-1 border border-[#0B0E1A]/20 rounded-md text-[#0B0E1A]">
-                {t.about.cardCode}
-              </span>
             </div>
 
             {/* Social Square Buttons (44x44px tap targets) */}

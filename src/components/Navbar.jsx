@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { X, ArrowUpRight, MapPin } from '@phosphor-icons/react';
+import { X, ArrowUpRight } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
 function RollLink({ href, label, suffix, onClick, className = '' }) {
@@ -197,7 +197,7 @@ export default function Navbar({ activeTheme = 'light', onNavigate }) {
           aria-label="Main Navigation"
           className="max-w-[1440px] mx-auto h-full px-4 sm:px-8 flex items-center justify-between gap-4"
         >
-          {/* Left: Brand & Location */}
+          {/* Left: Brand */}
           <div className="flex items-center gap-5 shrink-0">
             <a
               href="#hero"
@@ -209,13 +209,6 @@ export default function Navbar({ activeTheme = 'light', onNavigate }) {
                 .
               </span>
             </a>
-
-            <span
-              className={`hidden xl:inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.08em] whitespace-nowrap ${themeClasses.muted}`}
-            >
-              <MapPin weight="bold" className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>{t.nav.location}</span>
-            </span>
           </div>
 
           {/* Center: Single-line Editorial Nav Links */}

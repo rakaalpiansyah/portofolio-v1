@@ -187,11 +187,6 @@ export default function Hero({ onNavigate }) {
               {scrambledRole}
             </span>
           </div>
-
-          <div className="flex items-center gap-2 font-mono text-[11px] sm:text-xs uppercase tracking-[0.1em] text-[#4A5068]">
-            <span className="w-2 h-2 rounded-full bg-[#059669]" aria-hidden="true" />
-            <span>{t.hero.locationTag}</span>
-          </div>
         </div>
 
         {/* Center Monumental 3-Line Display Headline with Inline Media Pill */}

@@ -22,18 +22,7 @@ export default function EngineeringManifesto({ onNavigate }) {
   const rightWordRef = useRef(null);
 
   const [isDragging, setIsDragging] = useState(false);
-  const [frameTick, setFrameTick] = useState(0);
   const { t } = useLanguage();
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    const timer = setInterval(() => {
-      setFrameTick((prev) => (prev + 1) % 3600);
-    }, 100);
-    return () => clearInterval(timer);
-  }, []);
 
   // 1. Viewport-Lazy Three.js 3D Sculpture & Industrial Chains (Swiss Signal Vermilion & Titanium)
   useEffect(() => {
@@ -448,13 +437,6 @@ export default function EngineeringManifesto({ onNavigate }) {
     return () => mm.revert();
   }, []);
 
-  const formatTimecode = (tick) => {
-    const mins = String(Math.floor(tick / 600)).padStart(2, '0');
-    const secs = String(Math.floor((tick % 600) / 10)).padStart(2, '0');
-    const frames = String((tick % 10) * 2 + 10).padStart(2, '0');
-    return `00:${mins}:${secs}:${frames}`;
-  };
-
   const handleProcessNav = (e) => {
     e.preventDefault();
     if (onNavigate) {
@@ -524,12 +506,6 @@ export default function EngineeringManifesto({ onNavigate }) {
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-white">
             <span className="text-[#FF5B4D] font-semibold">(05)</span>
             <span>{t.showreel.indexLabel}</span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.1em] text-white tabular-nums">
-            <span className="w-2 h-2 rounded-full bg-[#FF3B30] kx-rec-blink" aria-hidden="true" />
-            <span>{t.showreel.recLabel}</span>
-            <span className="text-[#A3AAC2]">{formatTimecode(frameTick)}</span>
           </div>
         </div>
 
