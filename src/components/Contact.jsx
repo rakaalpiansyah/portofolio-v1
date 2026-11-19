@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   ArrowUpRight,
   CopySimple,
@@ -9,9 +11,14 @@ import {
 } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Contact() {
   const { t } = useLanguage();
   const emailAddress = 'rakaalpiansyah@gmail.com';
+  const sectionRef = useRef(null);
+  const discRef = useRef(null);
+  const formWrapRef = useRef(null);
   const nameInputRef = useRef(null);
 
   const [copied, setCopied] = useState(false);
@@ -25,6 +32,117 @@ export default function Contact() {
   const [validationError, setValidationError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.contact-line-inner',
+        { yPercent: 108 },
+        {
+          yPercent: 0,
+          duration: 0.95,
+          stagger: 0.12,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 86%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.contact-reveal-item',
+        { y: 26, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 82%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      if (discRef.current) {
+        gsap.fromTo(
+          discRef.current,
+          { scale: 0.8, rotation: -16, opacity: 0 },
+          {
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            duration: 1.0,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 84%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!formOpen || !formWrapRef.current) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    gsap.fromTo(
+      formWrapRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', clearProps: 'transform' }
+    );
+  }, [formOpen]);
+
+  const handleDiscPointerMove = (e) => {
+    const disc = discRef.current;
+    if (!disc) return;
+    if (
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+
+    const rect = disc.getBoundingClientRect();
+    const relX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+    const relY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+
+    gsap.to(disc, {
+      x: Math.max(-14, Math.min(14, relX * 14)),
+      y: Math.max(-14, Math.min(14, relY * 14)),
+      duration: 0.35,
+      ease: 'power2.out',
+      overwrite: 'auto',
+    });
+  };
+
+  const handleDiscPointerLeave = () => {
+    const disc = discRef.current;
+    if (!disc) return;
+    gsap.to(disc, {
+      x: 0,
+      y: 0,
+      duration: 0.65,
+      ease: 'elastic.out(1, 0.55)',
+      overwrite: 'auto',
+    });
+  };
 
   const handleCopyEmail = () => {
     if (navigator.clipboard) {
@@ -97,6 +215,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      ref={sectionRef}
       data-canvas-theme="dark"
       className="relative w-full bg-[#080A12] text-[#F8F9FC] py-20 md:py-28 px-4 sm:px-8 overflow-hidden"
     >
@@ -110,13 +229,17 @@ export default function Contact() {
                 <span>{t.contact.indexLabel}</span>
               </div>
               <h2 className="kx-display text-[clamp(2.8rem,6.5vw,5.75rem)] leading-[0.86] text-white">
-                <span className="block">{t.contact.headingLine1}</span>
-                <span className="block text-[#FF5B4D]">{t.contact.headingLine2}</span>
+                <span className="block overflow-hidden pb-[0.04em]">
+                  <span className="contact-line-inner block">{t.contact.headingLine1}</span>
+                </span>
+                <span className="block overflow-hidden pb-[0.04em] text-[#FF5B4D]">
+                  <span className="contact-line-inner block">{t.contact.headingLine2}</span>
+                </span>
               </h2>
             </div>
 
             {/* Email + Copy Pill */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="contact-reveal-item flex flex-wrap items-center gap-4">
               <a
                 href={`mailto:${emailAddress}`}
                 className="kx-display text-2xl sm:text-4xl md:text-5xl text-white underline underline-offset-8 decoration-white/35 hover:decoration-[#FF5B4D] hover:text-[#FF5B4D] transition-colors break-all"
@@ -145,7 +268,7 @@ export default function Contact() {
             </div>
 
             {/* 3-Column Factual Specs */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-white/15">
+            <div className="contact-reveal-item grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-white/15">
               {t.contact.specs.map((spec) => (
                 <div key={spec.label}>
                   <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#A3AAC2] block mb-1">
@@ -159,7 +282,7 @@ export default function Contact() {
             </div>
 
             {/* Social Links & Direct Form Toggle */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+            <div className="contact-reveal-item flex flex-wrap items-center justify-between gap-4 pt-2">
               <div className="flex flex-wrap items-center gap-5">
                 {[
                   { name: 'GitHub', href: 'https://github.com/rakaalpiansyah' },
@@ -190,16 +313,19 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right 5 Columns: Circular Swiss Signal Vermilion Disc CTA with Rotating SVG Ring */}
+          {/* Right 5 Columns: Circular Swiss Signal Vermilion Disc CTA with Magnetic Pull */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <button
+              ref={discRef}
               type="button"
               onClick={openAndFocusForm}
+              onPointerMove={handleDiscPointerMove}
+              onPointerLeave={handleDiscPointerLeave}
               data-thread-anchor="contact-disc"
               data-thread-loop="circle"
               data-cursor="OPEN"
               aria-label={t.contact.formToggleOpen}
-              className="group relative w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-[#C92A1D] text-white hover:bg-[#9E1F14] active:scale-[0.98] transition-colors flex flex-col items-center justify-center p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="contact-disc-btn group relative w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-[#C92A1D] text-white hover:bg-[#9E1F14] active:scale-[0.98] transition-colors flex flex-col items-center justify-center p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white will-change-transform"
             >
               {/* Continuously Rotating Outer Circular Text */}
               <svg
@@ -247,7 +373,10 @@ export default function Contact() {
 
         {/* Inline Progressive Direct Message Form */}
         {formOpen && (
-          <div className="p-6 sm:p-8 rounded-2xl bg-[#111524] border border-white/15 space-y-6">
+          <div
+            ref={formWrapRef}
+            className="p-6 sm:p-8 rounded-2xl bg-[#111524] border border-white/15 space-y-6"
+          >
             <div className="flex items-center justify-between gap-4 pb-4 border-b border-white/12">
               <h3 className="kx-display text-3xl text-white leading-none">
                 {t.contact.formTitle}

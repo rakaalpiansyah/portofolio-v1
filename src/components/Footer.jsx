@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUp, ArrowUpRight } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Footer({ onNavigate, onScrollTop }) {
   const { t } = useLanguage();
+  const footerRef = useRef(null);
   const [bandungTime, setBandungTime] = useState('');
 
   useEffect(() => {
@@ -26,6 +31,50 @@ export default function Footer({ onNavigate, onScrollTop }) {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.footer-col',
+        { y: 24, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: footer,
+            start: 'top bottom-=30px',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.footer-wordmark-inner',
+        { yPercent: 72 },
+        {
+          yPercent: 0,
+          duration: 1.05,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: '.footer-wordmark-wrap',
+            start: 'top bottom-=16px',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, footer);
+
+    return () => ctx.revert();
+  }, []);
+
   const handleLink = (e, href) => {
     e.preventDefault();
     if (onNavigate) {
@@ -38,13 +87,14 @@ export default function Footer({ onNavigate, onScrollTop }) {
   return (
     <footer
       id="footer"
+      ref={footerRef}
       data-canvas-theme="accent"
       className="relative w-full bg-[#C92A1D] text-white pt-16 pb-8 px-4 sm:px-8 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto space-y-12">
         {/* Top Columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
-          <div className="lg:col-span-4 space-y-4">
+          <div className="footer-col lg:col-span-4 space-y-4">
             <span className="kx-display text-3xl sm:text-4xl text-white leading-none block">
               RAKA ALPIANSYAH
             </span>
@@ -57,7 +107,7 @@ export default function Footer({ onNavigate, onScrollTop }) {
             </a>
           </div>
 
-          <div className="lg:col-span-3 space-y-3">
+          <div className="footer-col lg:col-span-3 space-y-3">
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-[#FFD8D2]">
               {t.footer.navTitle}
             </p>
@@ -84,7 +134,7 @@ export default function Footer({ onNavigate, onScrollTop }) {
             </ul>
           </div>
 
-          <div className="lg:col-span-2 space-y-3">
+          <div className="footer-col lg:col-span-2 space-y-3">
             <p className="font-mono text-xs uppercase tracking-[0.1em] text-[#FFD8D2]">
               {t.footer.projectsTitle}
             </p>
@@ -103,7 +153,7 @@ export default function Footer({ onNavigate, onScrollTop }) {
             </ul>
           </div>
 
-          <div className="lg:col-span-3 space-y-5">
+          <div className="footer-col lg:col-span-3 space-y-5">
             <div className="space-y-3">
               <p className="font-mono text-xs uppercase tracking-[0.1em] text-[#FFD8D2]">
                 {t.footer.socialTitle}
@@ -141,10 +191,10 @@ export default function Footer({ onNavigate, onScrollTop }) {
         </div>
 
         {/* Giant Edge-to-Edge Wordmark */}
-        <div className="select-none overflow-hidden py-2" aria-hidden="true">
+        <div className="footer-wordmark-wrap select-none overflow-hidden py-2" aria-hidden="true">
           <div className="kx-display text-[clamp(5.2rem,24vw,21rem)] leading-[0.8] tracking-[-0.03em] text-center flex items-center justify-center">
             <span
-              className="kx-wordmark-clipped kx-wordmark-outline inline-block"
+              className="footer-wordmark-inner kx-wordmark-clipped kx-wordmark-outline inline-block"
               style={{ backgroundImage: "url('./projects/agritrace-chain.png')" }}
             >
               RAKA

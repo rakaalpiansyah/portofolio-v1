@@ -26,7 +26,44 @@ export default function Process() {
     const section = sectionRef.current;
     if (!section) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const ctx = gsap.context(() => {
+      if (!prefersReducedMotion) {
+        gsap.fromTo(
+          '.process-line-inner',
+          { yPercent: 108 },
+          {
+            yPercent: 0,
+            duration: 0.95,
+            stagger: 0.12,
+            ease: 'power4.out',
+            clearProps: 'transform',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 84%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+
+        gsap.fromTo(
+          '.process-subtext',
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 82%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
       stepCardRefs.current.forEach((card, idx) => {
         if (!card) return;
         ScrollTrigger.create({
@@ -36,6 +73,24 @@ export default function Process() {
           onEnter: () => setActiveStep(idx),
           onEnterBack: () => setActiveStep(idx),
         });
+
+        if (!prefersReducedMotion) {
+          gsap.fromTo(
+            card,
+            { y: 34, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 88%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          );
+        }
       });
     }, section);
 
@@ -67,29 +122,37 @@ export default function Process() {
             <span>{t.process.indexLabel}</span>
           </div>
           <h2 className="kx-display text-[clamp(2.8rem,6.2vw,5.25rem)] leading-[0.86] text-[#0B0E1A] mb-4">
-            <span className="block">{t.process.headingLine1}</span>
-            <span className="block text-[#C92A1D]">{t.process.headingLine2}</span>
+            <span className="block overflow-hidden pb-[0.04em]">
+              <span className="process-line-inner block">{t.process.headingLine1}</span>
+            </span>
+            <span className="block overflow-hidden pb-[0.04em] text-[#C92A1D]">
+              <span className="process-line-inner block">{t.process.headingLine2}</span>
+            </span>
           </h2>
-          <p className="text-sm sm:text-base text-[#4A5068] max-w-[54ch] leading-relaxed">
+          <p className="process-subtext text-sm sm:text-base text-[#4A5068] max-w-[54ch] leading-relaxed">
             {t.process.subtext}
           </p>
         </div>
 
         {/* 12-Column Sticky Monitor + Ordered Engineering Steps */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left 5 Columns: Sticky 4:5 Viewfinder Monitor with Vertical Clip-Path Wipe */}
+          {/* Left 5 Columns: Sticky 4:5 Viewfinder Monitor with Cinematic Vertical Clip-Path Wipe */}
           <div className="lg:col-span-5 lg:sticky lg:top-[14vh]">
             <div className="relative w-full aspect-[4/5] rounded-2xl bg-[#080A12] overflow-hidden border border-[#0B0E1A]/15">
               {steps.map((step, idx) => {
                 const isShown = idx <= activeStep;
+                const isCurrent = idx === activeStep;
                 return (
                   <img
                     key={step.num}
                     src={step.image}
                     alt={step.title}
                     decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover transition-[clip-path] duration-300 ease-out"
+                    className={`absolute inset-0 w-full h-full object-cover transition-[clip-path,transform] duration-700 ${
+                      isCurrent ? 'scale-100' : 'scale-105'
+                    }`}
                     style={{
+                      transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
                       clipPath: isShown ? 'inset(0% 0% 0% 0%)' : 'inset(100% 0% 0% 0%)',
                       zIndex: idx + 1,
                     }}

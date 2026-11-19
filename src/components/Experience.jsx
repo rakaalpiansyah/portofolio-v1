@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, CaretDown, MapPin } from '@phosphor-icons/react';
 import { useLanguage } from '../context/LanguageContext';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const TOOLKIT_ITEMS = [
   { id: 'laravel', label: 'Laravel 11', category: 'backend' },
@@ -41,10 +45,121 @@ const MARQUEE_ROW_TWO = [
 
 export default function Experience() {
   const { t } = useLanguage();
+  const sectionRef = useRef(null);
+  const toolkitDetailRef = useRef(null);
+  const marqueeWrapRef = useRef(null);
+  const marqueeRow1DriftRef = useRef(null);
+  const marqueeRow2DriftRef = useRef(null);
+
   const [expFilter, setExpFilter] = useState('all');
   const [expandedId, setExpandedId] = useState('sonasoft');
   const [techCategory, setTechCategory] = useState('all');
   const [activeTechId, setActiveTechId] = useState('laravel');
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.exp-line-inner',
+        { yPercent: 108 },
+        {
+          yPercent: 0,
+          duration: 0.95,
+          stagger: 0.12,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 86%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.exp-row-item',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.exp-list-col',
+            start: 'top 86%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.exp-toolkit-panel',
+        { y: 42, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.exp-toolkit-panel',
+            start: 'top 86%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      if (marqueeWrapRef.current && marqueeRow1DriftRef.current && marqueeRow2DriftRef.current) {
+        gsap.fromTo(
+          marqueeRow1DriftRef.current,
+          { x: -60 },
+          {
+            x: 60,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: marqueeWrapRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8,
+            },
+          }
+        );
+
+        gsap.fromTo(
+          marqueeRow2DriftRef.current,
+          { x: 60 },
+          {
+            x: -60,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: marqueeWrapRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8,
+            },
+          }
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    if (!toolkitDetailRef.current) return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    gsap.fromTo(
+      toolkitDetailRef.current,
+      { opacity: 0.25, y: 10 },
+      { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
+    );
+  }, [activeTechId]);
 
   const filteredExp =
     expFilter === 'all'
@@ -72,6 +187,7 @@ export default function Experience() {
   return (
     <section
       id="experience"
+      ref={sectionRef}
       data-canvas-theme="mist"
       className="relative w-full bg-[#F5F4F0] text-[#0B0E1A] pt-20 md:pt-28 border-t border-[#0B0E1A]/10 overflow-hidden"
     >
@@ -84,8 +200,12 @@ export default function Experience() {
               <span>{t.experience.indexLabel}</span>
             </div>
             <h2 className="kx-display text-[clamp(2.8rem,6.2vw,5.25rem)] leading-[0.86] text-[#0B0E1A]">
-              <span className="block">{t.experience.headingLine1}</span>
-              <span className="block text-[#C92A1D]">{t.experience.headingLine2}</span>
+              <span className="block overflow-hidden pb-[0.04em]">
+                <span className="exp-line-inner block">{t.experience.headingLine1}</span>
+              </span>
+              <span className="block overflow-hidden pb-[0.04em] text-[#C92A1D]">
+                <span className="exp-line-inner block">{t.experience.headingLine2}</span>
+              </span>
             </h2>
           </div>
 
@@ -123,11 +243,11 @@ export default function Experience() {
         {/* 12-Column Career Track Record + Categorized Toolkit Inspector */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Left 7 Columns: Editorial Accordion Rows */}
-          <div className="lg:col-span-7 border-b border-[#0B0E1A]/15">
+          <div className="exp-list-col lg:col-span-7 border-b border-[#0B0E1A]/15">
             {filteredExp.map((exp) => {
               const isOpen = expandedId === exp.id;
               return (
-                <div key={exp.id} className="border-t border-[#0B0E1A]/15">
+                <div key={exp.id} className="exp-row-item border-t border-[#0B0E1A]/15">
                   <button
                     type="button"
                     onClick={() => setExpandedId(isOpen ? null : exp.id)}
@@ -210,7 +330,7 @@ export default function Experience() {
           </div>
 
           {/* Right 5 Columns: White Architectural Toolkit Panel */}
-          <div className="lg:col-span-5 bg-white rounded-2xl border border-[#0B0E1A]/12 p-5 sm:p-7 space-y-6">
+          <div className="exp-toolkit-panel lg:col-span-5 bg-white rounded-2xl border border-[#0B0E1A]/12 p-5 sm:p-7 space-y-6">
             <div className="flex items-center justify-between gap-2 pb-4 border-b border-[#0B0E1A]/12">
               <h3 className="kx-display text-3xl text-[#0B0E1A] leading-none">
                 {t.experience.toolkitTitle}
@@ -277,7 +397,10 @@ export default function Experience() {
             </div>
 
             {/* Verified Competency Detail View */}
-            <div className="p-4 sm:p-5 rounded-xl bg-[#F5F4F0] border border-[#0B0E1A]/10 space-y-3">
+            <div
+              ref={toolkitDetailRef}
+              className="p-4 sm:p-5 rounded-xl bg-[#F5F4F0] border border-[#0B0E1A]/10 space-y-3"
+            >
               <div className="flex items-center justify-between gap-2">
                 <span className="kx-display text-2xl text-[#0B0E1A] leading-none">
                   {selectedToolMeta.label}
@@ -317,38 +440,43 @@ export default function Experience() {
         </div>
       </div>
 
-      {/* Single Marquee on Entire Page: Dual-Row Opposing Stack Strip */}
+      {/* Single Marquee on Entire Page: Dual-Row Opposing Stack Strip with Scroll Drift */}
       <div
+        ref={marqueeWrapRef}
         data-thread-anchor="experience-marquee"
         className="kx-marquee-wrap border-y border-[#0B0E1A]/12 bg-white py-6 sm:py-8 overflow-hidden select-none"
         aria-label="Engineering Stack Ticker"
       >
-        <div className="kx-marquee-track flex items-center gap-8 mb-3">
-          {[...MARQUEE_ROW_ONE, ...MARQUEE_ROW_ONE].map((item, idx) => (
-            <span
-              key={idx}
-              className="kx-display italic text-3xl sm:text-5xl leading-none text-[#0B0E1A] whitespace-nowrap inline-flex items-center gap-8"
-            >
-              <span>{item}</span>
-              <span className="text-[#C92A1D] text-xl not-italic" aria-hidden="true">
-                /
+        <div ref={marqueeRow1DriftRef} className="will-change-transform mb-3">
+          <div className="kx-marquee-track flex items-center gap-8">
+            {[...MARQUEE_ROW_ONE, ...MARQUEE_ROW_ONE].map((item, idx) => (
+              <span
+                key={idx}
+                className="kx-display italic text-3xl sm:text-5xl leading-none text-[#0B0E1A] whitespace-nowrap inline-flex items-center gap-8"
+              >
+                <span>{item}</span>
+                <span className="text-[#C92A1D] text-xl not-italic" aria-hidden="true">
+                  /
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="kx-marquee-track-reverse flex items-center gap-8">
-          {[...MARQUEE_ROW_TWO, ...MARQUEE_ROW_TWO].map((item, idx) => (
-            <span
-              key={idx}
-              className="kx-display italic text-3xl sm:text-5xl leading-none text-[#C92A1D] whitespace-nowrap inline-flex items-center gap-8"
-            >
-              <span>{item}</span>
-              <span className="text-[#0B0E1A] text-xl not-italic" aria-hidden="true">
-                /
+        <div ref={marqueeRow2DriftRef} className="will-change-transform">
+          <div className="kx-marquee-track-reverse flex items-center gap-8">
+            {[...MARQUEE_ROW_TWO, ...MARQUEE_ROW_TWO].map((item, idx) => (
+              <span
+                key={idx}
+                className="kx-display italic text-3xl sm:text-5xl leading-none text-[#C92A1D] whitespace-nowrap inline-flex items-center gap-8"
+              >
+                <span>{item}</span>
+                <span className="text-[#0B0E1A] text-xl not-italic" aria-hidden="true">
+                  /
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

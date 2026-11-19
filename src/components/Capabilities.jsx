@@ -18,6 +18,42 @@ export default function Capabilities({ onNavigate }) {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.cap-line-inner',
+        { yPercent: 105 },
+        {
+          yPercent: 0,
+          duration: 0.95,
+          stagger: 0.12,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        ['.cap-center-sub', '.cap-center-cta'],
+        { y: 22, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 76%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, section);
+
     const mm = gsap.matchMedia();
 
     mm.add('(min-width: 768px)', () => {
@@ -30,34 +66,78 @@ export default function Capabilities({ onNavigate }) {
           ease: 'none',
           scrollTrigger: {
             trigger: section,
-            start: 'top 65%',
-            end: 'bottom 70%',
+            start: 'top 72%',
+            end: 'bottom 68%',
             scrub: 0.6,
           },
         });
       });
 
-      const nodes = gsap.utils.toArray('.cap-orbital-node', section);
-      nodes.forEach((node, idx) => {
+      const leftNodes = gsap.utils.toArray('.cap-orbital-left', section);
+      const rightNodes = gsap.utils.toArray('.cap-orbital-right', section);
+
+      leftNodes.forEach((node, idx) => {
         gsap.fromTo(
           node,
-          { opacity: 0.45, y: 18 },
+          { opacity: 0.2, x: -24, filter: 'blur(4px)' },
           {
             opacity: 1,
-            y: 0,
+            x: 0,
+            filter: 'blur(0px)',
             ease: 'power2.out',
             scrollTrigger: {
               trigger: section,
-              start: `${20 + idx * 10}% 75%`,
-              end: `${36 + idx * 10}% 65%`,
-              scrub: 0.5,
+              start: `${10 + idx * 12}% 78%`,
+              end: `${28 + idx * 12}% 62%`,
+              scrub: 0.55,
+            },
+          }
+        );
+      });
+
+      rightNodes.forEach((node, idx) => {
+        gsap.fromTo(
+          node,
+          { opacity: 0.2, x: 24, filter: 'blur(4px)' },
+          {
+            opacity: 1,
+            x: 0,
+            filter: 'blur(0px)',
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: `${10 + idx * 12}% 78%`,
+              end: `${28 + idx * 12}% 62%`,
+              scrub: 0.55,
             },
           }
         );
       });
     });
 
-    return () => mm.revert();
+    mm.add('(max-width: 767px)', () => {
+      gsap.fromTo(
+        '.cap-mobile-item',
+        { y: 24, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.cap-mobile-list',
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    });
+
+    return () => {
+      ctx.revert();
+      mm.revert();
+    };
   }, []);
 
   const leftItems = t.capabilities.items.slice(0, 3);
@@ -120,7 +200,7 @@ export default function Capabilities({ onNavigate }) {
           {/* Left 3 Orbital Nodes */}
           <div className="col-span-4 space-y-14 pr-6 relative z-10 text-right">
             {leftItems.map((item) => (
-              <div key={item.num} className="cap-orbital-node relative pr-8">
+              <div key={item.num} className="cap-orbital-left relative pr-8">
                 <span
                   aria-hidden="true"
                   className="hidden lg:flex absolute right-0 top-1.5 w-3.5 h-3.5 rounded-full bg-white border-4 border-[#C92A1D] ring-2 ring-white"
@@ -141,13 +221,17 @@ export default function Capabilities({ onNavigate }) {
           {/* Center Focal Display Statement + CTA */}
           <div className="col-span-4 text-center px-2 relative z-10 space-y-5">
             <h2 className="kx-display text-[clamp(3.2rem,5.4vw,5.25rem)] leading-[0.86] text-white">
-              <span className="block">{t.capabilities.headingLine1}</span>
-              <span className="block text-[#FFD8D2]">{t.capabilities.headingLine2}</span>
+              <span className="block overflow-hidden pb-[0.04em]">
+                <span className="cap-line-inner block">{t.capabilities.headingLine1}</span>
+              </span>
+              <span className="block overflow-hidden pb-[0.04em] text-[#FFD8D2]">
+                <span className="cap-line-inner block">{t.capabilities.headingLine2}</span>
+              </span>
             </h2>
-            <p className="text-sm sm:text-base text-white leading-relaxed max-w-[34ch] mx-auto">
+            <p className="cap-center-sub text-sm sm:text-base text-white leading-relaxed max-w-[34ch] mx-auto">
               {t.capabilities.subtext}
             </p>
-            <div>
+            <div className="cap-center-cta">
               <a
                 href="#contact"
                 onClick={handleCta}
@@ -162,7 +246,7 @@ export default function Capabilities({ onNavigate }) {
           {/* Right 3 Orbital Nodes */}
           <div className="col-span-4 space-y-14 pl-6 relative z-10 text-left">
             {rightItems.map((item) => (
-              <div key={item.num} className="cap-orbital-node relative pl-8">
+              <div key={item.num} className="cap-orbital-right relative pl-8">
                 <span
                   aria-hidden="true"
                   className="hidden lg:flex absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full bg-white border-4 border-[#C92A1D] ring-2 ring-white"
@@ -183,17 +267,24 @@ export default function Capabilities({ onNavigate }) {
         <div className="md:hidden space-y-8">
           <div className="text-center space-y-4">
             <h2 className="kx-display text-[clamp(2.8rem,12vw,4rem)] leading-[0.86] text-white">
-              <span className="block">{t.capabilities.headingLine1}</span>
-              <span className="block text-[#FFD8D2]">{t.capabilities.headingLine2}</span>
+              <span className="block overflow-hidden pb-[0.04em]">
+                <span className="cap-line-inner block">{t.capabilities.headingLine1}</span>
+              </span>
+              <span className="block overflow-hidden pb-[0.04em] text-[#FFD8D2]">
+                <span className="cap-line-inner block">{t.capabilities.headingLine2}</span>
+              </span>
             </h2>
-            <p className="text-sm text-white leading-relaxed max-w-[42ch] mx-auto">
+            <p className="cap-center-sub text-sm text-white leading-relaxed max-w-[42ch] mx-auto">
               {t.capabilities.subtext}
             </p>
           </div>
 
-          <ol className="space-y-4">
+          <ol className="cap-mobile-list space-y-4">
             {t.capabilities.items.map((item) => (
-              <li key={item.num} className="border-t border-white/25 pt-4 flex items-start gap-4">
+              <li
+                key={item.num}
+                className="cap-mobile-item border-t border-white/25 pt-4 flex items-start gap-4"
+              >
                 <span className="font-mono text-xs font-bold text-[#FFD8D2] pt-1 shrink-0">
                   {item.num}
                 </span>
@@ -207,7 +298,7 @@ export default function Capabilities({ onNavigate }) {
             ))}
           </ol>
 
-          <div className="text-center pt-2">
+          <div className="cap-center-cta text-center pt-2">
             <a
               href="#contact"
               onClick={handleCta}

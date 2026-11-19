@@ -130,20 +130,70 @@ export default function Projects({ scrollToY }) {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.projects-line-inner',
+        { yPercent: 108 },
+        {
+          yPercent: 0,
+          duration: 0.95,
+          stagger: 0.1,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
       if (underlineRef.current) {
         const len = underlineRef.current.getTotalLength();
         gsap.set(underlineRef.current, { strokeDasharray: len, strokeDashoffset: len });
         gsap.to(underlineRef.current, {
           strokeDashoffset: 0,
-          duration: 0.9,
-          ease: 'power3.out',
+          duration: 1.15,
+          ease: 'power2.inOut',
           scrollTrigger: {
             trigger: section,
-            start: 'top 75%',
-            once: true,
+            start: 'top 82%',
+            toggleActions: 'play none none reverse',
           },
         });
       }
+
+      gsap.fromTo(
+        '.projects-hud',
+        { y: 22, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 82%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.projects-mobile-card',
+        { y: 26, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
     }, section);
 
     const mm = gsap.matchMedia();
@@ -299,8 +349,12 @@ export default function Projects({ scrollToY }) {
                 <span>{t.projects.indexLabel}</span>
               </div>
               <h2 className="kx-display text-[clamp(2.5rem,5.4vw,4.5rem)] leading-[0.86] text-[#F8F9FC]">
-                <span>{t.projects.headingLine1} </span>
-                <span className="text-[#FF5B4D]">{t.projects.headingLine2}</span>
+                <span className="inline-block overflow-hidden pb-[0.04em] mr-2">
+                  <span className="projects-line-inner inline-block">{t.projects.headingLine1}</span>
+                </span>
+                <span className="inline-block overflow-hidden pb-[0.04em] text-[#FF5B4D]">
+                  <span className="projects-line-inner inline-block">{t.projects.headingLine2}</span>
+                </span>
               </h2>
               <svg
                 viewBox="0 0 360 14"
@@ -427,7 +481,7 @@ export default function Projects({ scrollToY }) {
               <article
                 key={proj.id}
                 onClick={() => setDrawerIndex(idx)}
-                className="snap-center shrink-0 w-[86vw] sm:w-[420px] rounded-2xl overflow-hidden bg-[#111524] border border-white/15 flex flex-col cursor-pointer"
+                className="projects-mobile-card snap-center shrink-0 w-[86vw] sm:w-[420px] rounded-2xl overflow-hidden bg-[#111524] border border-white/15 flex flex-col cursor-pointer"
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden">
                   <ProjectVisual project={proj} />
@@ -463,7 +517,7 @@ export default function Projects({ scrollToY }) {
           </div>
 
           {/* Bottom HUD + Direct Jump Controls */}
-          <div className="pt-3 border-t border-white/12 space-y-3">
+          <div className="projects-hud pt-3 border-t border-white/12 space-y-3">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-baseline gap-4 min-w-0">
                 <span className="kx-display text-4xl sm:text-5xl text-[#FF5B4D] tabular-nums leading-none">

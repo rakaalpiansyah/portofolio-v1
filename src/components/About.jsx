@@ -17,6 +17,9 @@ export default function About() {
   const sectionRef = useRef(null);
   const scribble1Ref = useRef(null);
   const scribble2Ref = useRef(null);
+  const portraitWrapRef = useRef(null);
+  const portraitImgRef = useRef(null);
+  const idCardRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const { t } = useLanguage();
 
@@ -27,41 +30,135 @@ export default function About() {
     if (prefersReducedMotion || !sectionRef.current) return;
 
     const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.about-line-inner',
+        { yPercent: 108 },
+        {
+          yPercent: 0,
+          duration: 0.95,
+          stagger: 0.12,
+          ease: 'power4.out',
+          clearProps: 'transform',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 84%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
       [scribble1Ref.current, scribble2Ref.current].forEach((path, idx) => {
         if (!path) return;
         const len = path.getTotalLength();
         gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
         gsap.to(path, {
           strokeDashoffset: 0,
-          duration: 0.9,
-          delay: idx * 0.14,
-          ease: 'power3.out',
+          duration: 1.25,
+          delay: idx * 0.18,
+          ease: 'power2.inOut',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 72%',
-            once: true,
+            start: 'top 78%',
+            toggleActions: 'play none none reverse',
           },
         });
       });
 
       gsap.fromTo(
         '.about-cred-item',
-        { y: 18 },
+        { y: 36, opacity: 0 },
         {
           y: 0,
-          duration: 0.65,
-          stagger: 0.08,
+          opacity: 1,
+          duration: 0.85,
+          stagger: 0.1,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.about-cred-grid',
-            start: 'top 82%',
-            once: true,
+            start: 'top 84%',
+            toggleActions: 'play none none reverse',
           },
         }
       );
+
+      gsap.fromTo(
+        '.about-bio-p',
+        { y: 28, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-bio-grid',
+            start: 'top 86%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      if (portraitWrapRef.current && portraitImgRef.current) {
+        const applyPortraitClip = (p) => {
+          if (!portraitWrapRef.current) return;
+          const topInset = (100 * (1 - p)).toFixed(2);
+          portraitWrapRef.current.style.clipPath = `inset(${topInset}% 0% 0% 0%)`;
+        };
+        const clipProxy = { p: 0 };
+        applyPortraitClip(0);
+
+        const portraitTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: portraitWrapRef.current,
+            start: 'top 82%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+
+        portraitTl
+          .to(
+            clipProxy,
+            {
+              p: 1,
+              duration: 1.1,
+              ease: 'power4.inOut',
+              onUpdate: () => applyPortraitClip(clipProxy.p),
+            },
+            0
+          )
+          .fromTo(
+            portraitImgRef.current,
+            { scale: 1.14 },
+            { scale: 1.0, duration: 1.25, ease: 'power3.out', clearProps: 'transform' },
+            0
+          );
+      }
     }, sectionRef);
 
-    return () => ctx.revert();
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      if (!idCardRef.current) return;
+      gsap.fromTo(
+        idCardRef.current,
+        { y: 26 },
+        {
+          y: -22,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.7,
+          },
+        }
+      );
+    });
+
+    return () => {
+      if (portraitWrapRef.current) portraitWrapRef.current.style.clipPath = '';
+      ctx.revert();
+      mm.revert();
+    };
   }, []);
 
   const handleCopyEmail = () => {
@@ -96,8 +193,12 @@ export default function About() {
             </div>
 
             <h2 className="kx-display text-[clamp(2.8rem,6.4vw,5.5rem)] leading-[0.86] text-[#0B0E1A]">
-              <span className="block">{t.about.headingLine1}</span>
-              <span className="block text-[#C92A1D]">{t.about.headingLine2}</span>
+              <span className="block overflow-hidden pb-[0.04em]">
+                <span className="about-line-inner block">{t.about.headingLine1}</span>
+              </span>
+              <span className="block overflow-hidden pb-[0.04em] text-[#C92A1D]">
+                <span className="about-line-inner block">{t.about.headingLine2}</span>
+              </span>
             </h2>
 
             {/* Hand-drawn SVG Double Scribble Underline */}
@@ -149,18 +250,18 @@ export default function About() {
           </div>
 
           {/* Two-Column Human Bio */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 pt-2">
-            <p className="text-sm sm:text-base text-[#0B0E1A] leading-relaxed max-w-[60ch]">
+          <div className="about-bio-grid grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 pt-2">
+            <p className="about-bio-p text-sm sm:text-base text-[#0B0E1A] leading-relaxed max-w-[60ch]">
               {t.about.p1}
             </p>
-            <p className="text-sm sm:text-base text-[#4A5068] leading-relaxed max-w-[60ch]">
+            <p className="about-bio-p text-sm sm:text-base text-[#4A5068] leading-relaxed max-w-[60ch]">
               {t.about.p2}
             </p>
           </div>
         </div>
 
         {/* Right 4 Columns: Editorial Profile ID Card */}
-        <div className="lg:col-span-4">
+        <div ref={idCardRef} className="lg:col-span-4 will-change-transform">
           <div className="rounded-2xl bg-[#F5F4F0] border border-[#0B0E1A]/12 p-5 sm:p-6 space-y-5">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -203,9 +304,13 @@ export default function About() {
               ))}
             </ul>
 
-            {/* Viewfinder Portrait Frame */}
-            <div className="relative rounded-xl overflow-hidden bg-[#080A12] aspect-[4/5] group">
+            {/* Viewfinder Portrait Frame (without PORTRAIT / 01 badge) */}
+            <div
+              ref={portraitWrapRef}
+              className="relative rounded-xl overflow-hidden bg-[#080A12] aspect-[4/5] group"
+            >
               <img
+                ref={portraitImgRef}
                 src="./foto1.webp"
                 alt="Raka Alpiansyah, Software & AI Engineer"
                 loading="lazy"
@@ -220,10 +325,6 @@ export default function About() {
               <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-white/80 pointer-events-none" />
               <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-white/80 pointer-events-none" />
               <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-white/80 pointer-events-none" />
-
-              <span className="absolute top-3.5 left-9 font-mono text-[10px] tracking-[0.12em] uppercase text-white/90 bg-[#080A12]/65 px-2 py-0.5 rounded">
-                PORTRAIT / 01
-              </span>
 
               <span
                 className="absolute right-2.5 bottom-6 font-mono text-[10px] tracking-[0.14em] uppercase text-white/90 bg-[#080A12]/70 px-2 py-1 rounded origin-bottom-right"

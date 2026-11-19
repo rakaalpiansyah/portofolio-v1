@@ -37,13 +37,14 @@ function AnimatedWords({ text, className = '' }) {
 
 export default function Hero({ onNavigate }) {
   const heroRef = useRef(null);
+  const pillRef = useRef(null);
   const { t } = useLanguage();
   const [plateIdx, setPlateIdx] = useState(0);
   const [frameTick, setFrameTick] = useState(0);
 
   const { displayText: scrambledRole, ref: roleRef } = useScrambleText(t.hero.roleScramble, {
     triggerOnView: false,
-    duration: 720,
+    duration: 850,
   });
 
   useEffect(() => {
@@ -70,14 +71,86 @@ export default function Hero({ onNavigate }) {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.hero-stagger-in',
-        { y: 18 },
-        { y: 0, duration: 0.75, stagger: 0.06, ease: 'power3.out', clearProps: 'transform' }
-      );
+      const applyPillClip = (p) => {
+        if (!pillRef.current) return;
+        const insetX = (42 * (1 - p)).toFixed(2);
+        pillRef.current.style.clipPath = `inset(0% ${insetX}% 0% ${insetX}% round 9999px)`;
+      };
+
+      const pillProxy = { p: 0 };
+      applyPillClip(0);
+
+      const tl = gsap.timeline({ delay: 0.12 });
+
+      tl.fromTo(
+        '.hero-top-strip',
+        { y: -16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' },
+        0
+      )
+        .fromTo(
+          '.hero-line-inner',
+          { yPercent: 108 },
+          {
+            yPercent: 0,
+            duration: 1.05,
+            stagger: 0.12,
+            ease: 'power4.out',
+            clearProps: 'transform',
+          },
+          0.08
+        )
+        .to(
+          pillProxy,
+          {
+            p: 1,
+            duration: 1.0,
+            ease: 'power4.out',
+            onUpdate: () => applyPillClip(pillProxy.p),
+          },
+          0.16
+        )
+        .fromTo(
+          pillRef.current,
+          { scale: 0.88 },
+          { scale: 1, duration: 1.0, ease: 'power4.out', clearProps: 'transform' },
+          0.16
+        )
+        .fromTo(
+          '.hero-bottom-item',
+          { y: 28, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.85,
+            stagger: 0.08,
+            ease: 'power3.out',
+            clearProps: 'transform',
+          },
+          '-=0.45'
+        );
     }, heroRef);
 
-    return () => ctx.revert();
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 768px)', () => {
+      gsap.to('.hero-scroll-stage', {
+        y: -52,
+        scale: 0.975,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      });
+    });
+
+    return () => {
+      if (pillRef.current) pillRef.current.style.clipPath = '';
+      ctx.revert();
+      mm.revert();
+    };
   }, []);
 
   const formatTimecode = (tick) => {
@@ -103,9 +176,9 @@ export default function Hero({ onNavigate }) {
       data-canvas-theme="light"
       className="relative min-h-[100dvh] w-full bg-white text-[#0B0E1A] pt-20 md:pt-24 pb-8 md:pb-10 px-4 sm:px-8 flex flex-col justify-between overflow-hidden"
     >
-      <div className="max-w-[1440px] w-full mx-auto flex-1 flex flex-col justify-between gap-6">
+      <div className="hero-scroll-stage max-w-[1440px] w-full mx-auto flex-1 flex flex-col justify-between gap-6 will-change-transform">
         {/* Top Metadata Strip */}
-        <div className="hero-stagger-in flex flex-wrap items-center justify-between gap-3 pt-2 border-b border-[#0B0E1A]/12 pb-3">
+        <div className="hero-top-strip flex flex-wrap items-center justify-between gap-3 pt-2 border-b border-[#0B0E1A]/12 pb-3">
           <div className="flex items-center gap-2.5">
             <span
               ref={roleRef}
@@ -128,10 +201,15 @@ export default function Hero({ onNavigate }) {
             aria-label={`${t.hero.headlineLine1Left} ${t.hero.headlineLine1Right} ${t.hero.headlineLine2} ${t.hero.headlineLine3}`}
           >
             <span className="flex flex-wrap items-center gap-x-3 sm:gap-x-5 gap-y-2 mb-1 sm:mb-2">
-              <AnimatedWords text={t.hero.headlineLine1Left} />
+              <span className="inline-block overflow-hidden pt-[0.06em] pb-[0.06em]">
+                <span className="hero-line-inner inline-block">
+                  <AnimatedWords text={t.hero.headlineLine1Left} />
+                </span>
+              </span>
 
               {/* Inline Interactive Kinetic Media Pill */}
               <a
+                ref={pillRef}
                 href="#projects"
                 onClick={(e) => handleNav(e, '#projects')}
                 data-thread-anchor="hero-pill"
@@ -156,27 +234,35 @@ export default function Hero({ onNavigate }) {
                 </span>
               </a>
 
-              <AnimatedWords text={t.hero.headlineLine1Right} />
+              <span className="inline-block overflow-hidden pt-[0.06em] pb-[0.06em]">
+                <span className="hero-line-inner inline-block">
+                  <AnimatedWords text={t.hero.headlineLine1Right} />
+                </span>
+              </span>
             </span>
 
-            <span className="block mb-1 sm:mb-2">
-              <AnimatedWords text={t.hero.headlineLine2} />
+            <span className="block overflow-hidden pt-[0.04em] pb-[0.06em] mb-1 sm:mb-2">
+              <span className="hero-line-inner block">
+                <AnimatedWords text={t.hero.headlineLine2} />
+              </span>
             </span>
 
-            <span className="block text-[#C92A1D]">
-              <AnimatedWords text={t.hero.headlineLine3} />
+            <span className="block overflow-hidden pt-[0.04em] pb-[0.06em] text-[#C92A1D]">
+              <span className="hero-line-inner block">
+                <AnimatedWords text={t.hero.headlineLine3} />
+              </span>
             </span>
           </h1>
         </div>
 
         {/* Bottom Value Prop + Dual CTAs + Active Preview Strip */}
-        <div className="hero-stagger-in grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pt-4 border-t border-[#0B0E1A]/12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pt-4 border-t border-[#0B0E1A]/12">
           <div className="lg:col-span-6 space-y-4">
-            <p className="text-sm sm:text-base text-[#4A5068] max-w-[54ch] leading-relaxed">
+            <p className="hero-bottom-item text-sm sm:text-base text-[#4A5068] max-w-[54ch] leading-relaxed">
               {t.hero.subtext}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="hero-bottom-item flex flex-wrap items-center gap-3">
               <a
                 href="#projects"
                 onClick={(e) => handleNav(e, '#projects')}
@@ -196,7 +282,7 @@ export default function Hero({ onNavigate }) {
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex flex-col sm:flex-row sm:items-center justify-between lg:justify-end gap-4">
+          <div className="hero-bottom-item lg:col-span-6 flex flex-col sm:flex-row sm:items-center justify-between lg:justify-end gap-4">
             {/* Compact Active Release Strip */}
             <a
               href="#projects"

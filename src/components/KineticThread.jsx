@@ -241,7 +241,7 @@ export default function KineticThread({ wrapperRef, activeTheme, lang }) {
       trigger: wrapper,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.25,
+      scrub: 0.45,
       onUpdate: (self) => {
         setDrawn(self.progress);
       },
